@@ -230,6 +230,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
+    <Compile Include="Controllers\StationsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\Vendors\LocationsController.cs" />
+    <Compile Include="Controllers\Vendors\US\US-UTController.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceGroup.cs" />
@@ -274,9 +278,8 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="AttributeRoutingConfig.cs" />
     <Compile Include="Controllers\AMSController.cs" />
-    <Compile Include="Controllers\DatabaseContext.cs" />
+    <Compile Include="Database\DatabaseContext.cs" />
     <Compile Include="Controllers\FrontEndController.cs" />
-    <Compile Include="Controllers\JsonContent.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
