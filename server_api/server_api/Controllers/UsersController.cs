@@ -8,7 +8,7 @@ using server_api.Models;
 namespace server_api.Controllers
 {
     /// <summary>
-    /// 
+    ///   User API end points.
     /// </summary>
     public class UsersController : ApiController
     {
