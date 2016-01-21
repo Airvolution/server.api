@@ -128,6 +128,33 @@ namespace server_api.Controllers
         }
 
         /// <summary>
+        ///   Adds one or many DeviceStates (from a station)
+        /// </summary>
+        /// <param name="state">*xml comment*</param>
+        /// <returns></returns>
+        [Route("stations/states")]
+        [HttpPost]
+        public IHttpActionResult AddAMSDeviceStates([FromBody]DeviceState[] states)
+        {
+            var db = new AirUDBCOE();
+            string deviceID = states[0].DeviceID;
+            Device device = db.Devices.SingleOrDefault(x => x.DeviceID == deviceID);
+
+            if (device == null)
+            {
+                // Failed to add DeviceState.
+                return Ok("Failed to add device state with Device with ID = " + states[0].DeviceID + " not found.");
+            }
+
+            db.DeviceStates.AddRange(states);
+
+            db.SaveChanges();
+
+            // Success.
+            return Ok(states);
+        }
+
+        /// <summary>
         ///   Updates a single AMS DeviceState from the "my devices" settings web page.
         /// </summary>
         /// <param name="state">The state of the device</param>
@@ -188,6 +215,26 @@ namespace server_api.Controllers
             }
         }
 
+
+        /// <summary>
+        ///   Adds one or many DevicePoints (from a station)
+        /// </summary>
+        /// <param name="dataSet">AMSDataSet Model</param>
+        /// <returns></returns>
+        [Route("stations/data")]
+        [HttpPost]
+        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
+        {
+            var db = new AirUDBCOE();
+
+            db.DataPoints.AddRange(dataSet);
+
+            db.SaveChanges();
+
+            return Ok(dataSet);
+        }
+
+
         /// <summary>
         ///   Returns the station locators based on the given coordinates.
         ///   
@@ -199,7 +246,7 @@ namespace server_api.Controllers
         /// <param name="longMax"></param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
-        [Route("stations/locators/{}")] // TODO: properly configure the URL to specify lat/long min/max
+        [Route("stations/locators/")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
         public IHttpActionResult StationLocators([FromUri]decimal latMin, [FromUri]decimal latMax, [FromUri]decimal longMin, [FromUri]decimal longMax)
         {
