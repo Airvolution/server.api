@@ -22,17 +22,17 @@ class PollutantQuery(object):
 def unix_time_millis(dt):
   return (dt - datetime.utcfromtimestamp(0)).total_seconds() * 1000.0
   
-apiUrls = [		"http://air.utah.gov/xmlFeed.php?id=boxelder",   
-			    "http://air.utah.gov/xmlFeed.php?id=cache",     
-			    "http://air.utah.gov/xmlFeed.php?id=p2",        
-			    "http://air.utah.gov/xmlFeed.php?id=bv",        
-			    "http://air.utah.gov/xmlFeed.php?id=rs",        
-			    "http://air.utah.gov/xmlFeed.php?id=slc",       
-			    "http://air.utah.gov/xmlFeed.php?id=tooele",    
-			    "http://air.utah.gov/xmlFeed.php?id=v4",        
-			    "http://air.utah.gov/xmlFeed.php?id=utah",      
-			    "http://air.utah.gov/xmlFeed.php?id=washington",
-			    "http://air.utah.gov/xmlFeed.php?id=weber"      
+apiUrls = ["http://air.utah.gov/xmlFeed.php?id=boxelder",
+            "http://air.utah.gov/xmlFeed.php?id=cache",
+            "http://air.utah.gov/xmlFeed.php?id=p2",
+            "http://air.utah.gov/xmlFeed.php?id=bv",
+            "http://air.utah.gov/xmlFeed.php?id=rs",
+            "http://air.utah.gov/xmlFeed.php?id=slc",
+            "http://air.utah.gov/xmlFeed.php?id=tooele",
+            "http://air.utah.gov/xmlFeed.php?id=v4",
+            "http://air.utah.gov/xmlFeed.php?id=utah",
+            "http://air.utah.gov/xmlFeed.php?id=washington",
+            "http://air.utah.gov/xmlFeed.php?id=weber"
 ]
 
 r = requests.get(apiUrls[index])
