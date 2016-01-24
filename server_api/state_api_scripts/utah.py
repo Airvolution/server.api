@@ -7,6 +7,8 @@ import imp
 import jsonpickle
 import time
 from datetime import datetime
+from pytz import timezone
+import pytz
 
 print "NEW CODE EXECUTION" 
 
@@ -21,6 +23,9 @@ class PollutantQuery(object):
 
 def unix_time_millis(dt):
   return (dt - datetime.utcfromtimestamp(0)).total_seconds() * 1000.0
+
+def unix_time_millis_aware(dt):
+  return (dt - datetime.utcfromtimestamp(0).replace(tzinfo = pytz.utc)).total_seconds() * 1000.0
   
 apiUrls = ["http://air.utah.gov/xmlFeed.php?id=boxelder",
             "http://air.utah.gov/xmlFeed.php?id=cache",
@@ -65,24 +70,23 @@ def add_to_pollutants(dt, pollutant_name, pollutant_value):
   pollutant_name_correct = add_to_pollutants_switch(pollutant_name)
   if pollutant_name_correct != -1:
     print str(dt) + ": " + pollutant_name_correct + ": " + pollutant_value
-    pollutants.append(PollutantQuery(unix_time_millis(dt), pollutant_name_correct, pollutant_value))
+    pollutants.append(PollutantQuery(unix_time_millis_aware(dt), pollutant_name_correct, pollutant_value))
   return
 
 tree = ET.parse('utah.xml')
 root = tree.getroot()
+local = timezone('US/Mountain')
 
 for data in root.find('site').findall('data'):
-  dt = datetime.strptime(data.find('date').text, "%m/%d/%Y %H:%M:%S")
+  naive = datetime.strptime(data.find('date').text, "%m/%d/%Y %H:%M:%S")
+  local_dt = local.localize(naive, is_dst=None)
+  utc_dt = local_dt.astimezone (pytz.utc)
+  
   for item in data:
     if item.text is not None and item.tag != 'date':
-      add_to_pollutants(dt, item.tag, item.text)
+      add_to_pollutants(utc_dt, item.tag, item.text)
   print ""
 
 f = open(r'out.json','w')
 f.write(jsonpickle.encode(pollutants, unpicklable=False))
 f.close()
-
-
-
-
-
