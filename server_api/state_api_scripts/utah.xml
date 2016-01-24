@@ -3,6 +3,1222 @@
 	<site>
 		<name>Salt Lake County</name>
 		<data>
+			<date>01/24/2016 10:00:00</date>
+			<ozone>0.018</ozone>
+			<ozone_8hr_avg>0.012</ozone_8hr_avg>
+			<pm25>13.9</pm25>
+			<pm25_24hr_avg>12</pm25_24hr_avg>
+			<nox>0.027</nox>
+			<no2>0.021</no2>
+			<temperature>32.39</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>2</wind_speed>
+			<wind_direction>278</wind_direction>
+			<co></co>
+			<solar_radiation>24</solar_radiation>
+			<so2>0.442</so2>
+			<noy>34.391</noy>
+			<bp></bp>
+			<pm10>14.3</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 09:00:00</date>
+			<ozone>0.02</ozone>
+			<ozone_8hr_avg>0.010</ozone_8hr_avg>
+			<pm25>11.2</pm25>
+			<pm25_24hr_avg>12.7</pm25_24hr_avg>
+			<nox>0.022</nox>
+			<no2>0.018</no2>
+			<temperature>32.46</temperature>
+			<relative_humidity>88</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>258</wind_direction>
+			<co></co>
+			<solar_radiation>16</solar_radiation>
+			<so2>0.45</so2>
+			<noy>28.817</noy>
+			<bp></bp>
+			<pm10>9.8</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 08:00:00</date>
+			<ozone>0.019</ozone>
+			<ozone_8hr_avg>0.009</ozone_8hr_avg>
+			<pm25>10.8</pm25>
+			<pm25_24hr_avg>13.6</pm25_24hr_avg>
+			<nox>0.022</nox>
+			<no2>0.019</no2>
+			<temperature>32.54</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>1.2</wind_speed>
+			<wind_direction>295</wind_direction>
+			<co></co>
+			<solar_radiation>6</solar_radiation>
+			<so2>0.493</so2>
+			<noy>27.759</noy>
+			<bp></bp>
+			<pm10>8.4</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 07:00:00</date>
+			<ozone>0.015</ozone>
+			<ozone_8hr_avg>0.008</ozone_8hr_avg>
+			<pm25>6.3</pm25>
+			<pm25_24hr_avg>14.3</pm25_24hr_avg>
+			<nox>0.021</nox>
+			<no2>0.019</no2>
+			<temperature>32.52</temperature>
+			<relative_humidity>88</relative_humidity>
+			<wind_speed>1.2</wind_speed>
+			<wind_direction>302</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.356</so2>
+			<noy>26.595</noy>
+			<bp></bp>
+			<pm10>4.5</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 06:00:00</date>
+			<ozone>0.016</ozone>
+			<ozone_8hr_avg>0.007</ozone_8hr_avg>
+			<pm25>6.2</pm25>
+			<pm25_24hr_avg>15.2</pm25_24hr_avg>
+			<nox>0.018</nox>
+			<no2>0.016</no2>
+			<temperature>32.39</temperature>
+			<relative_humidity>88</relative_humidity>
+			<wind_speed>2.7</wind_speed>
+			<wind_direction>298</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.282</so2>
+			<noy>24.316</noy>
+			<bp></bp>
+			<pm10>4.3</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 05:00:00</date>
+			<ozone>0.008</ozone>
+			<ozone_8hr_avg>0.006</ozone_8hr_avg>
+			<pm25>9.3</pm25>
+			<pm25_24hr_avg>16.2</pm25_24hr_avg>
+			<nox>0.045</nox>
+			<no2>0.032</no2>
+			<temperature>32.43</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>2</wind_speed>
+			<wind_direction>285</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.379</so2>
+			<noy>57.673</noy>
+			<bp></bp>
+			<pm10>7.3</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 04:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.008</ozone_8hr_avg>
+			<pm25>8.7</pm25>
+			<pm25_24hr_avg>16.8</pm25_24hr_avg>
+			<nox>0.059</nox>
+			<no2>0.039</no2>
+			<temperature>32.64</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>169</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.469</so2>
+			<noy>81.231</noy>
+			<bp></bp>
+			<pm10>5</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 03:00:00</date>
+			<ozone>0.001</ozone>
+			<ozone_8hr_avg>0.010</ozone_8hr_avg>
+			<pm25>7.5</pm25>
+			<pm25_24hr_avg>17.4</pm25_24hr_avg>
+			<nox>0.053</nox>
+			<no2>0.038</no2>
+			<temperature>33.22</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>0.8</wind_speed>
+			<wind_direction>203</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.415</so2>
+			<noy>67.76</noy>
+			<bp></bp>
+			<pm10>8</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 02:00:00</date>
+			<ozone>0.004</ozone>
+			<ozone_8hr_avg>0.011</ozone_8hr_avg>
+			<pm25>6.7</pm25>
+			<pm25_24hr_avg>18</pm25_24hr_avg>
+			<nox>0.041</nox>
+			<no2>0.032</no2>
+			<temperature>33.45</temperature>
+			<relative_humidity>86</relative_humidity>
+			<wind_speed>1</wind_speed>
+			<wind_direction>164</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.332</so2>
+			<noy>52.822</noy>
+			<bp></bp>
+			<pm10>3.4</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 01:00:00</date>
+			<ozone>0.008</ozone>
+			<ozone_8hr_avg>0.012</ozone_8hr_avg>
+			<pm25>5.9</pm25>
+			<pm25_24hr_avg>18.6</pm25_24hr_avg>
+			<nox>0.032</nox>
+			<no2>0.028</no2>
+			<temperature>33.34</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>1.2</wind_speed>
+			<wind_direction>38</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.272</so2>
+			<noy>39.125</noy>
+			<bp></bp>
+			<pm10>1.9</pm10>
+		</data>
+				<data>
+			<date>01/24/2016 00:00:00</date>
+			<ozone>0.011</ozone>
+			<ozone_8hr_avg>0.013</ozone_8hr_avg>
+			<pm25>6.4</pm25>
+			<pm25_24hr_avg>19.5</pm25_24hr_avg>
+			<nox>0.029</nox>
+			<no2>0.026</no2>
+			<temperature>32.8</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>2.4</wind_speed>
+			<wind_direction>150</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.283</so2>
+			<noy>35.542</noy>
+			<bp></bp>
+			<pm10>5.9</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 23:00:00</date>
+			<ozone>0.007</ozone>
+			<ozone_8hr_avg>0.016</ozone_8hr_avg>
+			<pm25>6.8</pm25>
+			<pm25_24hr_avg>20.3</pm25_24hr_avg>
+			<nox>0.038</nox>
+			<no2>0.033</no2>
+			<temperature>32.52</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>2.5</wind_speed>
+			<wind_direction>160</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.358</so2>
+			<noy>47.671</noy>
+			<bp></bp>
+			<pm10>5.9</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 22:00:00</date>
+			<ozone>0.014</ozone>
+			<ozone_8hr_avg>0.018</ozone_8hr_avg>
+			<pm25>6.9</pm25>
+			<pm25_24hr_avg>21.2</pm25_24hr_avg>
+			<nox>0.028</nox>
+			<no2>0.027</no2>
+			<temperature>32.73</temperature>
+			<relative_humidity>87</relative_humidity>
+			<wind_speed>1.4</wind_speed>
+			<wind_direction>265</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.408</so2>
+			<noy>34.496</noy>
+			<bp></bp>
+			<pm10>6.8</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 21:00:00</date>
+			<ozone>0.02</ozone>
+			<ozone_8hr_avg>0.018</ozone_8hr_avg>
+			<pm25>13.6</pm25>
+			<pm25_24hr_avg>22</pm25_24hr_avg>
+			<nox>0.021</nox>
+			<no2>0.02</no2>
+			<temperature>33.96</temperature>
+			<relative_humidity>86</relative_humidity>
+			<wind_speed>6.9</wind_speed>
+			<wind_direction>293</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.383</so2>
+			<noy>27.552</noy>
+			<bp></bp>
+			<pm10>12.1</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 20:00:00</date>
+			<ozone>0.019</ozone>
+			<ozone_8hr_avg>0.016</ozone_8hr_avg>
+			<pm25>16.3</pm25>
+			<pm25_24hr_avg>22.5</pm25_24hr_avg>
+			<nox>0.022</nox>
+			<no2>0.021</no2>
+			<temperature>36.11</temperature>
+			<relative_humidity>84</relative_humidity>
+			<wind_speed>6.1</wind_speed>
+			<wind_direction>304</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.425</so2>
+			<noy>29.359</noy>
+			<bp></bp>
+			<pm10>15</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 19:00:00</date>
+			<ozone>0.007</ozone>
+			<ozone_8hr_avg>0.014</ozone_8hr_avg>
+			<pm25>8.6</pm25>
+			<pm25_24hr_avg>22.9</pm25_24hr_avg>
+			<nox>0.045</nox>
+			<no2>0.039</no2>
+			<temperature>39.14</temperature>
+			<relative_humidity>84</relative_humidity>
+			<wind_speed>2.3</wind_speed>
+			<wind_direction>311</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.366</so2>
+			<noy>61.77</noy>
+			<bp></bp>
+			<pm10>10.2</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 18:00:00</date>
+			<ozone>0.011</ozone>
+			<ozone_8hr_avg>0.014</ozone_8hr_avg>
+			<pm25>5.8</pm25>
+			<pm25_24hr_avg>23.4</pm25_24hr_avg>
+			<nox>0.039</nox>
+			<no2>0.036</no2>
+			<temperature>40.17</temperature>
+			<relative_humidity>80</relative_humidity>
+			<wind_speed>2.4</wind_speed>
+			<wind_direction>309</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.392</so2>
+			<noy>50.796</noy>
+			<bp></bp>
+			<pm10>5</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 17:00:00</date>
+			<ozone>0.022</ozone>
+			<ozone_8hr_avg>0.014</ozone_8hr_avg>
+			<pm25>3.9</pm25>
+			<pm25_24hr_avg>24</pm25_24hr_avg>
+			<nox>0.027</nox>
+			<no2>0.024</no2>
+			<temperature>41.36</temperature>
+			<relative_humidity>78</relative_humidity>
+			<wind_speed>1.7</wind_speed>
+			<wind_direction>5</wind_direction>
+			<co></co>
+			<solar_radiation>3</solar_radiation>
+			<so2>0.381</so2>
+			<noy>32.257</noy>
+			<bp></bp>
+			<pm10>5.6</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 16:00:00</date>
+			<ozone>0.031</ozone>
+			<ozone_8hr_avg>0.012</ozone_8hr_avg>
+			<pm25>3.5</pm25>
+			<pm25_24hr_avg>24.7</pm25_24hr_avg>
+			<nox>0.021</nox>
+			<no2>0.018</no2>
+			<temperature>42.14</temperature>
+			<relative_humidity>74</relative_humidity>
+			<wind_speed>5.5</wind_speed>
+			<wind_direction>137</wind_direction>
+			<co></co>
+			<solar_radiation>16</solar_radiation>
+			<so2>0.419</so2>
+			<noy>25.695</noy>
+			<bp></bp>
+			<pm10>5.2</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 15:00:00</date>
+			<ozone>0.027</ozone>
+			<ozone_8hr_avg>0.008</ozone_8hr_avg>
+			<pm25>7.3</pm25>
+			<pm25_24hr_avg>25.4</pm25_24hr_avg>
+			<nox>0.032</nox>
+			<no2>0.023</no2>
+			<temperature>41.04</temperature>
+			<relative_humidity>73</relative_humidity>
+			<wind_speed>5.6</wind_speed>
+			<wind_direction>131</wind_direction>
+			<co></co>
+			<solar_radiation>68</solar_radiation>
+			<so2>0.522</so2>
+			<noy>40.499</noy>
+			<bp></bp>
+			<pm10>33.3</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 14:00:00</date>
+			<ozone>0.007</ozone>
+			<ozone_8hr_avg>0.005</ozone_8hr_avg>
+			<pm25>29.2</pm25>
+			<pm25_24hr_avg>25.8</pm25_24hr_avg>
+			<nox>0.065</nox>
+			<no2>0.036</no2>
+			<temperature>36.26</temperature>
+			<relative_humidity>65</relative_humidity>
+			<wind_speed>4.3</wind_speed>
+			<wind_direction>124</wind_direction>
+			<co></co>
+			<solar_radiation>98</solar_radiation>
+			<so2>0.84</so2>
+			<noy>92.633</noy>
+			<bp></bp>
+			<pm10>37.6</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 13:00:00</date>
+			<ozone>0.009</ozone>
+			<ozone_8hr_avg>0.004</ozone_8hr_avg>
+			<pm25>29.7</pm25>
+			<pm25_24hr_avg>25.1</pm25_24hr_avg>
+			<nox>0.051</nox>
+			<no2>0.031</no2>
+			<temperature>34.12</temperature>
+			<relative_humidity>69</relative_humidity>
+			<wind_speed>3.6</wind_speed>
+			<wind_direction>275</wind_direction>
+			<co></co>
+			<solar_radiation>157</solar_radiation>
+			<so2>0.63</so2>
+			<noy>77.933</noy>
+			<bp></bp>
+			<pm10>42.1</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 12:00:00</date>
+			<ozone>0.005</ozone>
+			<ozone_8hr_avg>0.003</ozone_8hr_avg>
+			<pm25>29.1</pm25>
+			<pm25_24hr_avg>24.2</pm25_24hr_avg>
+			<nox>0.069</nox>
+			<no2>0.037</no2>
+			<temperature>35.3</temperature>
+			<relative_humidity>68</relative_humidity>
+			<wind_speed>4.3</wind_speed>
+			<wind_direction>294</wind_direction>
+			<co></co>
+			<solar_radiation>84</solar_radiation>
+			<so2>0.888</so2>
+			<noy>104</noy>
+			<bp></bp>
+			<pm10>54.6</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 11:00:00</date>
+			<ozone>0.006</ozone>
+			<ozone_8hr_avg>0.003</ozone_8hr_avg>
+			<pm25>33.6</pm25>
+			<pm25_24hr_avg>23.5</pm25_24hr_avg>
+			<nox>0.084</nox>
+			<no2>0.043</no2>
+			<temperature>36</temperature>
+			<relative_humidity>63</relative_humidity>
+			<wind_speed>2</wind_speed>
+			<wind_direction>285</wind_direction>
+			<co></co>
+			<solar_radiation>106</solar_radiation>
+			<so2>1.443</so2>
+			<noy>130.623</noy>
+			<bp></bp>
+			<pm10>54.6</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 10:00:00</date>
+			<ozone>0.007</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>31.9</pm25>
+			<pm25_24hr_avg>22.6</pm25_24hr_avg>
+			<nox>0.086</nox>
+			<no2>0.039</no2>
+			<temperature>34.79</temperature>
+			<relative_humidity>67</relative_humidity>
+			<wind_speed>0.8</wind_speed>
+			<wind_direction>229</wind_direction>
+			<co></co>
+			<solar_radiation>203</solar_radiation>
+			<so2>1.15</so2>
+			<noy>142.928</noy>
+			<bp></bp>
+			<pm10>49</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 09:00:00</date>
+			<ozone>0.004</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>31</pm25>
+			<pm25_24hr_avg>21.8</pm25_24hr_avg>
+			<nox>0.18</nox>
+			<no2>0.048</no2>
+			<temperature>32.8</temperature>
+			<relative_humidity>71</relative_humidity>
+			<wind_speed>1.1</wind_speed>
+			<wind_direction>271</wind_direction>
+			<co></co>
+			<solar_radiation>247</solar_radiation>
+			<so2>1.576</so2>
+			<noy>195.08</noy>
+			<bp></bp>
+			<pm10>43.4</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 08:00:00</date>
+			<ozone>0.003</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>28.1</pm25>
+			<pm25_24hr_avg>21.1</pm25_24hr_avg>
+			<nox>0.211</nox>
+			<no2>0.047</no2>
+			<temperature>29.82</temperature>
+			<relative_humidity>76</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>135</wind_direction>
+			<co></co>
+			<solar_radiation>111</solar_radiation>
+			<so2>1.598</so2>
+			<noy>203.208</noy>
+			<bp></bp>
+			<pm10>39.7</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 07:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.001</ozone_8hr_avg>
+			<pm25>29</pm25>
+			<pm25_24hr_avg>20.4</pm25_24hr_avg>
+			<nox>0.182</nox>
+			<no2>0.045</no2>
+			<temperature>29.2</temperature>
+			<relative_humidity>76</relative_humidity>
+			<wind_speed>0.9</wind_speed>
+			<wind_direction>179</wind_direction>
+			<co></co>
+			<solar_radiation>3</solar_radiation>
+			<so2>1.184</so2>
+			<noy>203.209</noy>
+			<bp></bp>
+			<pm10>36.3</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 06:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.001</ozone_8hr_avg>
+			<pm25>29.4</pm25>
+			<pm25_24hr_avg>19.7</pm25_24hr_avg>
+			<nox>0.166</nox>
+			<no2>0.044</no2>
+			<temperature>28.96</temperature>
+			<relative_humidity>77</relative_humidity>
+			<wind_speed>1.1</wind_speed>
+			<wind_direction>152</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.312</so2>
+			<noy>203.204</noy>
+			<bp></bp>
+			<pm10>38.4</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 05:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.001</ozone_8hr_avg>
+			<pm25>24.7</pm25>
+			<pm25_24hr_avg>18.8</pm25_24hr_avg>
+			<nox>0.163</nox>
+			<no2>0.044</no2>
+			<temperature>28.9</temperature>
+			<relative_humidity>76</relative_humidity>
+			<wind_speed>0.8</wind_speed>
+			<wind_direction>255</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.284</so2>
+			<noy>203.208</noy>
+			<bp></bp>
+			<pm10>33.5</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 04:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.001</ozone_8hr_avg>
+			<pm25>21.5</pm25>
+			<pm25_24hr_avg>18.1</pm25_24hr_avg>
+			<nox>0.142</nox>
+			<no2>0.044</no2>
+			<temperature>28.72</temperature>
+			<relative_humidity>75</relative_humidity>
+			<wind_speed>0.7</wind_speed>
+			<wind_direction>157</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.037</so2>
+			<noy>202.846</noy>
+			<bp></bp>
+			<pm10>29</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 03:00:00</date>
+			<ozone>0.001</ozone>
+			<ozone_8hr_avg>0.001</ozone_8hr_avg>
+			<pm25>21.6</pm25>
+			<pm25_24hr_avg>17.5</pm25_24hr_avg>
+			<nox>0.134</nox>
+			<no2>0.042</no2>
+			<temperature>28.18</temperature>
+			<relative_humidity>75</relative_humidity>
+			<wind_speed>0.7</wind_speed>
+			<wind_direction>124</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.002</so2>
+			<noy>195.772</noy>
+			<bp></bp>
+			<pm10>36.1</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 02:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.001</ozone_8hr_avg>
+			<pm25>23.2</pm25>
+			<pm25_24hr_avg>16.9</pm25_24hr_avg>
+			<nox>0.136</nox>
+			<no2>0.042</no2>
+			<temperature>27.85</temperature>
+			<relative_humidity>75</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>115</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.011</so2>
+			<noy>194.887</noy>
+			<bp></bp>
+			<pm10>39</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 01:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>25.6</pm25>
+			<pm25_24hr_avg>16.3</pm25_24hr_avg>
+			<nox>0.138</nox>
+			<no2>0.043</no2>
+			<temperature>28.82</temperature>
+			<relative_humidity>74</relative_humidity>
+			<wind_speed>0.8</wind_speed>
+			<wind_direction>139</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.822</so2>
+			<noy>197.76</noy>
+			<bp></bp>
+			<pm10>43.5</pm10>
+		</data>
+				<data>
+			<date>01/23/2016 00:00:00</date>
+			<ozone>0.001</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>26.6</pm25>
+			<pm25_24hr_avg>15.8</pm25_24hr_avg>
+			<nox>0.159</nox>
+			<no2>0.044</no2>
+			<temperature>29.64</temperature>
+			<relative_humidity>74</relative_humidity>
+			<wind_speed>1.9</wind_speed>
+			<wind_direction>143</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.19</so2>
+			<noy>203.166</noy>
+			<bp></bp>
+			<pm10>44.8</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 23:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.004</ozone_8hr_avg>
+			<pm25>27.2</pm25>
+			<pm25_24hr_avg>15.2</pm25_24hr_avg>
+			<nox>0.161</nox>
+			<no2>0.045</no2>
+			<temperature>30.74</temperature>
+			<relative_humidity>73</relative_humidity>
+			<wind_speed>1</wind_speed>
+			<wind_direction>186</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.199</so2>
+			<noy>201.6</noy>
+			<bp></bp>
+			<pm10>48.6</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 22:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.006</ozone_8hr_avg>
+			<pm25>26.4</pm25>
+			<pm25_24hr_avg>14.7</pm25_24hr_avg>
+			<nox>0.135</nox>
+			<no2>0.045</no2>
+			<temperature>31.78</temperature>
+			<relative_humidity>71</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>53</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.024</so2>
+			<noy>187.595</noy>
+			<bp></bp>
+			<pm10>50.7</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 21:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.009</ozone_8hr_avg>
+			<pm25>27</pm25>
+			<pm25_24hr_avg>14.3</pm25_24hr_avg>
+			<nox>0.133</nox>
+			<no2>0.046</no2>
+			<temperature>32.91</temperature>
+			<relative_humidity>69</relative_humidity>
+			<wind_speed>1.5</wind_speed>
+			<wind_direction>103</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>1.017</so2>
+			<noy>184.813</noy>
+			<bp></bp>
+			<pm10>54</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 20:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.012</ozone_8hr_avg>
+			<pm25>24.4</pm25>
+			<pm25_24hr_avg>13.9</pm25_24hr_avg>
+			<nox>0.109</nox>
+			<no2>0.046</no2>
+			<temperature>32.97</temperature>
+			<relative_humidity>67</relative_humidity>
+			<wind_speed>1</wind_speed>
+			<wind_direction>158</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.891</so2>
+			<noy>151.131</noy>
+			<bp></bp>
+			<pm10>53.6</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 19:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.014</ozone_8hr_avg>
+			<pm25>21.9</pm25>
+			<pm25_24hr_avg>13.5</pm25_24hr_avg>
+			<nox>0.081</nox>
+			<no2>0.046</no2>
+			<temperature>33.52</temperature>
+			<relative_humidity>64</relative_humidity>
+			<wind_speed>0.8</wind_speed>
+			<wind_direction>118</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.618</so2>
+			<noy>112.142</noy>
+			<bp></bp>
+			<pm10>44.7</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 18:00:00</date>
+			<ozone>0.003</ozone>
+			<ozone_8hr_avg>0.016</ozone_8hr_avg>
+			<pm25>20.5</pm25>
+			<pm25_24hr_avg>13.1</pm25_24hr_avg>
+			<nox>0.053</nox>
+			<no2>0.044</no2>
+			<temperature>34.16</temperature>
+			<relative_humidity>63</relative_humidity>
+			<wind_speed>0.9</wind_speed>
+			<wind_direction>252</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.602</so2>
+			<noy>71.932</noy>
+			<bp></bp>
+			<pm10>42.6</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 17:00:00</date>
+			<ozone>0.008</ozone>
+			<ozone_8hr_avg>0.017</ozone_8hr_avg>
+			<pm25>20.2</pm25>
+			<pm25_24hr_avg>12.8</pm25_24hr_avg>
+			<nox>0.045</nox>
+			<no2>0.038</no2>
+			<temperature>35.35</temperature>
+			<relative_humidity>62</relative_humidity>
+			<wind_speed>2.3</wind_speed>
+			<wind_direction>265</wind_direction>
+			<co></co>
+			<solar_radiation>8</solar_radiation>
+			<so2>0.621</so2>
+			<noy>61.764</noy>
+			<bp></bp>
+			<pm10>30.4</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 16:00:00</date>
+			<ozone>0.017</ozone>
+			<ozone_8hr_avg>0.016</ozone_8hr_avg>
+			<pm25>19.5</pm25>
+			<pm25_24hr_avg>12.2</pm25_24hr_avg>
+			<nox>0.04</nox>
+			<no2>0.031</no2>
+			<temperature>36.58</temperature>
+			<relative_humidity>56</relative_humidity>
+			<wind_speed>2.9</wind_speed>
+			<wind_direction>272</wind_direction>
+			<co></co>
+			<solar_radiation>73</solar_radiation>
+			<so2>0.952</so2>
+			<noy>53.085</noy>
+			<bp></bp>
+			<pm10>33.2</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 15:00:00</date>
+			<ozone>0.019</ozone>
+			<ozone_8hr_avg>0.014</ozone_8hr_avg>
+			<pm25>18.5</pm25>
+			<pm25_24hr_avg>11.5</pm25_24hr_avg>
+			<nox>0.04</nox>
+			<no2>0.03</no2>
+			<temperature>37.87</temperature>
+			<relative_humidity>51</relative_humidity>
+			<wind_speed>7.9</wind_speed>
+			<wind_direction>297</wind_direction>
+			<co></co>
+			<solar_radiation>175</solar_radiation>
+			<so2>1.296</so2>
+			<noy>56.04</noy>
+			<bp></bp>
+			<pm10>38.3</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 14:00:00</date>
+			<ozone>0.022</ozone>
+			<ozone_8hr_avg>0.012</ozone_8hr_avg>
+			<pm25>10.4</pm25>
+			<pm25_24hr_avg>10.9</pm25_24hr_avg>
+			<nox>0.051</nox>
+			<no2>0.032</no2>
+			<temperature>43.72</temperature>
+			<relative_humidity>41</relative_humidity>
+			<wind_speed>4.2</wind_speed>
+			<wind_direction>280</wind_direction>
+			<co></co>
+			<solar_radiation>401</solar_radiation>
+			<so2>1.269</so2>
+			<noy>71.003</noy>
+			<bp></bp>
+			<pm10>32.2</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 13:00:00</date>
+			<ozone>0.024</ozone>
+			<ozone_8hr_avg>0.010</ozone_8hr_avg>
+			<pm25>9.4</pm25>
+			<pm25_24hr_avg>10.6</pm25_24hr_avg>
+			<nox>0.048</nox>
+			<no2>0.029</no2>
+			<temperature>42.39</temperature>
+			<relative_humidity>39</relative_humidity>
+			<wind_speed>2.1</wind_speed>
+			<wind_direction>227</wind_direction>
+			<co></co>
+			<solar_radiation>489</solar_radiation>
+			<so2>1.243</so2>
+			<noy>68.2</noy>
+			<bp></bp>
+			<pm10>33.3</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 12:00:00</date>
+			<ozone>0.019</ozone>
+			<ozone_8hr_avg>0.007</ozone_8hr_avg>
+			<pm25>11.7</pm25>
+			<pm25_24hr_avg>10.4</pm25_24hr_avg>
+			<nox>0.07</nox>
+			<no2>0.035</no2>
+			<temperature>40.42</temperature>
+			<relative_humidity>42</relative_humidity>
+			<wind_speed>2.1</wind_speed>
+			<wind_direction>90</wind_direction>
+			<co></co>
+			<solar_radiation>598</solar_radiation>
+			<so2>1.952</so2>
+			<noy>103.194</noy>
+			<bp></bp>
+			<pm10>44.4</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 11:00:00</date>
+			<ozone>0.016</ozone>
+			<ozone_8hr_avg>0.005</ozone_8hr_avg>
+			<pm25>12</pm25>
+			<pm25_24hr_avg>10.1</pm25_24hr_avg>
+			<nox>0.07</nox>
+			<no2>0.034</no2>
+			<temperature>36.08</temperature>
+			<relative_humidity>48</relative_humidity>
+			<wind_speed>2.2</wind_speed>
+			<wind_direction>252</wind_direction>
+			<co></co>
+			<solar_radiation>520</solar_radiation>
+			<so2>1.313</so2>
+			<noy>106.682</noy>
+			<bp></bp>
+			<pm10>44.5</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 10:00:00</date>
+			<ozone>0.011</ozone>
+			<ozone_8hr_avg>0.003</ozone_8hr_avg>
+			<pm25>12.5</pm25>
+			<pm25_24hr_avg>9.8</pm25_24hr_avg>
+			<nox>0.098</nox>
+			<no2>0.04</no2>
+			<temperature>33.84</temperature>
+			<relative_humidity>54</relative_humidity>
+			<wind_speed>2.1</wind_speed>
+			<wind_direction>223</wind_direction>
+			<co></co>
+			<solar_radiation>389</solar_radiation>
+			<so2>1.314</so2>
+			<noy>144.067</noy>
+			<bp></bp>
+			<pm10>51</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 09:00:00</date>
+			<ozone>0.005</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>15.5</pm25>
+			<pm25_24hr_avg>9.5</pm25_24hr_avg>
+			<nox>0.161</nox>
+			<no2>0.048</no2>
+			<temperature>31.34</temperature>
+			<relative_humidity>64</relative_humidity>
+			<wind_speed>2</wind_speed>
+			<wind_direction>268</wind_direction>
+			<co></co>
+			<solar_radiation>274</solar_radiation>
+			<so2>1.467</so2>
+			<noy>202.587</noy>
+			<bp></bp>
+			<pm10>40.4</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 08:00:00</date>
+			<ozone>0.003</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>11.8</pm25>
+			<pm25_24hr_avg>9.1</pm25_24hr_avg>
+			<nox>0.155</nox>
+			<no2>0.046</no2>
+			<temperature>28.17</temperature>
+			<relative_humidity>69</relative_humidity>
+			<wind_speed>2</wind_speed>
+			<wind_direction>58</wind_direction>
+			<co></co>
+			<solar_radiation>67</solar_radiation>
+			<so2>1.199</so2>
+			<noy>200.367</noy>
+			<bp></bp>
+			<pm10>23</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 07:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>10.1</pm25>
+			<pm25_24hr_avg>8.8</pm25_24hr_avg>
+			<nox>0.102</nox>
+			<no2>0.043</no2>
+			<temperature>27.56</temperature>
+			<relative_humidity>68</relative_humidity>
+			<wind_speed>2.5</wind_speed>
+			<wind_direction>88</wind_direction>
+			<co></co>
+			<solar_radiation>3</solar_radiation>
+			<so2>0.627</so2>
+			<noy>147.378</noy>
+			<bp></bp>
+			<pm10>22</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 06:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>9.5</pm25>
+			<pm25_24hr_avg>8.7</pm25_24hr_avg>
+			<nox>0.118</nox>
+			<no2>0.042</no2>
+			<temperature>26.65</temperature>
+			<relative_humidity>71</relative_humidity>
+			<wind_speed>2.3</wind_speed>
+			<wind_direction>141</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.877</so2>
+			<noy>170.678</noy>
+			<bp></bp>
+			<pm10>13.2</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 05:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>8.2</pm25>
+			<pm25_24hr_avg>8.5</pm25_24hr_avg>
+			<nox>0.092</nox>
+			<no2>0.042</no2>
+			<temperature>27.48</temperature>
+			<relative_humidity>69</relative_humidity>
+			<wind_speed>1.9</wind_speed>
+			<wind_direction>172</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.667</so2>
+			<noy>129.357</noy>
+			<bp></bp>
+			<pm10>8</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 04:00:00</date>
+			<ozone>0.003</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>6.2</pm25>
+			<pm25_24hr_avg>8.3</pm25_24hr_avg>
+			<nox>0.084</nox>
+			<no2>0.04</no2>
+			<temperature>27.23</temperature>
+			<relative_humidity>68</relative_humidity>
+			<wind_speed>1.1</wind_speed>
+			<wind_direction>82</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.6</so2>
+			<noy>118.673</noy>
+			<bp></bp>
+			<pm10>10.1</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 03:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>6.9</pm25>
+			<pm25_24hr_avg>8.3</pm25_24hr_avg>
+			<nox>0.087</nox>
+			<no2>0.039</no2>
+			<temperature>26.62</temperature>
+			<relative_humidity>70</relative_humidity>
+			<wind_speed>0.9</wind_speed>
+			<wind_direction>130</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.642</so2>
+			<noy>126.377</noy>
+			<bp></bp>
+			<pm10>15.3</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 02:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>10.1</pm25>
+			<pm25_24hr_avg>8.1</pm25_24hr_avg>
+			<nox>0.094</nox>
+			<no2>0.038</no2>
+			<temperature>26.61</temperature>
+			<relative_humidity>72</relative_humidity>
+			<wind_speed>1.4</wind_speed>
+			<wind_direction>123</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.686</so2>
+			<noy>140.583</noy>
+			<bp></bp>
+			<pm10>17.4</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 01:00:00</date>
+			<ozone>0.003</ozone>
+			<ozone_8hr_avg>0.002</ozone_8hr_avg>
+			<pm25>12.2</pm25>
+			<pm25_24hr_avg>7.9</pm25_24hr_avg>
+			<nox>0.099</nox>
+			<no2>0.038</no2>
+			<temperature>27.12</temperature>
+			<relative_humidity>72</relative_humidity>
+			<wind_speed>0.7</wind_speed>
+			<wind_direction>116</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.597</so2>
+			<noy>149.054</noy>
+			<bp></bp>
+			<pm10>23.6</pm10>
+		</data>
+				<data>
+			<date>01/22/2016 00:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.005</ozone_8hr_avg>
+			<pm25>13</pm25>
+			<pm25_24hr_avg>7.6</pm25_24hr_avg>
+			<nox>0.108</nox>
+			<no2>0.04</no2>
+			<temperature>27.89</temperature>
+			<relative_humidity>72</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>164</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.769</so2>
+			<noy>160.47</noy>
+			<bp></bp>
+			<pm10>28</pm10>
+		</data>
+				<data>
+			<date>01/21/2016 23:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.008</ozone_8hr_avg>
+			<pm25>14</pm25>
+			<pm25_24hr_avg>7.2</pm25_24hr_avg>
+			<nox>0.111</nox>
+			<no2>0.041</no2>
+			<temperature>29.38</temperature>
+			<relative_humidity>70</relative_humidity>
+			<wind_speed>1.1</wind_speed>
+			<wind_direction>87</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.806</so2>
+			<noy>151.521</noy>
+			<bp></bp>
+			<pm10>34.8</pm10>
+		</data>
+				<data>
+			<date>01/21/2016 22:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.012</ozone_8hr_avg>
+			<pm25>17.5</pm25>
+			<pm25_24hr_avg>6.8</pm25_24hr_avg>
+			<nox>0.116</nox>
+			<no2>0.042</no2>
+			<temperature>30.34</temperature>
+			<relative_humidity>73</relative_humidity>
+			<wind_speed>0.8</wind_speed>
+			<wind_direction>126</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.857</so2>
+			<noy>152.734</noy>
+			<bp></bp>
+			<pm10>34.7</pm10>
+		</data>
+				<data>
+			<date>01/21/2016 21:00:00</date>
+			<ozone>0.003</ozone>
+			<ozone_8hr_avg>0.016</ozone_8hr_avg>
+			<pm25>18.1</pm25>
+			<pm25_24hr_avg>6.2</pm25_24hr_avg>
+			<nox>0.1</nox>
+			<no2>0.041</no2>
+			<temperature>30.89</temperature>
+			<relative_humidity>73</relative_humidity>
+			<wind_speed>0.6</wind_speed>
+			<wind_direction>156</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.793</so2>
+			<noy>143.398</noy>
+			<bp></bp>
+			<pm10>33.2</pm10>
+		</data>
+				<data>
+			<date>01/21/2016 20:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.019</ozone_8hr_avg>
+			<pm25>15</pm25>
+			<pm25_24hr_avg>5.7</pm25_24hr_avg>
+			<nox>0.077</nox>
+			<no2>0.042</no2>
+			<temperature>31.96</temperature>
+			<relative_humidity>70</relative_humidity>
+			<wind_speed>0.9</wind_speed>
+			<wind_direction>207</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.721</so2>
+			<noy>106.471</noy>
+			<bp></bp>
+			<pm10>39.2</pm10>
+		</data>
+				<data>
+			<date>01/21/2016 19:00:00</date>
+			<ozone>0.002</ozone>
+			<ozone_8hr_avg>0.022</ozone_8hr_avg>
+			<pm25>12.9</pm25>
+			<pm25_24hr_avg>5.4</pm25_24hr_avg>
+			<nox>0.092</nox>
+			<no2>0.046</no2>
+			<temperature>34.5</temperature>
+			<relative_humidity>56</relative_humidity>
+			<wind_speed>1.4</wind_speed>
+			<wind_direction>127</wind_direction>
+			<co></co>
+			<solar_radiation>-0</solar_radiation>
+			<so2>0.654</so2>
+			<noy>119.782</noy>
+			<bp></bp>
+			<pm10>44</pm10>
+		</data>
+				<data>
 			<date>01/21/2016 18:00:00</date>
 			<ozone>0.003</ozone>
 			<ozone_8hr_avg>0.025</ozone_8hr_avg>
@@ -2895,7 +4111,7 @@
 			<ozone>0.019</ozone>
 			<ozone_8hr_avg>0.013</ozone_8hr_avg>
 			<pm25>15.6</pm25>
-			<pm25_24hr_avg>6.5</pm25_24hr_avg>
+			<pm25_24hr_avg>5.9</pm25_24hr_avg>
 			<nox>0.034</nox>
 			<no2>0.025</no2>
 			<temperature>31.14</temperature>
@@ -2914,7 +4130,7 @@
 			<ozone>0.006</ozone>
 			<ozone_8hr_avg>0.014</ozone_8hr_avg>
 			<pm25>14.1</pm25>
-			<pm25_24hr_avg>6.9</pm25_24hr_avg>
+			<pm25_24hr_avg>5.2</pm25_24hr_avg>
 			<nox>0.074</nox>
 			<no2>0.041</no2>
 			<temperature>31.56</temperature>
@@ -2933,7 +4149,7 @@
 			<ozone>0.007</ozone>
 			<ozone_8hr_avg>0.015</ozone_8hr_avg>
 			<pm25>8.8</pm25>
-			<pm25_24hr_avg>7.7</pm25_24hr_avg>
+			<pm25_24hr_avg>4.6</pm25_24hr_avg>
 			<nox>0.052</nox>
 			<no2>0.038</no2>
 			<temperature>31.74</temperature>
@@ -2952,7 +4168,7 @@
 			<ozone>0.007</ozone>
 			<ozone_8hr_avg>0.014</ozone_8hr_avg>
 			<pm25>6.4</pm25>
-			<pm25_24hr_avg>8.8</pm25_24hr_avg>
+			<pm25_24hr_avg>4.3</pm25_24hr_avg>
 			<nox>0.05</nox>
 			<no2>0.039</no2>
 			<temperature>31.93</temperature>
@@ -2971,7 +4187,7 @@
 			<ozone>0.013</ozone>
 			<ozone_8hr_avg>0.014</ozone_8hr_avg>
 			<pm25>6.3</pm25>
-			<pm25_24hr_avg>9.9</pm25_24hr_avg>
+			<pm25_24hr_avg>4</pm25_24hr_avg>
 			<nox>0.033</nox>
 			<no2>0.029</no2>
 			<temperature>31.12</temperature>
@@ -2990,7 +4206,7 @@
 			<ozone>0.018</ozone>
 			<ozone_8hr_avg>0.015</ozone_8hr_avg>
 			<pm25>8</pm25>
-			<pm25_24hr_avg>11</pm25_24hr_avg>
+			<pm25_24hr_avg>3.7</pm25_24hr_avg>
 			<nox>0.026</nox>
 			<no2>0.023</no2>
 			<temperature>30.5</temperature>
@@ -3009,7 +4225,7 @@
 			<ozone>0.02</ozone>
 			<ozone_8hr_avg>0.015</ozone_8hr_avg>
 			<pm25>9.5</pm25>
-			<pm25_24hr_avg>12.2</pm25_24hr_avg>
+			<pm25_24hr_avg>3.4</pm25_24hr_avg>
 			<nox>0.023</nox>
 			<no2>0.021</no2>
 			<temperature>30.53</temperature>
@@ -3028,7 +4244,7 @@
 			<ozone>0.021</ozone>
 			<ozone_8hr_avg>0.014</ozone_8hr_avg>
 			<pm25>7</pm25>
-			<pm25_24hr_avg>13.2</pm25_24hr_avg>
+			<pm25_24hr_avg>3</pm25_24hr_avg>
 			<nox>0.021</nox>
 			<no2>0.019</no2>
 			<temperature>30.48</temperature>
@@ -3047,7 +4263,7 @@
 			<ozone>0.027</ozone>
 			<ozone_8hr_avg>0.012</ozone_8hr_avg>
 			<pm25>7.2</pm25>
-			<pm25_24hr_avg>14.4</pm25_24hr_avg>
+			<pm25_24hr_avg>2.7</pm25_24hr_avg>
 			<nox>0.016</nox>
 			<no2>0.015</no2>
 			<temperature>31.87</temperature>
@@ -3066,7 +4282,7 @@
 			<ozone>0.008</ozone>
 			<ozone_8hr_avg>0.009</ozone_8hr_avg>
 			<pm25>7.2</pm25>
-			<pm25_24hr_avg>15.7</pm25_24hr_avg>
+			<pm25_24hr_avg>2.4</pm25_24hr_avg>
 			<nox>0.039</nox>
 			<no2>0.033</no2>
 			<temperature>31.81</temperature>
@@ -3085,7 +4301,7 @@
 			<ozone>0.003</ozone>
 			<ozone_8hr_avg>0.010</ozone_8hr_avg>
 			<pm25>4.6</pm25>
-			<pm25_24hr_avg>17</pm25_24hr_avg>
+			<pm25_24hr_avg>2.1</pm25_24hr_avg>
 			<nox>0.053</nox>
 			<no2>0.039</no2>
 			<temperature>30.47</temperature>
@@ -3104,7 +4320,7 @@
 			<ozone>0.007</ozone>
 			<ozone_8hr_avg>0.014</ozone_8hr_avg>
 			<pm25>4.2</pm25>
-			<pm25_24hr_avg>18.4</pm25_24hr_avg>
+			<pm25_24hr_avg>1.9</pm25_24hr_avg>
 			<nox>0.042</nox>
 			<no2>0.034</no2>
 			<temperature>29.92</temperature>
@@ -3123,7 +4339,7 @@
 			<ozone>0.018</ozone>
 			<ozone_8hr_avg>0.018</ozone_8hr_avg>
 			<pm25>3.4</pm25>
-			<pm25_24hr_avg>19.8</pm25_24hr_avg>
+			<pm25_24hr_avg>1.8</pm25_24hr_avg>
 			<nox>0.029</nox>
 			<no2>0.025</no2>
 			<temperature>30.24</temperature>
@@ -3142,7 +4358,7 @@
 			<ozone>0.021</ozone>
 			<ozone_8hr_avg>0.020</ozone_8hr_avg>
 			<pm25>2.8</pm25>
-			<pm25_24hr_avg>21.2</pm25_24hr_avg>
+			<pm25_24hr_avg>1.6</pm25_24hr_avg>
 			<nox>0.025</nox>
 			<no2>0.021</no2>
 			<temperature>29.53</temperature>
@@ -3161,7 +4377,7 @@
 			<ozone>0.009</ozone>
 			<ozone_8hr_avg>0.022</ozone_8hr_avg>
 			<pm25>4.1</pm25>
-			<pm25_24hr_avg>22.8</pm25_24hr_avg>
+			<pm25_24hr_avg>1.5</pm25_24hr_avg>
 			<nox>0.048</nox>
 			<no2>0.036</no2>
 			<temperature>30.43</temperature>
@@ -3180,7 +4396,7 @@
 			<ozone>0.003</ozone>
 			<ozone_8hr_avg>0.025</ozone_8hr_avg>
 			<pm25>6.2</pm25>
-			<pm25_24hr_avg>24.4</pm25_24hr_avg>
+			<pm25_24hr_avg>1.3</pm25_24hr_avg>
 			<nox>0.07</nox>
 			<no2>0.043</no2>
 			<temperature>31.57</temperature>
@@ -3197,9 +4413,9 @@
 				<data>
 			<date>01/14/2016 18:00:00</date>
 			<ozone>0.005</ozone>
-			<ozone_8hr_avg>0.027</ozone_8hr_avg>
+			<ozone_8hr_avg>0.025</ozone_8hr_avg>
 			<pm25>4.5</pm25>
-			<pm25_24hr_avg>25.8</pm25_24hr_avg>
+			<pm25_24hr_avg>1.1</pm25_24hr_avg>
 			<nox>0.067</nox>
 			<no2>0.04</no2>
 			<temperature>32.97</temperature>
@@ -3216,9 +4432,9 @@
 				<data>
 			<date>01/14/2016 17:00:00</date>
 			<ozone>0.016</ozone>
-			<ozone_8hr_avg>0.028</ozone_8hr_avg>
+			<ozone_8hr_avg>0.024</ozone_8hr_avg>
 			<pm25>3.8</pm25>
-			<pm25_24hr_avg>27.3</pm25_24hr_avg>
+			<pm25_24hr_avg>0.9</pm25_24hr_avg>
 			<nox>0.047</nox>
 			<no2>0.028</no2>
 			<temperature>36.13</temperature>
@@ -3235,9 +4451,9 @@
 				<data>
 			<date>01/14/2016 16:00:00</date>
 			<ozone>0.035</ozone>
-			<ozone_8hr_avg>0.026</ozone_8hr_avg>
+			<ozone_8hr_avg>0.022</ozone_8hr_avg>
 			<pm25>2.6</pm25>
-			<pm25_24hr_avg>28.8</pm25_24hr_avg>
+			<pm25_24hr_avg>0.7</pm25_24hr_avg>
 			<nox>0.01</nox>
 			<no2>0.009</no2>
 			<temperature>37.43</temperature>
@@ -3254,9 +4470,9 @@
 				<data>
 			<date>01/14/2016 15:00:00</date>
 			<ozone>0.037</ozone>
-			<ozone_8hr_avg>0.022</ozone_8hr_avg>
+			<ozone_8hr_avg>0.018</ozone_8hr_avg>
 			<pm25>2.6</pm25>
-			<pm25_24hr_avg>30.4</pm25_24hr_avg>
+			<pm25_24hr_avg>0.6</pm25_24hr_avg>
 			<nox>0.011</nox>
 			<no2>0.008</no2>
 			<temperature>38.14</temperature>
@@ -3273,9 +4489,9 @@
 				<data>
 			<date>01/14/2016 14:00:00</date>
 			<ozone>0.035</ozone>
-			<ozone_8hr_avg>0.018</ozone_8hr_avg>
+			<ozone_8hr_avg>0.013</ozone_8hr_avg>
 			<pm25>4.9</pm25>
-			<pm25_24hr_avg>32.1</pm25_24hr_avg>
+			<pm25_24hr_avg>0.5</pm25_24hr_avg>
 			<nox>0.014</nox>
 			<no2>0.011</no2>
 			<temperature>36.59</temperature>
@@ -3292,9 +4508,9 @@
 				<data>
 			<date>01/14/2016 13:00:00</date>
 			<ozone>0.036</ozone>
-			<ozone_8hr_avg>0.014</ozone_8hr_avg>
+			<ozone_8hr_avg>0.009</ozone_8hr_avg>
 			<pm25>3.4</pm25>
-			<pm25_24hr_avg>33.3</pm25_24hr_avg>
+			<pm25_24hr_avg>0.3</pm25_24hr_avg>
 			<nox>0.013</nox>
 			<no2>0.01</no2>
 			<temperature>37.09</temperature>
@@ -3311,9 +4527,9 @@
 				<data>
 			<date>01/14/2016 12:00:00</date>
 			<ozone>0.038</ozone>
-			<ozone_8hr_avg>0.009</ozone_8hr_avg>
+			<ozone_8hr_avg>0.004</ozone_8hr_avg>
 			<pm25>3.8</pm25>
-			<pm25_24hr_avg>34.6</pm25_24hr_avg>
+			<pm25_24hr_avg>0.2</pm25_24hr_avg>
 			<nox>0.014</nox>
 			<no2>0.011</no2>
 			<temperature>36.44</temperature>
@@ -3326,1222 +4542,6 @@
 			<noy>20.09</noy>
 			<bp></bp>
 			<pm10>17.4</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 11:00:00</date>
-			<ozone>0.02</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>14.1</pm25>
-			<pm25_24hr_avg>35.6</pm25_24hr_avg>
-			<nox>0.047</nox>
-			<no2>0.031</no2>
-			<temperature>33.56</temperature>
-			<relative_humidity>78</relative_humidity>
-			<wind_speed>3.2</wind_speed>
-			<wind_direction>86</wind_direction>
-			<co>0.45</co>
-			<solar_radiation>275</solar_radiation>
-			<so2>0.718</so2>
-			<noy>66.125</noy>
-			<bp></bp>
-			<pm10>29.4</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 10:00:00</date>
-			<ozone>0.009</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>27.1</pm25>
-			<pm25_24hr_avg>36.2</pm25_24hr_avg>
-			<nox>0.069</nox>
-			<no2>0.037</no2>
-			<temperature>31.1</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>2.8</wind_speed>
-			<wind_direction>94</wind_direction>
-			<co>0.61</co>
-			<solar_radiation>121</solar_radiation>
-			<so2>0.723</so2>
-			<noy>101.574</noy>
-			<bp></bp>
-			<pm10>43.6</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 09:00:00</date>
-			<ozone>0.004</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>33.1</pm25>
-			<pm25_24hr_avg>36.1</pm25_24hr_avg>
-			<nox>0.108</nox>
-			<no2>0.041</no2>
-			<temperature>29.64</temperature>
-			<relative_humidity>71</relative_humidity>
-			<wind_speed>1.7</wind_speed>
-			<wind_direction>60</wind_direction>
-			<co>0.94</co>
-			<solar_radiation>62</solar_radiation>
-			<so2>0.988</so2>
-			<noy>158.904</noy>
-			<bp></bp>
-			<pm10>47.4</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 08:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>34.2</pm25>
-			<pm25_24hr_avg>35.9</pm25_24hr_avg>
-			<nox>0.122</nox>
-			<no2>0.041</no2>
-			<temperature>28.18</temperature>
-			<relative_humidity>74</relative_humidity>
-			<wind_speed>3.2</wind_speed>
-			<wind_direction>152</wind_direction>
-			<co>1.02</co>
-			<solar_radiation>20</solar_radiation>
-			<so2>1.106</so2>
-			<noy>176.97</noy>
-			<bp></bp>
-			<pm10>41.3</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 07:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>31.8</pm25>
-			<pm25_24hr_avg>35.4</pm25_24hr_avg>
-			<nox>0.115</nox>
-			<no2>0.041</no2>
-			<temperature>28.28</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>1.4</wind_speed>
-			<wind_direction>269</wind_direction>
-			<co>1.02</co>
-			<solar_radiation>1</solar_radiation>
-			<so2>0.888</so2>
-			<noy>161.434</noy>
-			<bp></bp>
-			<pm10>39.9</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 06:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>34.2</pm25>
-			<pm25_24hr_avg>34.9</pm25_24hr_avg>
-			<nox>0.089</nox>
-			<no2>0.039</no2>
-			<temperature>26.99</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>3.6</wind_speed>
-			<wind_direction>146</wind_direction>
-			<co>0.63</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.828</so2>
-			<noy>125.649</noy>
-			<bp></bp>
-			<pm10>41.2</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 05:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>35.5</pm25>
-			<pm25_24hr_avg>34.3</pm25_24hr_avg>
-			<nox>0.072</nox>
-			<no2>0.038</no2>
-			<temperature>25.62</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>2</wind_speed>
-			<wind_direction>152</wind_direction>
-			<co>0.54</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.704</so2>
-			<noy>104.238</noy>
-			<bp></bp>
-			<pm10>41.3</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 04:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>34.8</pm25>
-			<pm25_24hr_avg>33.8</pm25_24hr_avg>
-			<nox>0.067</nox>
-			<no2>0.038</no2>
-			<temperature>25.2</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>2.5</wind_speed>
-			<wind_direction>230</wind_direction>
-			<co>0.47</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.637</so2>
-			<noy>95.933</noy>
-			<bp></bp>
-			<pm10>43.6</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 03:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>35.9</pm25>
-			<pm25_24hr_avg>33.3</pm25_24hr_avg>
-			<nox>0.068</nox>
-			<no2>0.037</no2>
-			<temperature>25.03</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>4.1</wind_speed>
-			<wind_direction>302</wind_direction>
-			<co>0.53</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.675</so2>
-			<noy>96.542</noy>
-			<bp></bp>
-			<pm10>41.9</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 02:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>37.3</pm25>
-			<pm25_24hr_avg>32.8</pm25_24hr_avg>
-			<nox>0.063</nox>
-			<no2>0.039</no2>
-			<temperature>25.32</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>3.4</wind_speed>
-			<wind_direction>173</wind_direction>
-			<co>0.5</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.734</so2>
-			<noy>90.774</noy>
-			<bp></bp>
-			<pm10>43</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 01:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>39.7</pm25>
-			<pm25_24hr_avg>32.2</pm25_24hr_avg>
-			<nox>0.058</nox>
-			<no2>0.038</no2>
-			<temperature>25.67</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>4.3</wind_speed>
-			<wind_direction>314</wind_direction>
-			<co></co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.444</so2>
-			<noy>83.198</noy>
-			<bp></bp>
-			<pm10>38</pm10>
-		</data>
-				<data>
-			<date>01/14/2016 00:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.006</ozone_8hr_avg>
-			<pm25>38.7</pm25>
-			<pm25_24hr_avg>31.6</pm25_24hr_avg>
-			<nox>0.062</nox>
-			<no2>0.037</no2>
-			<temperature>24.53</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>1.5</wind_speed>
-			<wind_direction>4</wind_direction>
-			<co>0.56</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.507</so2>
-			<noy>84.63</noy>
-			<bp></bp>
-			<pm10>39.8</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 23:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.008</ozone_8hr_avg>
-			<pm25>38</pm25>
-			<pm25_24hr_avg>30.8</pm25_24hr_avg>
-			<nox>0.048</nox>
-			<no2>0.035</no2>
-			<temperature>25.1</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>1.1</wind_speed>
-			<wind_direction>133</wind_direction>
-			<co>0.45</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.436</so2>
-			<noy>67.625</noy>
-			<bp></bp>
-			<pm10>38.2</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 22:00:00</date>
-			<ozone>0.004</ozone>
-			<ozone_8hr_avg>0.009</ozone_8hr_avg>
-			<pm25>36.7</pm25>
-			<pm25_24hr_avg>30.3</pm25_24hr_avg>
-			<nox>0.039</nox>
-			<no2>0.032</no2>
-			<temperature>25.14</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>1.7</wind_speed>
-			<wind_direction>165</wind_direction>
-			<co>0.41</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.383</so2>
-			<noy>50.238</noy>
-			<bp></bp>
-			<pm10>36.9</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 21:00:00</date>
-			<ozone>0.006</ozone>
-			<ozone_8hr_avg>0.010</ozone_8hr_avg>
-			<pm25>41.4</pm25>
-			<pm25_24hr_avg>30</pm25_24hr_avg>
-			<nox>0.038</nox>
-			<no2>0.033</no2>
-			<temperature>25.34</temperature>
-			<relative_humidity>75</relative_humidity>
-			<wind_speed>2.5</wind_speed>
-			<wind_direction>168</wind_direction>
-			<co>0.37</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.423</so2>
-			<noy>50.209</noy>
-			<bp></bp>
-			<pm10>40.8</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 20:00:00</date>
-			<ozone>0.01</ozone>
-			<ozone_8hr_avg>0.011</ozone_8hr_avg>
-			<pm25>41.1</pm25>
-			<pm25_24hr_avg>29.5</pm25_24hr_avg>
-			<nox>0.038</nox>
-			<no2>0.033</no2>
-			<temperature>25.42</temperature>
-			<relative_humidity>75</relative_humidity>
-			<wind_speed>1.4</wind_speed>
-			<wind_direction>149</wind_direction>
-			<co>0.35</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.462</so2>
-			<noy>50.203</noy>
-			<bp></bp>
-			<pm10>46.5</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 19:00:00</date>
-			<ozone>0.014</ozone>
-			<ozone_8hr_avg>0.012</ozone_8hr_avg>
-			<pm25>40.3</pm25>
-			<pm25_24hr_avg>29</pm25_24hr_avg>
-			<nox>0.034</nox>
-			<no2>0.031</no2>
-			<temperature>25.19</temperature>
-			<relative_humidity>74</relative_humidity>
-			<wind_speed>2</wind_speed>
-			<wind_direction>260</wind_direction>
-			<co>0.36</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.4</so2>
-			<noy>44.502</noy>
-			<bp></bp>
-			<pm10>44.6</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 18:00:00</date>
-			<ozone>0.006</ozone>
-			<ozone_8hr_avg>0.012</ozone_8hr_avg>
-			<pm25>41</pm25>
-			<pm25_24hr_avg>28.5</pm25_24hr_avg>
-			<nox>0.048</nox>
-			<no2>0.041</no2>
-			<temperature>25.87</temperature>
-			<relative_humidity>72</relative_humidity>
-			<wind_speed>3.2</wind_speed>
-			<wind_direction>298</wind_direction>
-			<co>0.53</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.506</so2>
-			<noy>62.926</noy>
-			<bp></bp>
-			<pm10>45.3</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 17:00:00</date>
-			<ozone>0.01</ozone>
-			<ozone_8hr_avg>0.013</ozone_8hr_avg>
-			<pm25>39.6</pm25>
-			<pm25_24hr_avg>27.9</pm25_24hr_avg>
-			<nox>0.041</nox>
-			<no2>0.037</no2>
-			<temperature>26.48</temperature>
-			<relative_humidity>70</relative_humidity>
-			<wind_speed>4.1</wind_speed>
-			<wind_direction>296</wind_direction>
-			<co>0.4</co>
-			<solar_radiation>4</solar_radiation>
-			<so2>0.585</so2>
-			<noy>55.343</noy>
-			<bp></bp>
-			<pm10>51.5</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 16:00:00</date>
-			<ozone>0.013</ozone>
-			<ozone_8hr_avg>0.012</ozone_8hr_avg>
-			<pm25>40.1</pm25>
-			<pm25_24hr_avg>27.4</pm25_24hr_avg>
-			<nox>0.046</nox>
-			<no2>0.038</no2>
-			<temperature>27.71</temperature>
-			<relative_humidity>65</relative_humidity>
-			<wind_speed>5.9</wind_speed>
-			<wind_direction>311</wind_direction>
-			<co>0.41</co>
-			<solar_radiation>62</solar_radiation>
-			<so2>0.975</so2>
-			<noy>65.511</noy>
-			<bp></bp>
-			<pm10>68</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 15:00:00</date>
-			<ozone>0.013</ozone>
-			<ozone_8hr_avg>0.011</ozone_8hr_avg>
-			<pm25>42.6</pm25>
-			<pm25_24hr_avg>26.7</pm25_24hr_avg>
-			<nox>0.066</nox>
-			<no2>0.041</no2>
-			<temperature>30.25</temperature>
-			<relative_humidity>62</relative_humidity>
-			<wind_speed>5.5</wind_speed>
-			<wind_direction>301</wind_direction>
-			<co>0.53</co>
-			<solar_radiation>194</solar_radiation>
-			<so2>2.524</so2>
-			<noy>95.099</noy>
-			<bp></bp>
-			<pm10>74.1</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 14:00:00</date>
-			<ozone>0.013</ozone>
-			<ozone_8hr_avg>0.010</ozone_8hr_avg>
-			<pm25>35.9</pm25>
-			<pm25_24hr_avg>25.6</pm25_24hr_avg>
-			<nox>0.078</nox>
-			<no2>0.046</no2>
-			<temperature>31.58</temperature>
-			<relative_humidity>55</relative_humidity>
-			<wind_speed>4.3</wind_speed>
-			<wind_direction>286</wind_direction>
-			<co>0.59</co>
-			<solar_radiation>229</solar_radiation>
-			<so2>2.538</so2>
-			<noy>113.587</noy>
-			<bp></bp>
-			<pm10>70.5</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 13:00:00</date>
-			<ozone>0.015</ozone>
-			<ozone_8hr_avg>0.008</ozone_8hr_avg>
-			<pm25>33.2</pm25>
-			<pm25_24hr_avg>24.8</pm25_24hr_avg>
-			<nox>0.08</nox>
-			<no2>0.043</no2>
-			<temperature>30.7</temperature>
-			<relative_humidity>55</relative_humidity>
-			<wind_speed>3.8</wind_speed>
-			<wind_direction>322</wind_direction>
-			<co>0.6</co>
-			<solar_radiation>374</solar_radiation>
-			<so2>1.635</so2>
-			<noy>122.043</noy>
-			<bp></bp>
-			<pm10>80.8</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 12:00:00</date>
-			<ozone>0.015</ozone>
-			<ozone_8hr_avg>0.007</ozone_8hr_avg>
-			<pm25>28</pm25>
-			<pm25_24hr_avg>24.2</pm25_24hr_avg>
-			<nox>0.102</nox>
-			<no2>0.045</no2>
-			<temperature>29.97</temperature>
-			<relative_humidity>54</relative_humidity>
-			<wind_speed>4.3</wind_speed>
-			<wind_direction>268</wind_direction>
-			<co>0.73</co>
-			<solar_radiation>596</solar_radiation>
-			<so2>1.615</so2>
-			<noy>152.39</noy>
-			<bp></bp>
-			<pm10>76.2</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 11:00:00</date>
-			<ozone>0.015</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>27.4</pm25>
-			<pm25_24hr_avg>23.8</pm25_24hr_avg>
-			<nox>0.092</nox>
-			<no2>0.04</no2>
-			<temperature>28.06</temperature>
-			<relative_humidity>58</relative_humidity>
-			<wind_speed>2.6</wind_speed>
-			<wind_direction>233</wind_direction>
-			<co>0.68</co>
-			<solar_radiation>645</solar_radiation>
-			<so2>2.232</so2>
-			<noy>143.604</noy>
-			<bp></bp>
-			<pm10>62.1</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 10:00:00</date>
-			<ozone>0.012</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>26.9</pm25>
-			<pm25_24hr_avg>23.4</pm25_24hr_avg>
-			<nox>0.093</nox>
-			<no2>0.039</no2>
-			<temperature>24.96</temperature>
-			<relative_humidity>64</relative_humidity>
-			<wind_speed>4.2</wind_speed>
-			<wind_direction>305</wind_direction>
-			<co>0.67</co>
-			<solar_radiation>421</solar_radiation>
-			<so2>1.438</so2>
-			<noy>148.188</noy>
-			<bp></bp>
-			<pm10>60.3</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 09:00:00</date>
-			<ozone>0.005</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>26.5</pm25>
-			<pm25_24hr_avg>23</pm25_24hr_avg>
-			<nox>0.183</nox>
-			<no2>0.051</no2>
-			<temperature>21.67</temperature>
-			<relative_humidity>70</relative_humidity>
-			<wind_speed>2.7</wind_speed>
-			<wind_direction>265</wind_direction>
-			<co>1.52</co>
-			<solar_radiation>250</solar_radiation>
-			<so2>1.404</so2>
-			<noy>203.184</noy>
-			<bp></bp>
-			<pm10>40.2</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 08:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>23</pm25>
-			<pm25_24hr_avg>22.6</pm25_24hr_avg>
-			<nox>0.196</nox>
-			<no2>0.049</no2>
-			<temperature>20.08</temperature>
-			<relative_humidity>74</relative_humidity>
-			<wind_speed>0.7</wind_speed>
-			<wind_direction>170</wind_direction>
-			<co>2.17</co>
-			<solar_radiation>55</solar_radiation>
-			<so2>1.497</so2>
-			<noy>203.004</noy>
-			<bp></bp>
-			<pm10>13.5</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 07:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>19.7</pm25>
-			<pm25_24hr_avg>22.3</pm25_24hr_avg>
-			<nox>0.187</nox>
-			<no2>0.051</no2>
-			<temperature>18.54</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>1.4</wind_speed>
-			<wind_direction>107</wind_direction>
-			<co>1.57</co>
-			<solar_radiation>3</solar_radiation>
-			<so2>1.115</so2>
-			<noy>203.187</noy>
-			<bp></bp>
-			<pm10>16.9</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 06:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>19.3</pm25>
-			<pm25_24hr_avg>22.1</pm25_24hr_avg>
-			<nox>0.148</nox>
-			<no2>0.048</no2>
-			<temperature>18.29</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>1.5</wind_speed>
-			<wind_direction>111</wind_direction>
-			<co>0.96</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.052</so2>
-			<noy>199.444</noy>
-			<bp></bp>
-			<pm10>23.1</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 05:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>22.9</pm25>
-			<pm25_24hr_avg>21.8</pm25_24hr_avg>
-			<nox>0.172</nox>
-			<no2>0.049</no2>
-			<temperature>18.11</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>1.6</wind_speed>
-			<wind_direction>140</wind_direction>
-			<co>1.15</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.206</so2>
-			<noy>203.189</noy>
-			<bp></bp>
-			<pm10>30</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 04:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>24.3</pm25>
-			<pm25_24hr_avg>21.4</pm25_24hr_avg>
-			<nox>0.152</nox>
-			<no2>0.045</no2>
-			<temperature>18.56</temperature>
-			<relative_humidity>77</relative_humidity>
-			<wind_speed>1.1</wind_speed>
-			<wind_direction>137</wind_direction>
-			<co>0.98</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.107</so2>
-			<noy>203.195</noy>
-			<bp></bp>
-			<pm10>36.7</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 03:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>23.4</pm25>
-			<pm25_24hr_avg>20.9</pm25_24hr_avg>
-			<nox>0.144</nox>
-			<no2>0.045</no2>
-			<temperature>19.37</temperature>
-			<relative_humidity>76</relative_humidity>
-			<wind_speed>1.4</wind_speed>
-			<wind_direction>135</wind_direction>
-			<co>0.89</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.031</so2>
-			<noy>201.672</noy>
-			<bp></bp>
-			<pm10>38.9</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 02:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>23.2</pm25>
-			<pm25_24hr_avg>20.3</pm25_24hr_avg>
-			<nox>0.136</nox>
-			<no2>0.044</no2>
-			<temperature>19.94</temperature>
-			<relative_humidity>75</relative_humidity>
-			<wind_speed>0.6</wind_speed>
-			<wind_direction>166</wind_direction>
-			<co>0.87</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.959</so2>
-			<noy>192.486</noy>
-			<bp></bp>
-			<pm10>41.3</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 01:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>24.1</pm25>
-			<pm25_24hr_avg>19.8</pm25_24hr_avg>
-			<nox>0.14</nox>
-			<no2>0.045</no2>
-			<temperature>20.71</temperature>
-			<relative_humidity>75</relative_humidity>
-			<wind_speed>1.1</wind_speed>
-			<wind_direction>128</wind_direction>
-			<co>1</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.829</so2>
-			<noy>202.123</noy>
-			<bp></bp>
-			<pm10>39.1</pm10>
-		</data>
-				<data>
-			<date>01/13/2016 00:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>21.7</pm25>
-			<pm25_24hr_avg>19.4</pm25_24hr_avg>
-			<nox>0.138</nox>
-			<no2>0.045</no2>
-			<temperature>21.41</temperature>
-			<relative_humidity>74</relative_humidity>
-			<wind_speed>0.9</wind_speed>
-			<wind_direction>168</wind_direction>
-			<co>1.03</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.983</so2>
-			<noy>197.726</noy>
-			<bp></bp>
-			<pm10>38.4</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 23:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>25.3</pm25>
-			<pm25_24hr_avg>19.1</pm25_24hr_avg>
-			<nox>0.151</nox>
-			<no2>0.047</no2>
-			<temperature>22.67</temperature>
-			<relative_humidity>72</relative_humidity>
-			<wind_speed>1.1</wind_speed>
-			<wind_direction>109</wind_direction>
-			<co>1.08</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.064</so2>
-			<noy>196.434</noy>
-			<bp></bp>
-			<pm10>47.7</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 22:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.006</ozone_8hr_avg>
-			<pm25>28.6</pm25>
-			<pm25_24hr_avg>18.6</pm25_24hr_avg>
-			<nox>0.162</nox>
-			<no2>0.05</no2>
-			<temperature>23.41</temperature>
-			<relative_humidity>71</relative_humidity>
-			<wind_speed>1.1</wind_speed>
-			<wind_direction>194</wind_direction>
-			<co>1.2</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.155</so2>
-			<noy>202.639</noy>
-			<bp></bp>
-			<pm10>56</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 21:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.008</ozone_8hr_avg>
-			<pm25>30.2</pm25>
-			<pm25_24hr_avg>17.9</pm25_24hr_avg>
-			<nox>0.143</nox>
-			<no2>0.051</no2>
-			<temperature>24.56</temperature>
-			<relative_humidity>69</relative_humidity>
-			<wind_speed>0.6</wind_speed>
-			<wind_direction>151</wind_direction>
-			<co>0.99</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>1.052</so2>
-			<noy>197.92</noy>
-			<bp></bp>
-			<pm10>51</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 20:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.011</ozone_8hr_avg>
-			<pm25>29.3</pm25>
-			<pm25_24hr_avg>17.2</pm25_24hr_avg>
-			<nox>0.098</nox>
-			<no2>0.05</no2>
-			<temperature>25.28</temperature>
-			<relative_humidity>67</relative_humidity>
-			<wind_speed>0.9</wind_speed>
-			<wind_direction>135</wind_direction>
-			<co>0.77</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.775</so2>
-			<noy>141.422</noy>
-			<bp></bp>
-			<pm10>44.9</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 19:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.013</ozone_8hr_avg>
-			<pm25>27</pm25>
-			<pm25_24hr_avg>16.5</pm25_24hr_avg>
-			<nox>0.065</nox>
-			<no2>0.049</no2>
-			<temperature>25.84</temperature>
-			<relative_humidity>65</relative_humidity>
-			<wind_speed>1.4</wind_speed>
-			<wind_direction>220</wind_direction>
-			<co>0.58</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.556</so2>
-			<noy>90.244</noy>
-			<bp></bp>
-			<pm10>44.9</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 18:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.016</ozone_8hr_avg>
-			<pm25>26.9</pm25>
-			<pm25_24hr_avg>15.4</pm25_24hr_avg>
-			<nox>0.06</nox>
-			<no2>0.049</no2>
-			<temperature>26.94</temperature>
-			<relative_humidity>62</relative_humidity>
-			<wind_speed>1.8</wind_speed>
-			<wind_direction>277</wind_direction>
-			<co>0.53</co>
-			<solar_radiation>0</solar_radiation>
-			<so2>0.677</so2>
-			<noy>82.575</noy>
-			<bp></bp>
-			<pm10>54.5</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 17:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.018</ozone_8hr_avg>
-			<pm25>27.8</pm25>
-			<pm25_24hr_avg>14.3</pm25_24hr_avg>
-			<nox>0.071</nox>
-			<no2>0.05</no2>
-			<temperature>28.64</temperature>
-			<relative_humidity>61</relative_humidity>
-			<wind_speed>3.5</wind_speed>
-			<wind_direction>299</wind_direction>
-			<co>0.58</co>
-			<solar_radiation>7</solar_radiation>
-			<so2>0.898</so2>
-			<noy>98.302</noy>
-			<bp></bp>
-			<pm10>57.4</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 16:00:00</date>
-			<ozone>0.01</ozone>
-			<ozone_8hr_avg>0.019</ozone_8hr_avg>
-			<pm25>23.7</pm25>
-			<pm25_24hr_avg>13.1</pm25_24hr_avg>
-			<nox>0.063</nox>
-			<no2>0.042</no2>
-			<temperature>30.71</temperature>
-			<relative_humidity>58</relative_humidity>
-			<wind_speed>5.3</wind_speed>
-			<wind_direction>306</wind_direction>
-			<co>0.51</co>
-			<solar_radiation>101</solar_radiation>
-			<so2>0.952</so2>
-			<noy>87.765</noy>
-			<bp></bp>
-			<pm10>48.1</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 15:00:00</date>
-			<ozone>0.022</ozone>
-			<ozone_8hr_avg>0.018</ozone_8hr_avg>
-			<pm25>16</pm25>
-			<pm25_24hr_avg>12.2</pm25_24hr_avg>
-			<nox>0.048</nox>
-			<no2>0.031</no2>
-			<temperature>32.85</temperature>
-			<relative_humidity>46</relative_humidity>
-			<wind_speed>4.4</wind_speed>
-			<wind_direction>275</wind_direction>
-			<co>0.41</co>
-			<solar_radiation>313</solar_radiation>
-			<so2>0.766</so2>
-			<noy>66.235</noy>
-			<bp></bp>
-			<pm10>42.2</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 14:00:00</date>
-			<ozone>0.024</ozone>
-			<ozone_8hr_avg>0.016</ozone_8hr_avg>
-			<pm25>16.9</pm25>
-			<pm25_24hr_avg>11.5</pm25_24hr_avg>
-			<nox>0.049</nox>
-			<no2>0.029</no2>
-			<temperature>32.49</temperature>
-			<relative_humidity>46</relative_humidity>
-			<wind_speed>3.6</wind_speed>
-			<wind_direction>237</wind_direction>
-			<co>0.44</co>
-			<solar_radiation>482</solar_radiation>
-			<so2>0.781</so2>
-			<noy>68.229</noy>
-			<bp></bp>
-			<pm10>38.3</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 13:00:00</date>
-			<ozone>0.024</ozone>
-			<ozone_8hr_avg>0.013</ozone_8hr_avg>
-			<pm25>18.9</pm25>
-			<pm25_24hr_avg>10.8</pm25_24hr_avg>
-			<nox>0.044</nox>
-			<no2>0.026</no2>
-			<temperature>30.8</temperature>
-			<relative_humidity>51</relative_humidity>
-			<wind_speed>3.1</wind_speed>
-			<wind_direction>151</wind_direction>
-			<co>0.43</co>
-			<solar_radiation>524</solar_radiation>
-			<so2>0.682</so2>
-			<noy>62.63</noy>
-			<bp></bp>
-			<pm10>40</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 12:00:00</date>
-			<ozone>0.022</ozone>
-			<ozone_8hr_avg>0.010</ozone_8hr_avg>
-			<pm25>18.9</pm25>
-			<pm25_24hr_avg>10</pm25_24hr_avg>
-			<nox>0.048</nox>
-			<no2>0.027</no2>
-			<temperature>28.38</temperature>
-			<relative_humidity>55</relative_humidity>
-			<wind_speed>2.8</wind_speed>
-			<wind_direction>188</wind_direction>
-			<co>0.45</co>
-			<solar_radiation>514</solar_radiation>
-			<so2>0.928</so2>
-			<noy>69.228</noy>
-			<bp></bp>
-			<pm10>40.6</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 11:00:00</date>
-			<ozone>0.022</ozone>
-			<ozone_8hr_avg>0.008</ozone_8hr_avg>
-			<pm25>17.7</pm25>
-			<pm25_24hr_avg>9.2</pm25_24hr_avg>
-			<nox>0.043</nox>
-			<no2>0.023</no2>
-			<temperature>26.64</temperature>
-			<relative_humidity>58</relative_humidity>
-			<wind_speed>3.6</wind_speed>
-			<wind_direction>217</wind_direction>
-			<co>0.44</co>
-			<solar_radiation>531</solar_radiation>
-			<so2>0.838</so2>
-			<noy>63.814</noy>
-			<bp></bp>
-			<pm10>42.5</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 10:00:00</date>
-			<ozone>0.019</ozone>
-			<ozone_8hr_avg>0.006</ozone_8hr_avg>
-			<pm25>16.1</pm25>
-			<pm25_24hr_avg>8.5</pm25_24hr_avg>
-			<nox>0.05</nox>
-			<no2>0.027</no2>
-			<temperature>24.15</temperature>
-			<relative_humidity>59</relative_humidity>
-			<wind_speed>3.9</wind_speed>
-			<wind_direction>170</wind_direction>
-			<co>0.45</co>
-			<solar_radiation>454</solar_radiation>
-			<so2>0.682</so2>
-			<noy>75.385</noy>
-			<bp></bp>
-			<pm10>44.2</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 09:00:00</date>
-			<ozone>0.013</ozone>
-			<ozone_8hr_avg>0.004</ozone_8hr_avg>
-			<pm25>17.4</pm25>
-			<pm25_24hr_avg>7.8</pm25_24hr_avg>
-			<nox>0.07</nox>
-			<no2>0.036</no2>
-			<temperature>22.28</temperature>
-			<relative_humidity>63</relative_humidity>
-			<wind_speed>3.8</wind_speed>
-			<wind_direction>299</wind_direction>
-			<co>0.61</co>
-			<solar_radiation>263</solar_radiation>
-			<so2>0.684</so2>
-			<noy>106.047</noy>
-			<bp></bp>
-			<pm10>36.4</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 08:00:00</date>
-			<ozone>0.004</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>16.5</pm25>
-			<pm25_24hr_avg>7.1</pm25_24hr_avg>
-			<nox>0.129</nox>
-			<no2>0.043</no2>
-			<temperature>20.27</temperature>
-			<relative_humidity>68</relative_humidity>
-			<wind_speed>1.6</wind_speed>
-			<wind_direction>90</wind_direction>
-			<co>1.3</co>
-			<solar_radiation>90</solar_radiation>
-			<so2>0.979</so2>
-			<noy>172.919</noy>
-			<bp></bp>
-			<pm10>26.5</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 07:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>15.5</pm25>
-			<pm25_24hr_avg>6.4</pm25_24hr_avg>
-			<nox>0.091</nox>
-			<no2>0.041</no2>
-			<temperature>18.98</temperature>
-			<relative_humidity>70</relative_humidity>
-			<wind_speed>2.6</wind_speed>
-			<wind_direction>304</wind_direction>
-			<co>0.91</co>
-			<solar_radiation>2</solar_radiation>
-			<so2>0.611</so2>
-			<noy>124.986</noy>
-			<bp></bp>
-			<pm10>24.9</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 06:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.004</ozone_8hr_avg>
-			<pm25>11.8</pm25>
-			<pm25_24hr_avg>5.7</pm25_24hr_avg>
-			<nox>0.082</nox>
-			<no2>0.042</no2>
-			<temperature>18.27</temperature>
-			<relative_humidity>70</relative_humidity>
-			<wind_speed>2</wind_speed>
-			<wind_direction>94</wind_direction>
-			<co>0.69</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.586</so2>
-			<noy>111.396</noy>
-			<bp></bp>
-			<pm10>22.3</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 05:00:00</date>
-			<ozone>0.001</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>13.7</pm25>
-			<pm25_24hr_avg>5.2</pm25_24hr_avg>
-			<nox>0.065</nox>
-			<no2>0.04</no2>
-			<temperature>18.16</temperature>
-			<relative_humidity>70</relative_humidity>
-			<wind_speed>2.6</wind_speed>
-			<wind_direction>162</wind_direction>
-			<co>0.45</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.48</so2>
-			<noy>88.732</noy>
-			<bp></bp>
-			<pm10>17.7</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 04:00:00</date>
-			<ozone>0.002</ozone>
-			<ozone_8hr_avg>0.007</ozone_8hr_avg>
-			<pm25>10.1</pm25>
-			<pm25_24hr_avg>4.7</pm25_24hr_avg>
-			<nox>0.061</nox>
-			<no2>0.04</no2>
-			<temperature>18.19</temperature>
-			<relative_humidity>67</relative_humidity>
-			<wind_speed>1.8</wind_speed>
-			<wind_direction>167</wind_direction>
-			<co>0.4</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.466</so2>
-			<noy>85.177</noy>
-			<bp></bp>
-			<pm10>15.5</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 03:00:00</date>
-			<ozone>0.006</ozone>
-			<ozone_8hr_avg>0.008</ozone_8hr_avg>
-			<pm25>10.6</pm25>
-			<pm25_24hr_avg>4.3</pm25_24hr_avg>
-			<nox>0.046</nox>
-			<no2>0.035</no2>
-			<temperature>19.03</temperature>
-			<relative_humidity>64</relative_humidity>
-			<wind_speed>1.5</wind_speed>
-			<wind_direction>111</wind_direction>
-			<co>0.31</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.406</so2>
-			<noy>62.027</noy>
-			<bp></bp>
-			<pm10>16.6</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 02:00:00</date>
-			<ozone>0.007</ozone>
-			<ozone_8hr_avg>0.008</ozone_8hr_avg>
-			<pm25>11.6</pm25>
-			<pm25_24hr_avg>3.8</pm25_24hr_avg>
-			<nox>0.042</nox>
-			<no2>0.035</no2>
-			<temperature>19.18</temperature>
-			<relative_humidity>65</relative_humidity>
-			<wind_speed>3</wind_speed>
-			<wind_direction>127</wind_direction>
-			<co>0.32</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.362</so2>
-			<noy>53.925</noy>
-			<bp></bp>
-			<pm10>19</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 01:00:00</date>
-			<ozone>0.003</ozone>
-			<ozone_8hr_avg>0.007</ozone_8hr_avg>
-			<pm25>14.3</pm25>
-			<pm25_24hr_avg>3.3</pm25_24hr_avg>
-			<nox>0.064</nox>
-			<no2>0.04</no2>
-			<temperature>20.04</temperature>
-			<relative_humidity>67</relative_humidity>
-			<wind_speed>2.1</wind_speed>
-			<wind_direction>140</wind_direction>
-			<co>0.51</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.388</so2>
-			<noy>83.919</noy>
-			<bp></bp>
-			<pm10>22.7</pm10>
-		</data>
-				<data>
-			<date>01/12/2016 00:00:00</date>
-			<ozone>0.007</ozone>
-			<ozone_8hr_avg>0.006</ozone_8hr_avg>
-			<pm25>13</pm25>
-			<pm25_24hr_avg>2.7</pm25_24hr_avg>
-			<nox>0.041</nox>
-			<no2>0.034</no2>
-			<temperature>20.68</temperature>
-			<relative_humidity>64</relative_humidity>
-			<wind_speed>2.8</wind_speed>
-			<wind_direction>152</wind_direction>
-			<co>0.38</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.333</so2>
-			<noy>54.628</noy>
-			<bp></bp>
-			<pm10>23.9</pm10>
-		</data>
-				<data>
-			<date>01/11/2016 23:00:00</date>
-			<ozone>0.005</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>13.1</pm25>
-			<pm25_24hr_avg>2.2</pm25_24hr_avg>
-			<nox>0.05</nox>
-			<no2>0.037</no2>
-			<temperature>21.78</temperature>
-			<relative_humidity>64</relative_humidity>
-			<wind_speed>2</wind_speed>
-			<wind_direction>141</wind_direction>
-			<co>0.47</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.394</so2>
-			<noy>67.351</noy>
-			<bp></bp>
-			<pm10>24.4</pm10>
-		</data>
-				<data>
-			<date>01/11/2016 22:00:00</date>
-			<ozone>0.014</ozone>
-			<ozone_8hr_avg>0.005</ozone_8hr_avg>
-			<pm25>12.8</pm25>
-			<pm25_24hr_avg>1.6</pm25_24hr_avg>
-			<nox>0.034</nox>
-			<no2>0.028</no2>
-			<temperature>23.15</temperature>
-			<relative_humidity>61</relative_humidity>
-			<wind_speed>2.3</wind_speed>
-			<wind_direction>112</wind_direction>
-			<co>0.41</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.342</so2>
-			<noy>40.469</noy>
-			<bp></bp>
-			<pm10>23.1</pm10>
-		</data>
-				<data>
-			<date>01/11/2016 21:00:00</date>
-			<ozone>0.012</ozone>
-			<ozone_8hr_avg>0.003</ozone_8hr_avg>
-			<pm25>13.5</pm25>
-			<pm25_24hr_avg>1.1</pm25_24hr_avg>
-			<nox>0.039</nox>
-			<no2>0.031</no2>
-			<temperature>23.49</temperature>
-			<relative_humidity>61</relative_humidity>
-			<wind_speed>3.1</wind_speed>
-			<wind_direction>115</wind_direction>
-			<co>0.38</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.368</so2>
-			<noy>47.987</noy>
-			<bp></bp>
-			<pm10>26.2</pm10>
-		</data>
-				<data>
-			<date>01/11/2016 20:00:00</date>
-			<ozone>0.016</ozone>
-			<ozone_8hr_avg>0.002</ozone_8hr_avg>
-			<pm25>13.1</pm25>
-			<pm25_24hr_avg>0.5</pm25_24hr_avg>
-			<nox>0.03</nox>
-			<no2>0.027</no2>
-			<temperature>24.8</temperature>
-			<relative_humidity>59</relative_humidity>
-			<wind_speed>2.3</wind_speed>
-			<wind_direction>105</wind_direction>
-			<co>0.29</co>
-			<solar_radiation>-0</solar_radiation>
-			<so2>0.321</so2>
-			<noy>41.31</noy>
-			<bp></bp>
-			<pm10>23.6</pm10>
 		</data>
 			</site>
 </air_quality_data>
