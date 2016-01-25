@@ -75,7 +75,7 @@ def add_to_pollutants(dt, pollutant_name, pollutant_value):
 
 tree = ET.parse('utah.xml')
 root = tree.getroot()
-local = timezone('US/Mountain')
+local = timezone('MST')
 
 for data in root.find('site').findall('data'):
   naive = datetime.strptime(data.find('date').text, "%m/%d/%Y %H:%M:%S")
