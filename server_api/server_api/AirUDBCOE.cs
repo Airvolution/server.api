@@ -7,8 +7,14 @@ namespace server_api
 
     public partial class AirUDBCOE : DbContext
     {
+        
         public AirUDBCOE()
             : base("name=AirUDBCOE")
+        {
+        }
+        
+        public AirUDBCOE(string connectionString)
+            : base(connectionString)
         {
         }
 

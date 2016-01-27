@@ -23,6 +23,10 @@ namespace server_api
         [StringLength(20)]
         public string Pass { get; set; }
 
+        
+        [StringLength(320)]
+        public string Name { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeviceGroup> DeviceGroups { get; set; }
 
