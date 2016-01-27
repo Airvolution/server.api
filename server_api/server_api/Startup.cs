@@ -1,11 +1,10 @@
 ﻿using System;
 using Microsoft.Owin;
 using Owin;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Http;
-using server_api.App_Start;
+using Microsoft.Owin.Security.OAuth;
+using server_api.Providers;
 using Swashbuckle.Application;
 
 [assembly: OwinStartup(typeof(server_api.App_Start.Startup))]
@@ -27,6 +26,8 @@ namespace server_api.App_Start
             HttpConfiguration config = new HttpConfiguration();
 
             WebApiConfig.Register(config);
+            ConfigureOAuth(app);
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             config.EnableSwagger(c => {
                 c.SingleApiVersion("v1", "server_api");
@@ -40,6 +41,20 @@ namespace server_api.App_Start
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
         }
 
+        public void ConfigureOAuth(IAppBuilder app)
+        {
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
+                Provider = new SimpleAuthorizationServerProvider()
+            };
+
+            // Token Generation
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+        }
         /// <summary>
         /// *xml comment*
         /// </summary>
