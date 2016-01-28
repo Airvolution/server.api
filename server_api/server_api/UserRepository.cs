@@ -24,6 +24,8 @@ namespace server_api
                 User newUser = new User();
                 newUser.Email = email;
                 newUser.Pass = password;
+                newUser.Password = password;
+                newUser.ConfirmPassword = password;
 
                 _context.Users.Add(newUser);
                 _context.SaveChanges();
