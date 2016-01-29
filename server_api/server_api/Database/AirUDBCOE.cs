@@ -88,24 +88,7 @@ namespace server_api
                 .WithRequired(e => e.Pollutant)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
-                .Property(e => e.Email)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<User>()
-                .Property(e => e.Pass)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.DeviceGroups)
-                .WithRequired(e => e.User)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.Devices)
-                .WithRequired(e => e.User)
-                .WillCascadeOnDelete(false);
-
+           
             modelBuilder.Entity<Devices_States_and_Datapoints>()
                 .Property(e => e.DeviceID)
                 .IsUnicode(false);

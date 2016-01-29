@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 using server_api.Models;
 
 namespace server_api.Controllers
@@ -10,66 +12,83 @@ namespace server_api.Controllers
     /// <summary>
     ///   User API end points.
     /// </summary>
+    [RoutePrefix("users")]
     public class UsersController : ApiController
     {
-        /// <summary>
-        ///   Validates user is not already in database and if not, creates new User in database.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        [Route("users/register")]
-        [HttpPost]
-        public IHttpActionResult Register([FromBody]SwaggerUser user)
+        private AuthRepository _repo = null;
+
+        public UsersController()
         {
-            var db = new AirUDBCOE();
-
-            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.email);
-
-            if (existingUser == null)
-            {
-                // Perform queries to insert new user into database.
-                User newUser = new User();
-                newUser.Email = user.email;
-                newUser.Pass = user.pass;
-
-                db.Users.Add(newUser);
-                db.SaveChanges();
-
-                // Account register success.
-                return Ok("Account registration successful! Welcome, " + user.email);
-            }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Account registration failed! Account with email address: " +
-                                                                             user.email +
-                                                                             " already exists. Please try a different email address.");
-            }
+            _repo = new AuthRepository();
         }
 
         /// <summary>
-        ///   Validates user based on Email and Pass.
+        ///   This is a testing method. 
+        ///   
+        ///   This method simply returns successful.
         /// </summary>
-        /// <param name="user"></param>
         /// <returns></returns>
-        [Route("users/login")]
-        [HttpPost]
-        public IHttpActionResult Login([FromBody]SwaggerUser user)
+        [Authorize]
+        [Route("servertest")]
+        [HttpGet]
+        public IHttpActionResult ServerTest()
         {
-            var db = new AirUDBCOE();
+            return Ok("Success");
+        }
 
-            User validUserAndPass = db.Users.SingleOrDefault(x => x.Email == user.email && x.Pass == user.pass);
+        [AllowAnonymous]
+        [Route("register")]
+        public async Task<IHttpActionResult> Register(User userModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            IdentityResult result = await _repo.RegisterUser(userModel);
+            IHttpActionResult error = GetErrorResult(result);
+            if (error != null)
+            {
+                return error;
+            }
+            return Ok();
+        }
 
-            if (validUserAndPass != null)
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                // Login success.
-                return Ok("Login Successful! Welcome, " + user.email);
+                _repo.Dispose();    
             }
-            else
+            base.Dispose(disposing);
+        }
+
+        private IHttpActionResult GetErrorResult(IdentityResult result)
+        {
+            if (result == null)
             {
-                // Login fail.
-                return BadRequest("Login failed! Please check email and password.");
+                return InternalServerError();
             }
+
+            if (!result.Succeeded)
+            {
+                if (result.Errors != null)
+                {
+                    foreach (string error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // No ModelState errors are available to send, so just return an empty BadRequest.
+                    return BadRequest();
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            return null;
         }
     }
 }
