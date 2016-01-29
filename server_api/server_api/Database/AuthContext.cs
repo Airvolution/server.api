@@ -4,12 +4,12 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace server_api.Database
+namespace server_api
 {
     public class AuthContext : IdentityDbContext<IdentityUser>
     {
         public AuthContext()
-            : base("AuthContext")
+            : base("AirUDBCOE")
         {
             
         }

@@ -23,7 +23,7 @@ namespace server_api
                 // Perform queries to insert new user into database.
                 User newUser = new User();
                 newUser.Email = email;
-                newUser.Pass = password;
+                newUser.Password = password;
                 newUser.Password = password;
                 newUser.ConfirmPassword = password;
 
