@@ -307,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthRepository.cs" />
+    <Compile Include="Controllers\WeatherController.cs" />
     <Compile Include="Database\AirUDBCOE.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -327,8 +328,11 @@
       <DependentUpon>201512072201225_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\GpsBounds.cs" />
+    <Compile Include="Models\GpsCoordinates.cs" />
     <Compile Include="Models\SwaggerModels.cs" />
     <Compile Include="Models\Pollutant.cs" />
+    <Compile Include="Models\WeatherResponse.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -478,6 +482,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Weather\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
