@@ -19,6 +19,9 @@ namespace server_api
         [StringLength(17)]
         public string DeviceID { get; set; }
 
+        [StringLength(30)]
+        public string DeviceType { get; set; }
+
         [Required]
         [StringLength(320)]
         public string Email { get; set; }
