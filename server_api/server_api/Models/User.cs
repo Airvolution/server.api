@@ -15,6 +15,10 @@ namespace server_api
             Devices = new HashSet<Device>();
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
         [StringLength(20)]
         [Display(Name = "First name")]
         public string FirstName { get; set; }
