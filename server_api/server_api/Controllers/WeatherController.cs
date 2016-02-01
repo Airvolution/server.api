@@ -19,17 +19,17 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("weather/current")]
         [HttpGet]
-        public IHttpActionResult CurrentWeather(decimal lat = 360, decimal lng = 360, int cityId = -1, int zipCode = -1)
+        public IHttpActionResult CurrentWeather(decimal lat = 360, decimal lng = 360, int id = -1, int zip = -1)
         {
             StringBuilder parameters = new StringBuilder("?");
 
-            if (cityId != -1)
+            if (id != -1)
             {
-                parameters.Append("id=" + cityId);
+                parameters.Append("id=" + id);
             }
-            else if (zipCode != -1)
+            else if (zip != -1)
             {
-                parameters.Append("zip=" + zipCode + ",us");
+                parameters.Append("zip=" + zip + ",us");
             }
             else if (lat != 360 || lng != 360)
             {
