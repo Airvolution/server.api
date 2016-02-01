@@ -21,7 +21,7 @@ namespace server_api
 
         [Key]
         [Column(Order = 1)]
-        [StringLength(320)]
+        [StringLength(100)]
         public string Email { get; set; }
 
         public virtual User User { get; set; }

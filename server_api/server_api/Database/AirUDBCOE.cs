@@ -7,8 +7,14 @@ namespace server_api
 
     public partial class AirUDBCOE : DbContext
     {
+        
         public AirUDBCOE()
             : base("name=AirUDBCOE")
+        {
+        }
+        
+        public AirUDBCOE(string connectionString)
+            : base(connectionString)
         {
         }
 
@@ -22,82 +28,8 @@ namespace server_api
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DataPoint>()
-                .Property(e => e.DeviceID)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DataPoint>()
-                .Property(e => e.PollutantName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeviceGroup>()
-                .Property(e => e.GroupName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeviceGroup>()
-                .Property(e => e.Email)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Device>()
-                .Property(e => e.DeviceID)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Device>()
-                .Property(e => e.Email)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Device>()
-                .HasMany(e => e.DataPoints)
-                .WithRequired(e => e.Device)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Device>()
-                .HasMany(e => e.DeviceStates)
-                .WithRequired(e => e.Device)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Device>()
-                .HasMany(e => e.DeviceGroups)
-                .WithMany(e => e.Devices)
-                .Map(m => m.ToTable("DevicesAndGroups").MapLeftKey("DeviceID").MapRightKey(new[] { "GroupName", "g_Email" }));
-
-            modelBuilder.Entity<DeviceState>()
-                .Property(e => e.DeviceID)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeviceState>()
-                .Property(e => e.Lat)
-                .HasPrecision(9, 6);
-
-            modelBuilder.Entity<DeviceState>()
-                .Property(e => e.Long)
-                .HasPrecision(9, 6);
-
-            modelBuilder.Entity<Pollutant>()
-                .Property(e => e.PollutantName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Pollutant>()
-                .HasMany(e => e.DataPoints)
-                .WithRequired(e => e.Pollutant)
-                .WillCascadeOnDelete(false);
-
-           
-            modelBuilder.Entity<Devices_States_and_Datapoints>()
-                .Property(e => e.DeviceID)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Devices_States_and_Datapoints>()
-                .Property(e => e.Lat)
-                .HasPrecision(9, 6);
-
-            modelBuilder.Entity<Devices_States_and_Datapoints>()
-                .Property(e => e.Long)
-                .HasPrecision(9, 6);
-
-            modelBuilder.Entity<Devices_States_and_Datapoints>()
-                .Property(e => e.PollutantName)
-                .IsUnicode(false);
+            base.OnModelCreating(modelBuilder);
         }
+
     }
 }
