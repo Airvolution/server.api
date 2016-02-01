@@ -246,7 +246,7 @@ namespace server_api.Controllers
         /// <param name="longMax"></param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
-        [Route("stations/locators/")] // TODO: properly configure the URL to specify lat/long min/max
+        [Route("stations/locators")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
         public IHttpActionResult StationLocators([FromUri]GpsBounds bounds)
         {
