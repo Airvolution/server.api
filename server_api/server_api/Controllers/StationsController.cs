@@ -248,13 +248,13 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
         [Route("stations/locators/")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
-        public IHttpActionResult StationLocators([FromUri]decimal latMin, [FromUri]decimal latMax, [FromUri]decimal longMin, [FromUri]decimal longMax)
+        public IHttpActionResult StationLocators([FromUri]GpsBounds bounds)
         {
             // SHOULD BE VARIABLE
-            //decimal latMin = para.southWest.lat;
-            //decimal latMax = para.northEast.lat;
-            //decimal longMin = para.southWest.lng;
-            //decimal longMax = para.northEast.lng;
+            decimal latMin = bounds.latMin;
+            decimal latMax = bounds.latMax;
+            decimal longMin = bounds.longMin;
+            decimal longMax = bounds.longMax;
 
             var db = new AirUDBCOE();
 
