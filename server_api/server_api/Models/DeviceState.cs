@@ -10,7 +10,7 @@ namespace server_api
     {
         [Key]
         [Column(Order = 0)]
-        [StringLength(17)]
+        [StringLength(32)]
         public string DeviceID { get; set; }
 
         [Key]

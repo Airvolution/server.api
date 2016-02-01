@@ -8,7 +8,7 @@ namespace server_api
 
     public partial class Devices_States_and_Datapoints
     {
-        [StringLength(17)]
+        [StringLength(32)]
         public string DeviceID { get; set; }
 
         public DateTime? StateTime { get; set; }

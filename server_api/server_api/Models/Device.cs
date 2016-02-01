@@ -16,8 +16,11 @@ namespace server_api
             DeviceGroups = new HashSet<DeviceGroup>();
         }
 
-        [StringLength(17)]
+        [StringLength(32)]
         public string DeviceID { get; set; }
+
+        [StringLength(100)]
+        public string Agency { get; set; }
 
         [StringLength(30)]
         public string DeviceType { get; set; }
