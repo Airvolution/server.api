@@ -6,19 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Web;
 using System.Web.Http;
-using Swashbuckle.Swagger.Annotations;
 using System.Web.Http.Description;
 using server_api.Models;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using System.Globalization;
-
 
 namespace server_api.Controllers
 {
@@ -483,66 +476,6 @@ namespace server_api.Controllers
             {
                 // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
                 return BadRequest("Device with ID: " + deviceID + " does not exist. Please try a different Device ID.");
-            }
-        }
-
-        /// <summary>
-        ///   Validates user is not already in database and if not, creates new User in database.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        [Route("frontend/registerUser")]
-        [HttpPost]
-        public IHttpActionResult UserRegistration([FromBody]SwaggerUser user)
-        {
-            var db = new AirUDBCOE();
-
-            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.email);
-
-            if (existingUser == null)
-            {
-                // Perform queries to insert new user into database.
-                User newUser = new User();
-                newUser.Email = user.email;
-                newUser.Pass = user.pass;
-
-                db.Users.Add(newUser);
-                db.SaveChanges();
-
-                // Account register success.
-                return Ok("Account registration successful! Welcome, " + user.email);
-            }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Account registration failed! Account with email address: " + 
-                                                                             user.email + 
-                                                                             " already exists. Please try a different email address.");
-            }
-        }
-
-        /// <summary>
-        ///   Validates user based on Email and Pass.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        [Route("frontend/login")]
-        [HttpPost]
-        public IHttpActionResult UserLogin([FromBody]SwaggerUser user)
-        {
-            var db = new AirUDBCOE();
-
-            User validUserAndPass = db.Users.SingleOrDefault(x => x.Email == user.email && x.Pass == user.pass);
-
-            if (validUserAndPass != null)
-            {
-                // Login success.
-                return Ok("Login Successful! Welcome, " + user.email);
-            }
-            else
-            {
-                // Login fail.
-                return BadRequest("Login failed! Please check email and password.");
             }
         }
 
