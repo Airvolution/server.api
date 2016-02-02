@@ -40,7 +40,7 @@ namespace server_api
             }
         }
 
-        public Device GetUserDevices(string username)
+        public Station GetUserDevices(string username)
         {
             return null;
         }

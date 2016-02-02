@@ -6,10 +6,10 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Device
+    public partial class Station
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Device()
+        public Station()
         {
             DataPoints = new HashSet<DataPoint>();
             DeviceStates = new HashSet<DeviceState>();
@@ -17,13 +17,13 @@ namespace server_api
         }
 
         [StringLength(32)]
-        public string DeviceID { get; set; }
+        public string ID { get; set; }
 
         [StringLength(100)]
         public string Agency { get; set; }
 
         [StringLength(30)]
-        public string DeviceType { get; set; }
+        public string Type { get; set; }
 
         [Required]
         [StringLength(320)]
@@ -37,7 +37,7 @@ namespace server_api
         [StringLength(1000)]
         public string Purpose { get; set; }
 
-        public bool DevicePrivacy { get; set; }
+        public bool Privacy { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataPoint> DataPoints { get; set; }

@@ -20,7 +20,7 @@ namespace server_api
 
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<DeviceGroup> DeviceGroups { get; set; }
-        public virtual DbSet<Device> Devices { get; set; }
+        public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<DeviceState> DeviceStates { get; set; }
         public virtual DbSet<Pollutant> Pollutants { get; set; }
         public virtual DbSet<User> Users { get; set; }

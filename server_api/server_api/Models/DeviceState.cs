@@ -9,11 +9,6 @@ namespace server_api
     public partial class DeviceState
     {
         [Key]
-        [Column(Order = 0)]
-        [StringLength(32)]
-        public string DeviceID { get; set; }
-
-        [Key]
         [Column(Order = 1)]
         public DateTime StateTime { get; set; }
 
@@ -25,6 +20,7 @@ namespace server_api
 
         public bool StatePrivacy { get; set; }
 
-        public virtual Device Device { get; set; }
+        [Key]
+        public virtual Station Station { get; set; }
     }
 }

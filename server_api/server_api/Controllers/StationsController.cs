@@ -85,7 +85,7 @@ namespace server_api.Controllers
         /// - Updates Database to represent new association between existing user and 
         ///    new device.
         /// </summary>
-        /// <param name="newDeviceState">The current Device and its DeviceState</param>
+        /// <param name="newDeviceState">The current Station and its DeviceState</param>
         /// <returns></returns>
         [ResponseType(typeof(SwaggerDeviceState))]
         [Route("stations/register")]
@@ -94,22 +94,21 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            Device existingDevice = db.Devices.SingleOrDefault(x => x.DeviceID == newDeviceState.Id);
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == newDeviceState.Id);
             if (existingDevice == null)
             {
                 // Add device success.
-                Device device = new Device();
+                Station device = new Station();
                 device.Name = newDeviceState.Name;
-                device.DeviceID = newDeviceState.Id;
+                device.ID = newDeviceState.Id;
                 device.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
-                device.DevicePrivacy = newDeviceState.Privacy;
+                device.Privacy = newDeviceState.Privacy;
                 device.Purpose = newDeviceState.Purpose;
-                db.Devices.Add(device);
+                db.Stations.Add(device);
                 db.SaveChanges();
 
                 DeviceState state = new DeviceState();
-                state.Device = device;
-                state.DeviceID = newDeviceState.Id;
+                state.Station = device;
                 state.InOrOut = newDeviceState.Indoor;
                 state.StatePrivacy = newDeviceState.Privacy;
                 state.StateTime = new DateTime(1900, 1, 1);
@@ -123,7 +122,7 @@ namespace server_api.Controllers
             else
             {
                 // Add device fail.
-                return BadRequest("Existing Device");
+                return BadRequest("Existing Station");
             }
         }
 
@@ -137,13 +136,12 @@ namespace server_api.Controllers
         public IHttpActionResult AddAMSDeviceStates([FromBody]DeviceState[] states)
         {
             var db = new AirUDBCOE();
-            string deviceID = states[0].DeviceID;
-            Device device = db.Devices.SingleOrDefault(x => x.DeviceID == deviceID);
+            Station device = states[0].Station;
 
             if (device == null)
             {
                 // Failed to add DeviceState.
-                return Ok("Failed to add device state with Device with ID = " + states[0].DeviceID + " not found.");
+                return Ok("Failed to add device state with Station with ID = " + states[0].Station.ID + " not found.");
             }
 
             db.DeviceStates.AddRange(states);
@@ -166,17 +164,17 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            // Validate Device from given DeviceId exists.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == state.Id);
+            // Validate Station from given DeviceId exists.
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == state.Id);
 
             if (registeredDevice != null)
             {
                 // Request previous state from database based on state.DeviceID
                 DeviceState previousState = (
                                     from device in db.DeviceStates
-                                    where device.DeviceID == state.Id
+                                    where device.Station.ID == state.Id
                                     && device.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
-                                    group device by device.DeviceID into deviceIDGroup
+                                    group device by device.Station.ID into deviceIDGroup
                                     select new
                                     {
                                         DeviceID = deviceIDGroup.Key,
@@ -189,8 +187,7 @@ namespace server_api.Controllers
                 // Inherit lat and long from previous state
 
                 DeviceState newDeviceState = new DeviceState();
-                newDeviceState.Device = previousState.Device;
-                newDeviceState.DeviceID = state.Id;
+                newDeviceState.Station = previousState.Station;
                 newDeviceState.InOrOut = state.Indoor;
                 newDeviceState.StatePrivacy = state.Privacy;
                 newDeviceState.Lat = previousState.Lat;
@@ -210,7 +207,7 @@ namespace server_api.Controllers
             }
             else
             {
-                // Device with DeviceID: <deviceID> does not exist.
+                // Station with DeviceID: <deviceID> does not exist.
                 return NotFound();
             }
         }
@@ -266,7 +263,7 @@ namespace server_api.Controllers
                           && state.Long < longMax
                           && state.StatePrivacy == false // Can create add in Spring
                           && state.InOrOut == false // Can create add in Spring
-                          group state by state.DeviceID into deviceIDGroup
+                          group state by state.Station.ID into deviceIDGroup
                           select new
                           {
                               MaxStateTime = deviceIDGroup.Max(device => device.StateTime)
@@ -279,14 +276,14 @@ namespace server_api.Controllers
 
             foreach (DeviceState d in results)
             {
-                amses.AddSwaggerDevice(d.DeviceID, d.Lat, d.Long);
+                amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Long);
             }
 
             return Ok(amses);
         }
 
         /// <summary>
-        ///   Returns all datapoints for a Device given a DeviceID.
+        ///   Returns all datapoints for a Station given a DeviceID.
         /// 
         ///   Primary Use: Compare View and single AMS device Map View "data graph"
         /// </summary>
@@ -299,7 +296,7 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            Device existingDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId.ToString());
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == deviceId.ToString());
 
             if (existingDevice != null)
             {
@@ -338,7 +335,7 @@ namespace server_api.Controllers
             else
             {
                 // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Device with ID: " + deviceId + " does not exist. Please try a different Device ID.");
+                return BadRequest("Station with ID: " + deviceId + " does not exist. Please try a different Station ID.");
             }
         }
 
@@ -357,7 +354,7 @@ namespace server_api.Controllers
             var db = new AirUDBCOE();
 
             // Validate DeviceID represents an actual AMS device.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId.ToString());
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == deviceId.ToString());
             if (registeredDevice != null)
             {
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
@@ -448,7 +445,7 @@ namespace server_api.Controllers
             }
             else
             {
-                // Device with DeviceID: <deviceID> does not exist.
+                // Station with DeviceID: <deviceID> does not exist.
                 return NotFound();
             }
         }
@@ -463,23 +460,23 @@ namespace server_api.Controllers
         {
             AirUDBCOE db = new AirUDBCOE();
 
-            // Validate Device from given DeviceId exists.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == id);
+            // Validate Station from given DeviceId exists.
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == id);
 
             if (registeredDevice != null)
             {
-                Device toDelete = (from dev in db.Devices
-                                   where dev.DeviceID == id
+                Station toDelete = (from dev in db.Stations
+                                   where dev.ID == id
                                    select dev).Single();
 
-                db.Devices.Remove(toDelete);
+                db.Stations.Remove(toDelete);
                 db.SaveChanges();
 
                 return Ok("Delete Successful");
             }
             else
             {
-                // Device with DeviceID: <deviceID> does not exist.
+                // Station with DeviceID: <deviceID> does not exist.
                 return NotFound();
             }
         }

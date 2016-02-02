@@ -308,6 +308,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
     <Compile Include="Database\AirUDBCOE.cs" />
@@ -321,7 +322,6 @@
     <Compile Include="Controllers\Vendors\US\US-UTController.cs" />
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="Database\AuthContext.cs" />
-    <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DeviceGroup.cs" />
     <Compile Include="Models\DeviceState.cs" />
     <Compile Include="Models\Devices_States_and_Datapoints.cs" />

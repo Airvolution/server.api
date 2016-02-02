@@ -9,11 +9,6 @@ namespace server_api
     public partial class DataPoint
     {
         [Key]
-        [Column(Order = 0)]
-        [StringLength(17)]
-        public string DeviceID { get; set; }
-
-        [Key]
         [Column(Order = 1)]
         public DateTime MeasurementTime { get; set; }
 
@@ -24,7 +19,7 @@ namespace server_api
         [StringLength(30)]
         public string PollutantName { get; set; }
 
-        public virtual Device Device { get; set; }
+        public virtual Station Station { get; set; }
 
         public virtual Pollutant Pollutant { get; set; }
     }

@@ -41,13 +41,12 @@ namespace server_api.Controllers
         public IHttpActionResult UpdateAMSDeviceState([FromBody]DeviceState[] states)
         {
             var db = new AirUDBCOE();
-            string deviceID = states[0].DeviceID;
-            Device device = db.Devices.SingleOrDefault(x => x.DeviceID == deviceID);
+            Station device = states[0].Station;
 
             if (device == null)
             {
                 // Failed to add DeviceState.
-                return Ok("Failed to add device state with Device with ID = " + states[0].DeviceID + " not found.");                
+                return Ok("Failed to add device state with Station with ID = " + states[0].Station + " not found.");                
             }
 
             db.DeviceStates.AddRange(states);
