@@ -354,8 +354,9 @@ namespace server_api.Controllers
             Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId);
             if (registeredDevice != null)
             {
+                // TODO: Should not be using hard coded db link
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
-                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=lobato;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
+                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=air;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
                 SwaggerLatestPollutantsList latestPollutants = new SwaggerLatestPollutantsList();
                 SwaggerLatestDataPoints latest = new SwaggerLatestDataPoints();
                 using (SqlConnection myConnection = conn)
