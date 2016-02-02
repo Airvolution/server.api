@@ -11,7 +11,7 @@ namespace server_api
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            DeviceGroups = new HashSet<DeviceGroup>();
+            DeviceGroups = new HashSet<StationGroup>();
             Devices = new HashSet<Station>();
         }
 
@@ -46,7 +46,7 @@ namespace server_api
         public string ConfirmPassword { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeviceGroup> DeviceGroups { get; set; }
+        public virtual ICollection<StationGroup> DeviceGroups { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Station> Devices { get; set; }

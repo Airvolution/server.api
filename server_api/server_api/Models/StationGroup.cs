@@ -6,18 +6,18 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class DeviceGroup
+    public partial class StationGroup
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DeviceGroup()
+        public StationGroup()
         {
-            Devices = new HashSet<Station>();
+            Stations = new HashSet<Station>();
         }
 
         [Key]
         [Column(Order = 0)]
         [StringLength(20)]
-        public string GroupName { get; set; }
+        public string Name { get; set; }
 
         [Key]
         [Column(Order = 1)]
@@ -27,6 +27,6 @@ namespace server_api
         public virtual User User { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Station> Devices { get; set; }
+        public virtual ICollection<Station> Stations { get; set; }
     }
 }
