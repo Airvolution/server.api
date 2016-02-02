@@ -14,6 +14,7 @@ namespace server_api
             DataPoints = new HashSet<DataPoint>();
             DeviceStates = new HashSet<DeviceState>();
             DeviceGroups = new HashSet<DeviceGroup>();
+            Parameters = new HashSet<Parameter>();
         }
 
         [StringLength(32)]
@@ -43,6 +44,9 @@ namespace server_api
         public virtual ICollection<DataPoint> DataPoints { get; set; }
 
         public virtual User User { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Parameter> Parameters { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeviceState> DeviceStates { get; set; }

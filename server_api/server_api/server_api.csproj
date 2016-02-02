@@ -308,6 +308,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
@@ -329,7 +330,6 @@
     <Compile Include="Models\GpsBounds.cs" />
     <Compile Include="Models\GpsCoordinates.cs" />
     <Compile Include="Models\SwaggerModels.cs" />
-    <Compile Include="Models\Pollutant.cs" />
     <Compile Include="Models\WeatherResponse.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Startup.cs" />

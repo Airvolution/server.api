@@ -435,36 +435,21 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
+            Station existingStation = db.Stations.SingleOrDefault(x => x.ID == deviceID);
 
-            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == deviceID);
-
-            if (existingDevice != null)
+            if (existingStation != null)
             {
-
-                List<Pollutant> pollutants = db.Pollutants.Select(x => x).ToList<Pollutant>();
-
                 List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
 
-                StringBuilder msg = new StringBuilder();
-
-                foreach (Pollutant p in pollutants)
-                {
-                    var amsDataForPollutant = from a in db.Devices_States_and_Datapoints
-                                              where a.DeviceID == deviceID
-                                              && a.PollutantName == p.PollutantName
-                                              orderby a.MeasurementTime
-                                              select a;
-
-                    /* MOVE ALTITUDE TO STATE */
-                    if (amsDataForPollutant.Count() != 0 && !p.PollutantName.Equals("Altitude"))
-                    {
-                        SwaggerPollutantList pl = new SwaggerPollutantList(p.PollutantName);
-
-                        foreach (var item in amsDataForPollutant)
-                        {
+                foreach (Parameter parameter in existingStation.Parameters){
+                    if (parameter.Name.Equals("Altitude")){
+                        SwaggerPollutantList pl = new SwaggerPollutantList(parameter.Name);
+                        foreach (DataPoint datapoint in parameter.DataPoints){
+                        
+                            
                             pl.values.Add(new object[2]);
-                            pl.values.Last()[0] = ConvertDateTimeToMilliseconds(item.MeasurementTime);
-                            pl.values.Last()[1] = (decimal)item.Value;
+                            pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.MeasurementTime);
+                            pl.values.Last()[1] = (decimal)datapoint.Value;
                         }
                         data.Add(pl);
                     }

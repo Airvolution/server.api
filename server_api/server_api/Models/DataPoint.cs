@@ -9,18 +9,15 @@ namespace server_api
     public partial class DataPoint
     {
         [Key]
+        [Column(Order = 0)]
+        public virtual Parameter Parameter { get; set; }
+
+        [Key]
         [Column(Order = 1)]
         public DateTime MeasurementTime { get; set; }
 
         public double Value { get; set; }
-
-        [Key]
-        [Column(Order = 2)]
-        [StringLength(30)]
-        public string PollutantName { get; set; }
-
-        public virtual Station Station { get; set; }
-
-        public virtual Pollutant Pollutant { get; set; }
+        public int Category { get; set; }
+        public int AQI { get; set; }
     }
 }

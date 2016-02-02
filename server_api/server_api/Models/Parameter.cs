@@ -6,17 +6,23 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Pollutant
+    public partial class Parameter
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Pollutant()
+        public Parameter()
         {
             DataPoints = new HashSet<DataPoint>();
         }
 
         [Key]
+        [Column(Order = 0)]
         [StringLength(30)]
-        public string PollutantName { get; set; }
+        public string Name { get; set; }
+
+        [Key]
+        [Column(Order = 1)]
+        [StringLength(30)]
+        public string Unit { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataPoint> DataPoints { get; set; }
