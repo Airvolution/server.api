@@ -346,12 +346,12 @@ namespace server_api.Controllers
         [ResponseType(typeof(SwaggerLatestDataPoints))]
         [Route("stations/latestDataPoint/{deviceId}")]
         [HttpGet]
-        public IHttpActionResult LatestDataPoint([FromUri]int deviceId)
+        public IHttpActionResult LatestDataPoint([FromUri]string deviceId)
         {
             var db = new AirUDBCOE();
 
             // Validate DeviceID represents an actual AMS device.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId.ToString());
+            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId);
             if (registeredDevice != null)
             {
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
