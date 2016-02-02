@@ -289,11 +289,11 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<SwaggerPollutantList>))]
         [Route("stations/datapoints/{deviceID}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]int deviceId)
+        public IHttpActionResult DataPoints([FromUri]string deviceId)
         {
             var db = new AirUDBCOE();
 
-            Device existingDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId.ToString());
+            Device existingDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceId);
 
             if (existingDevice != null)
             {
@@ -307,7 +307,7 @@ namespace server_api.Controllers
                 foreach (Pollutant p in pollutants)
                 {
                     var amsDataForPollutant = from a in db.Devices_States_and_Datapoints
-                                              where a.DeviceID == deviceId.ToString()
+                                              where a.DeviceID == deviceId
                                               && a.PollutantName == p.PollutantName
                                               orderby a.MeasurementTime
                                               select a;
