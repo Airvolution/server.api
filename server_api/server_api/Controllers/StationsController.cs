@@ -85,7 +85,7 @@ namespace server_api.Controllers
         /// - Updates Database to represent new association between existing user and 
         ///    new device.
         /// </summary>
-        /// <param name="newDeviceState">The current Station and its DeviceState</param>
+        /// <param name="newDeviceState">The current Station and its StationState</param>
         /// <returns></returns>
         [ResponseType(typeof(SwaggerDeviceState))]
         [Route("stations/register")]
@@ -107,7 +107,7 @@ namespace server_api.Controllers
                 db.Stations.Add(device);
                 db.SaveChanges();
 
-                DeviceState state = new DeviceState();
+                StationState state = new StationState();
                 state.Station = device;
                 state.InOrOut = newDeviceState.Indoor;
                 state.StatePrivacy = newDeviceState.Privacy;
@@ -133,14 +133,14 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/states")]
         [HttpPost]
-        public IHttpActionResult AddAMSDeviceStates([FromBody]DeviceState[] states)
+        public IHttpActionResult AddAMSDeviceStates([FromBody]StationState[] states)
         {
             var db = new AirUDBCOE();
             Station device = states[0].Station;
 
             if (device == null)
             {
-                // Failed to add DeviceState.
+                // Failed to add StationState.
                 return Ok("Failed to add device state with Station with ID = " + states[0].Station.ID + " not found.");
             }
 
@@ -153,7 +153,7 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        ///   Updates a single AMS DeviceState from the "my devices" settings web page.
+        ///   Updates a single AMS StationState from the "my devices" settings web page.
         /// </summary>
         /// <param name="state">The state of the device</param>
         /// <returns></returns>
@@ -170,7 +170,7 @@ namespace server_api.Controllers
             if (registeredDevice != null)
             {
                 // Request previous state from database based on state.DeviceID
-                DeviceState previousState = (
+                StationState previousState = (
                                     from device in db.DeviceStates
                                     where device.Station.ID == state.Id
                                     && device.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
@@ -186,7 +186,7 @@ namespace server_api.Controllers
 
                 // Inherit lat and long from previous state
 
-                DeviceState newDeviceState = new DeviceState();
+                StationState newDeviceState = new StationState();
                 newDeviceState.Station = previousState.Station;
                 newDeviceState.InOrOut = state.Indoor;
                 newDeviceState.StatePrivacy = state.Privacy;
@@ -274,7 +274,7 @@ namespace server_api.Controllers
 
             SwaggerAMSList amses = new SwaggerAMSList();
 
-            foreach (DeviceState d in results)
+            foreach (StationState d in results)
             {
                 amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Long);
             }

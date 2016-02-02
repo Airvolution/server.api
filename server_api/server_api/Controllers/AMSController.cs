@@ -38,14 +38,14 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("ams/state")]
         [HttpPost]
-        public IHttpActionResult UpdateAMSDeviceState([FromBody]DeviceState[] states)
+        public IHttpActionResult UpdateAMSDeviceState([FromBody]StationState[] states)
         {
             var db = new AirUDBCOE();
             Station device = states[0].Station;
 
             if (device == null)
             {
-                // Failed to add DeviceState.
+                // Failed to add StationState.
                 return Ok("Failed to add device state with Station with ID = " + states[0].Station + " not found.");                
             }
 

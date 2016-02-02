@@ -6,7 +6,7 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class DeviceState
+    public partial class StationState
     {
         [Key]
         [Column(Order = 1)]

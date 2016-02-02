@@ -12,7 +12,7 @@ namespace server_api
         public Station()
         {
             DataPoints = new HashSet<DataPoint>();
-            DeviceStates = new HashSet<DeviceState>();
+            DeviceStates = new HashSet<StationState>();
             DeviceGroups = new HashSet<DeviceGroup>();
             Parameters = new HashSet<Parameter>();
         }
@@ -49,7 +49,7 @@ namespace server_api
         public virtual ICollection<Parameter> Parameters { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeviceState> DeviceStates { get; set; }
+        public virtual ICollection<StationState> DeviceStates { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeviceGroup> DeviceGroups { get; set; }
