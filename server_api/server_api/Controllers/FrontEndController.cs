@@ -495,9 +495,9 @@ namespace server_api.Controllers
                 StationState state = new StationState();
                 state.Station = device;
                 state.InOrOut = newDeviceState.Indoor;
-                state.StatePrivacy = newDeviceState.Privacy;
+                state.Privacy = newDeviceState.Privacy;
                 state.StateTime = new DateTime(1900, 1, 1);
-                state.Long = 0.0m;
+                state.Lng = 0.0m;
                 state.Lat = 90.0m;
                 db.DeviceStates.Add(state);
                 db.SaveChanges();
@@ -533,8 +533,8 @@ namespace server_api.Controllers
                 List<SwaggerDeviceState> swaggerDeviceStates = new List<SwaggerDeviceState>();
                 using (SqlConnection myConnection = conn)
                 {
-                    string oString = @"select MaxCompleteStates.DeviceID, Devices.Name, Devices.Purpose, MaxCompleteStates.StateTime, MaxCompleteStates.Lat, MaxCompleteStates.Long, MaxCompleteStates.InOrOut, MaxCompleteStates.StatePrivacy from
-                                        (select MaxStates.DeviceID, MaxStates.StateTime, DeviceStates.Lat, DeviceStates.Long, DeviceStates.InOrOut, DeviceStates.StatePrivacy from
+                    string oString = @"select MaxCompleteStates.DeviceID, Devices.Name, Devices.Purpose, MaxCompleteStates.StateTime, MaxCompleteStates.Lat, MaxCompleteStates.Lng, MaxCompleteStates.InOrOut, MaxCompleteStates.Privacy from
+                                        (select MaxStates.DeviceID, MaxStates.StateTime, DeviceStates.Lat, DeviceStates.Lng, DeviceStates.InOrOut, DeviceStates.Privacy from
 	                                        (select DeviceID, Max(StateTime) as StateTime
 				                                        from DeviceStates
 				                                        group by DeviceID) as MaxStates
@@ -556,11 +556,11 @@ namespace server_api.Controllers
                             swaggerDeviceStates.Add(new SwaggerDeviceState(
                                                                     (string)oReader["Name"],
                                                                     (string)oReader["DeviceID"],
-                                                                    (bool)oReader["StatePrivacy"],
+                                                                    (bool)oReader["Privacy"],
                                                                     (string)oReader["Purpose"],
                                                                     (bool) oReader["InOrOut"],
                                                                     (decimal)oReader["Lat"],
-                                                                    (decimal)oReader["Long"],
+                                                                    (decimal)oReader["Lng"],
                                                                     email));
                         }
 
@@ -614,9 +614,9 @@ namespace server_api.Controllers
                 newDeviceState.Station = previousState.Station;
                 newDeviceState.Station.ID = state.Id;
                 newDeviceState.InOrOut = state.Indoor;
-                newDeviceState.StatePrivacy = state.Privacy;
+                newDeviceState.Privacy = state.Privacy;
                 newDeviceState.Lat = previousState.Lat;
-                newDeviceState.Long = previousState.Long;
+                newDeviceState.Lng = previousState.Lng;
                 newDeviceState.StateTime = DateTime.Now;
                 db.DeviceStates.Add(newDeviceState);
                 db.SaveChanges();
@@ -661,9 +661,9 @@ namespace server_api.Controllers
                           where
                           state.Lat > latMin
                           && state.Lat < latMax
-                          && state.Long > longMin
-                          && state.Long < longMax
-                          && state.StatePrivacy == false // Can create add in Spring
+                          && state.Lng > longMin
+                          && state.Lng < longMax
+                          && state.Privacy == false // Can create add in Spring
                           && state.InOrOut == false // Can create add in Spring
                           group state by state.Station.ID into deviceIDGroup
                           select new
@@ -678,7 +678,7 @@ namespace server_api.Controllers
 
             foreach (StationState d in results)
             {
-                amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Long);
+                amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Lng);
             }
 
             return Ok(amses);
@@ -723,9 +723,9 @@ namespace server_api.Controllers
 		                            Devices_States_and_DataPoints.StateTime,
 		                            Devices_States_and_DataPoints.MeasurementTime,
 		                            Devices_States_and_DataPoints.Lat,
-		                            Devices_States_and_DataPoints.Long,
+		                            Devices_States_and_DataPoints.Lng,
 		                            Devices_States_and_DataPoints.InOrOut,
-		                            Devices_States_and_DataPoints.StatePrivacy,
+		                            Devices_States_and_DataPoints.Privacy,
 		                            Devices_States_and_DataPoints.Value,
 		                            Devices_States_and_DataPoints.PollutantName
                             from(select DeviceID, Max(MeasurementTime) as MaxMeasurementTime, PollutantName
@@ -734,9 +734,9 @@ namespace server_api.Controllers
 					                            from DeviceStates
 												where Lat > @latMin
 												and Lat < @latMax
-												and Long > @longMin
-												and Long < @longMax
-												and StatePrivacy=@statePrivacy
+												and Lng > @longMin
+												and Lng < @longMax
+												and Privacy=@statePrivacy
 												and InOrOut=@inOrOut
 					                            group by DeviceID) as MaxStates
 			                            left join Devices_States_and_DataPoints
@@ -764,7 +764,7 @@ namespace server_api.Controllers
                 {
                     while (oReader.Read())
                     {
-                        pollutantCoordinatesAndValues.AddSwaggerCoordinateAndValue((decimal)oReader["Lat"], (decimal)oReader["Long"], (double)oReader["Value"]);
+                        pollutantCoordinatesAndValues.AddSwaggerCoordinateAndValue((decimal)oReader["Lat"], (decimal)oReader["Lng"], (double)oReader["Value"]);
                     }
 
                     myConnection.Close();
@@ -802,9 +802,9 @@ namespace server_api.Controllers
 		                                        Devices_States_and_DataPoints.StateTime,
 		                                        Devices_States_and_DataPoints.MeasurementTime,
 		                                        Devices_States_and_DataPoints.Lat,
-		                                        Devices_States_and_DataPoints.Long,
+		                                        Devices_States_and_DataPoints.Lng,
 		                                        Devices_States_and_DataPoints.InOrOut,
-		                                        Devices_States_and_DataPoints.StatePrivacy,
+		                                        Devices_States_and_DataPoints.Privacy,
 		                                        Devices_States_and_DataPoints.Value,
 		                                        Devices_States_and_DataPoints.PollutantName
                                         from(select DeviceID, Max(MeasurementTime) as MaxMeasurementTime, PollutantName

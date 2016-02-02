@@ -14,11 +14,11 @@ namespace server_api
 
         public decimal Lat { get; set; }
 
-        public decimal Long { get; set; }
+        public decimal Lng { get; set; }
 
         public bool InOrOut { get; set; }
 
-        public bool StatePrivacy { get; set; }
+        public bool Privacy { get; set; }
 
         [Key]
         public virtual Station Station { get; set; }
