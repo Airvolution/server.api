@@ -249,16 +249,10 @@ namespace server_api.Controllers
         /// <param name="longMax"></param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
-        [Route("stations/locators/")] // TODO: properly configure the URL to specify lat/long min/max
+        [Route("stations/locators")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
-        public IHttpActionResult StationLocators([FromUri]GpsBounds bounds)
+        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal longMin = -179, decimal longMax = 179)
         {
-            // SHOULD BE VARIABLE
-            decimal latMin = bounds.latMin;
-            decimal latMax = bounds.latMax;
-            decimal longMin = bounds.longMin;
-            decimal longMax = bounds.longMax;
-
             var db = new AirUDBCOE();
             /*
              * TODO
@@ -301,7 +295,7 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<SwaggerPollutantList>))]
         [Route("stations/datapoints/{deviceID}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]int deviceId)
+        public IHttpActionResult DataPoints([FromUri]string deviceId)
         {
             var db = new AirUDBCOE();
 
@@ -347,7 +341,7 @@ namespace server_api.Controllers
         [ResponseType(typeof(SwaggerLatestDataPoints))]
         [Route("stations/latestDataPoint/{deviceId}")]
         [HttpGet]
-        public IHttpActionResult LatestDataPoint([FromUri]int deviceId)
+        public IHttpActionResult LatestDataPoint([FromUri]string deviceId)
         {
             var db = new AirUDBCOE();
 
@@ -356,8 +350,9 @@ namespace server_api.Controllers
             /*
             if (registeredDevice != null)
             {
+                // TODO: Should not be using hard coded db link
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
-                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=lobato;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
+                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=air;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
                 SwaggerLatestPollutantsList latestPollutants = new SwaggerLatestPollutantsList();
                 SwaggerLatestDataPoints latest = new SwaggerLatestDataPoints();
                 using (SqlConnection myConnection = conn)
