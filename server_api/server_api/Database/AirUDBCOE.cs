@@ -21,10 +21,8 @@ namespace server_api
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<StationGroup> DeviceGroups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
-        public virtual DbSet<StationState> DeviceStates { get; set; }
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Devices_States_and_Datapoints> Devices_States_and_Datapoints { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

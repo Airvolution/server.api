@@ -12,8 +12,7 @@ namespace server_api
         public Station()
         {
             DataPoints = new HashSet<DataPoint>();
-            DeviceStates = new HashSet<StationState>();
-            DeviceGroups = new HashSet<StationGroup>();
+            StationGroups = new HashSet<StationGroup>();
             Parameters = new HashSet<Parameter>();
         }
 
@@ -23,13 +22,6 @@ namespace server_api
         [StringLength(100)]
         public string Agency { get; set; }
 
-        [StringLength(30)]
-        public string Type { get; set; }
-
-        [Required]
-        [StringLength(320)]
-        public string Email { get; set; }
-
         [Required]
         [StringLength(320)]
         public string Name { get; set; }
@@ -37,8 +29,6 @@ namespace server_api
         [Required]
         [StringLength(1000)]
         public string Purpose { get; set; }
-
-        public bool Privacy { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataPoint> DataPoints { get; set; }
@@ -49,9 +39,6 @@ namespace server_api
         public virtual ICollection<Parameter> Parameters { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StationState> DeviceStates { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StationGroup> DeviceGroups { get; set; }
+        public virtual ICollection<StationGroup> StationGroups { get; set; }
     }
 }

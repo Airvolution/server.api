@@ -12,6 +12,9 @@ using server_api.Models;
 using System.IO;
 using System.Xml.Serialization;
 using System.Globalization;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace server_api.Controllers
 {
@@ -20,6 +23,15 @@ namespace server_api.Controllers
     /// </summary>
     public class FrontEndController : ApiController
     {
+        private AuthRepository _auth_repo = null;
+        private AirUDBCOE _db_repo = null;
+
+        public FrontEndController()
+        {
+            _auth_repo = new AuthRepository();
+            _db_repo = new AirUDBCOE();
+        }
+
         /*
          * + = Working as expected
          * - = Needs work
@@ -30,7 +42,7 @@ namespace server_api.Controllers
          * 
          * // Map View (DONE)
          * + GetAllDataPointsForDevice() - Returns all datapoints for a Station given a DeviceID. (Line Chart)
-         * + GetLatestDataFromSingleAMSDevice() - Returns the latest datapoints for a single AMS device based on specified DeviceID. (Details Panel)
+         * + GetLatestDataFromSingleAMSDevice() - Returns the latest datapoints for a single AMS station based on specified DeviceID. (Details Panel)
          * + GetAllDevicesInMapRange() -  Returns the AMS DeviceStates for all AMS devices within specified MapParameters. (Map)
          * 
          * // Heat Map View (DONE)
@@ -41,7 +53,7 @@ namespace server_api.Controllers
          * + GetAllDataPointsForDevice() - Returns all datapoints for a Station given a DeviceID. (Compare Chart)
          * 
          * // Station Registration View (DONE)
-         * + DeviceRegistration() - Registers an AMS device.
+         * + DeviceRegistration() - Registers an AMS station.
          * 
          * // Station Settings View
          * + GetUsersDeviceStates() - Returns the set of DeviceStates associated with the given user email.
@@ -424,7 +436,7 @@ namespace server_api.Controllers
         /// <summary>
         ///   Returns all datapoints for a Station given a DeviceID.
         /// 
-        ///   Primary Use: Compare View and single AMS device Map View "data graph"
+        ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
         /// <param name="deviceID"></param>
         /// <returns></returns>
@@ -465,52 +477,63 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        /// Registers an AMS device:
+        /// Registers an AMS station:
         /// - Validates request
         /// - Updates Database to represent new association between existing user and 
-        ///    new device.
+        ///    new station.
         /// </summary>
         /// <param name="newDeviceState">The current Station and its StationState</param>
         /// <returns></returns>
         [ResponseType(typeof(SwaggerDeviceState))]
         [Route("frontend/registerUserDevice")]
         [HttpPost]
-        public IHttpActionResult RegisterUserDevice([FromBody]SwaggerDeviceState newDeviceState)
+        public IHttpActionResult RegisterUserDevice([FromBody]JObject jsonData)
         {
             var db = new AirUDBCOE();
 
-            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == newDeviceState.Id);
+            /*Register Station
+            {
+	            "station": {
+		            "Name": "Draper",
+		            "ID": "123",
+		            "Agency": "EPA",
+		            "Purpose": "Bad Stuff"
+	            },
+	            "user": {
+		            "Email": "zacharyisaiahlobato@gmail.com"
+	            }
+            }
+            */
+            
+            dynamic newDeviceState = jsonData;
+
+            JObject userJObj = newDeviceState.user;
+            JObject stationJObj = newDeviceState.station;
+
+            User user = userJObj.ToObject<User>();
+            Station station = stationJObj.ToObject<Station>();
+
+            // IdentityUser existingUser = await _auth_repo.FindUser("lobato", "burritos");
+
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == station.ID);
+            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
+
             if (existingDevice == null)
             {
-                // Add device success.
-                Station device = new Station();
-                device.Name = newDeviceState.Name;
-                device.ID = newDeviceState.Id;
-                device.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
-                device.Privacy = newDeviceState.Privacy;
-                device.Purpose = newDeviceState.Purpose;
-                db.Stations.Add(device);
-                db.SaveChanges();
-
-                StationState state = new StationState();
-                state.Station = device;
-                state.InOrOut = newDeviceState.Indoor;
-                state.Privacy = newDeviceState.Privacy;
-                state.StateTime = new DateTime(1900, 1, 1);
-                state.Lng = 0.0m;
-                state.Lat = 90.0m;
-                db.DeviceStates.Add(state);
+                // Add station success.
+                station.User = existingUser;
+                db.Stations.Add(station);
                 db.SaveChanges();
 
                 return Ok(newDeviceState);
             }
             else
             {
-                // Add device fail.
+                // Add station fail.
                 return BadRequest("Existing Station");
             }
         }
-
+        /*
         /// <summary>
         ///   Returns the set of DeviceStates associated with the given user email.
         /// </summary>
@@ -575,11 +598,12 @@ namespace server_api.Controllers
                 return NotFound();
             }
         }
-
+        */
+        /*
         /// <summary>
         ///   Updates a single AMS StationState from the "my devices" settings web page.
         /// </summary>
-        /// <param name="state">The state of the device</param>
+        /// <param name="state">The state of the station</param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
         [Route("frontend/updateUserDeviceState")]
@@ -595,14 +619,14 @@ namespace server_api.Controllers
             {
                 // Request previous state from database based on state.DeviceID
                 StationState previousState = (
-                                    from device in db.DeviceStates
-                                    where device.Station.ID == state.Id
-                                    && device.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
-                                    group device by device.Station.ID into deviceIDGroup
+                                    from station in db.DeviceStates
+                                    where station.Station.ID == state.Id
+                                    && station.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
+                                    group station by station.Station.ID into deviceIDGroup
                                     select new
                                     {
                                         DeviceID = deviceIDGroup.Key,
-                                        MaxMeasurementTime = deviceIDGroup.Max(device => device.StateTime)
+                                        MaxMeasurementTime = deviceIDGroup.Max(station => station.StateTime)
                                     } into MaxStates
                                     join coordinates in db.DeviceStates
                                                             on MaxStates.MaxMeasurementTime equals coordinates.StateTime into latestStateGroup
@@ -636,43 +660,41 @@ namespace server_api.Controllers
                 return NotFound();
             }
         }
-
+        */
+        
         /// <summary>
         ///   Returns the AMS DeviceStates for all AMS devices within specified MapParameters.
         ///   
-        ///   Primary Use: Populate the Map View with AMS device icons. 
+        ///   Primary Use: Populate the Map View with AMS station icons. 
         /// </summary>
         /// <param name="para">The NE and SW bounds of a map</param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
         [Route("frontend/map")]
         [HttpPost]
-        public IHttpActionResult GetAllDevicesInMapRange([FromBody]SwaggerMapParameters para)
+        public IHttpActionResult GetAllDevicesInMapRange([FromBody]GpsBounds para)
         {
             // SHOULD BE VARIABLE
-            decimal latMin = para.southWest.lat;
-            decimal latMax = para.northEast.lat;
-            decimal longMin = para.southWest.lng;
-            decimal longMax = para.northEast.lng;
+            decimal latMin = para.latMin;
+            decimal latMax = para.latMax;
+            decimal longMin = para.longMin;
+            decimal longMax = para.longMax;
 
             var db = new AirUDBCOE();
-
-            var results = from state in db.DeviceStates
+            /*
+            Need to figure out.
+            var results = from point in db.DataPoints
                           where
-                          state.Lat > latMin
-                          && state.Lat < latMax
-                          && state.Lng > longMin
-                          && state.Lng < longMax
-                          && state.Privacy == false // Can create add in Spring
-                          && state.InOrOut == false // Can create add in Spring
-                          group state by state.Station.ID into deviceIDGroup
-                          select new
-                          {
-                              MaxStateTime = deviceIDGroup.Max(device => device.StateTime)
-                          } into MaxStates
-                          join coordinates in db.DeviceStates
-                          on MaxStates.MaxStateTime equals coordinates.StateTime into latestStateGroup
-                          select latestStateGroup.FirstOrDefault();
+                          point.Lat > -90
+                          && point.Lat < 90
+                          && point.Lng > -180
+                          && point.Lng < 180
+                          && point.InOrOut == false
+                          group point by point.Parameter;
+
+            foreach (result in results){
+                results.OrderByDescending(i = > if.Value).fi
+            }
 
             SwaggerAMSList amses = new SwaggerAMSList();
 
@@ -680,8 +702,9 @@ namespace server_api.Controllers
             {
                 amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Lng);
             }
-
-            return Ok(amses);
+            */
+            //return Ok(amses);
+            return Ok();
         }
         
         /// <summary>
@@ -775,9 +798,9 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        ///   Returns the latest datapoints for a single AMS device based on specified DeviceID. 
+        ///   Returns the latest datapoints for a single AMS station based on specified DeviceID. 
         ///   
-        ///   Primary Use: "details" panel on Map View after selecting AMS device on map. 
+        ///   Primary Use: "details" panel on Map View after selecting AMS station on map. 
         /// </summary>
         /// <param name="deviceID"></param>
         /// <returns></returns>
@@ -788,7 +811,7 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            // Validate DeviceID represents an actual AMS device.
+            // Validate DeviceID represents an actual AMS station.
             Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == deviceID);
             if (registeredDevice != null)
             {

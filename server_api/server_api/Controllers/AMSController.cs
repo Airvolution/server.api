@@ -31,6 +31,7 @@ namespace server_api.Controllers
             return Ok(dataSet);
         }
 
+        /*
         /// <summary>
         /// 
         /// </summary>
@@ -41,12 +42,12 @@ namespace server_api.Controllers
         public IHttpActionResult UpdateAMSDeviceState([FromBody]StationState[] states)
         {
             var db = new AirUDBCOE();
-            Station device = states[0].Station;
+            Station station = states[0].Station;
 
-            if (device == null)
+            if (station == null)
             {
                 // Failed to add StationState.
-                return Ok("Failed to add device state with Station with ID = " + states[0].Station + " not found.");                
+                return Ok("Failed to add station state with Station with ID = " + states[0].Station + " not found.");                
             }
 
             db.DeviceStates.AddRange(states);
@@ -56,6 +57,7 @@ namespace server_api.Controllers
             // Success.
             return Ok(states);
         }
+        */
 
         /// <summary>
         /// *xml comment*

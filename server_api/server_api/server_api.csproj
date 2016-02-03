@@ -324,8 +324,6 @@
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="Database\AuthContext.cs" />
     <Compile Include="Models\StationGroup.cs" />
-    <Compile Include="Models\StationState.cs" />
-    <Compile Include="Models\Devices_States_and_Datapoints.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\GpsBounds.cs" />
     <Compile Include="Models\GpsCoordinates.cs" />

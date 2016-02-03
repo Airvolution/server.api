@@ -9,11 +9,13 @@ using server_api.Models;
 
 namespace server_api.Controllers
 {
+    
     /// <summary>
     /// 
     /// </summary>
     public class StationsController: ApiController
     {
+        /*
         /// <summary>
         ///   Returns the set of DeviceStates associated with the given user email.
         /// </summary>
@@ -78,12 +80,13 @@ namespace server_api.Controllers
                 return NotFound();
             }
         }
-
+       */
+        /*
         /// <summary>
-        /// Registers an AMS device:
+        /// Registers an AMS station:
         /// - Validates request
         /// - Updates Database to represent new association between existing user and 
-        ///    new device.
+        ///    new station.
         /// </summary>
         /// <param name="newDeviceState">The current Station and its StationState</param>
         /// <returns></returns>
@@ -97,18 +100,18 @@ namespace server_api.Controllers
             Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == newDeviceState.Id);
             if (existingDevice == null)
             {
-                // Add device success.
-                Station device = new Station();
-                device.Name = newDeviceState.Name;
-                device.ID = newDeviceState.Id;
-                device.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
-                device.Privacy = newDeviceState.Privacy;
-                device.Purpose = newDeviceState.Purpose;
-                db.Stations.Add(device);
+                // Add station success.
+                Station station = new Station();
+                station.Name = newDeviceState.Name;
+                station.ID = newDeviceState.Id;
+                station.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
+                station.Privacy = newDeviceState.Privacy;
+                station.Purpose = newDeviceState.Purpose;
+                db.Stations.Add(station);
                 db.SaveChanges();
 
                 StationState state = new StationState();
-                state.Station = device;
+                state.Station = station;
                 state.InOrOut = newDeviceState.Indoor;
                 state.Privacy = newDeviceState.Privacy;
                 state.StateTime = new DateTime(1900, 1, 1);
@@ -121,11 +124,13 @@ namespace server_api.Controllers
             }
             else
             {
-                // Add device fail.
+                // Add station fail.
                 return BadRequest("Existing Station");
             }
         }
+        */
 
+        /*
         /// <summary>
         ///   Adds one or many DeviceStates (from a station)
         /// </summary>
@@ -136,12 +141,12 @@ namespace server_api.Controllers
         public IHttpActionResult AddAMSDeviceStates([FromBody]StationState[] states)
         {
             var db = new AirUDBCOE();
-            Station device = states[0].Station;
+            Station station = states[0].Station;
 
-            if (device == null)
+            if (station == null)
             {
                 // Failed to add StationState.
-                return Ok("Failed to add device state with Station with ID = " + states[0].Station.ID + " not found.");
+                return Ok("Failed to add station state with Station with ID = " + states[0].Station.ID + " not found.");
             }
 
             db.DeviceStates.AddRange(states);
@@ -151,11 +156,12 @@ namespace server_api.Controllers
             // Success.
             return Ok(states);
         }
-
+        */
+        /*
         /// <summary>
         ///   Updates a single AMS StationState from the "my devices" settings web page.
         /// </summary>
-        /// <param name="state">The state of the device</param>
+        /// <param name="state">The state of the station</param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
         [Route("stations/state/{deviceId}")]
@@ -171,14 +177,14 @@ namespace server_api.Controllers
             {
                 // Request previous state from database based on state.DeviceID
                 StationState previousState = (
-                                    from device in db.DeviceStates
-                                    where device.Station.ID == state.Id
-                                    && device.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
-                                    group device by device.Station.ID into deviceIDGroup
+                                    from station in db.DeviceStates
+                                    where station.Station.ID == state.Id
+                                    && station.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
+                                    group station by station.Station.ID into deviceIDGroup
                                     select new
                                     {
                                         DeviceID = deviceIDGroup.Key,
-                                        MaxMeasurementTime = deviceIDGroup.Max(device => device.StateTime)
+                                        MaxMeasurementTime = deviceIDGroup.Max(station => station.StateTime)
                                     } into MaxStates
                                     join coordinates in db.DeviceStates
                                                             on MaxStates.MaxMeasurementTime equals coordinates.StateTime into latestStateGroup
@@ -211,7 +217,7 @@ namespace server_api.Controllers
                 return NotFound();
             }
         }
-
+        */
 
         /// <summary>
         ///   Adds one or many DevicePoints (from a station)
@@ -231,11 +237,11 @@ namespace server_api.Controllers
             return Ok(dataSet);
         }
 
-
+        
         /// <summary>
         ///   Returns the station locators based on the given coordinates.
         ///   
-        ///   Primary Use: Populate the Map View with AMS device icons. 
+        ///   Primary Use: Populate the Map View with AMS station icons. 
         /// </summary>
         /// <param name="latMin"></param>
         /// <param name="latMax"></param>
@@ -254,7 +260,8 @@ namespace server_api.Controllers
             decimal longMax = bounds.longMax;
 
             var db = new AirUDBCOE();
-
+            /*
+             * TODO
             var results = from state in db.DeviceStates
                           where
                           state.Lat > latMin
@@ -266,26 +273,28 @@ namespace server_api.Controllers
                           group state by state.Station.ID into deviceIDGroup
                           select new
                           {
-                              MaxStateTime = deviceIDGroup.Max(device => device.StateTime)
+                              MaxStateTime = deviceIDGroup.Max(station => station.StateTime)
                           } into MaxStates
                           join coordinates in db.DeviceStates
                           on MaxStates.MaxStateTime equals coordinates.StateTime into latestStateGroup
                           select latestStateGroup.FirstOrDefault();
-
+            */
             SwaggerAMSList amses = new SwaggerAMSList();
 
+            /*
             foreach (StationState d in results)
             {
                 amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Lng);
             }
-
+            */
             return Ok(amses);
         }
-
+        
+ 
         /// <summary>
         ///   Returns all datapoints for a Station given a DeviceID.
         /// 
-        ///   Primary Use: Compare View and single AMS device Map View "data graph"
+        ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
@@ -329,9 +338,9 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        ///   Returns the latest datapoints for a single AMS device based on specified DeviceId. 
+        ///   Returns the latest datapoints for a single AMS station based on specified DeviceId. 
         ///   
-        ///   Primary Use: "details" panel on Map View after selecting AMS device on map. 
+        ///   Primary Use: "details" panel on Map View after selecting AMS station on map. 
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
@@ -342,8 +351,9 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            // Validate DeviceID represents an actual AMS device.
+            // Validate DeviceID represents an actual AMS station.
             Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == deviceId.ToString());
+            /*
             if (registeredDevice != null)
             {
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
@@ -437,6 +447,8 @@ namespace server_api.Controllers
                 // Station with DeviceID: <deviceID> does not exist.
                 return NotFound();
             }
+             * */
+            return Ok();
         }
 
         /// <summary>
