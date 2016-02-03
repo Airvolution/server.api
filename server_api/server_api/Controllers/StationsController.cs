@@ -251,36 +251,34 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
         [Route("stations/locators")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
-        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal longMin = -179, decimal longMax = 179)
+        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal lngMin = -179, decimal lngMax = 179)
         {
+            // SHOULD BE VARIABLE
             var db = new AirUDBCOE();
-            /*
-             * TODO
-            var results = from state in db.DeviceStates
+
+
+            var results = from point in db.DataPoints
                           where
-                          state.Lat > latMin
-                          && state.Lat < latMax
-                          && state.Lng > longMin
-                          && state.Lng < longMax
-                          && state.Privacy == false // Can create add in Spring
-                          && state.InOrOut == false // Can create add in Spring
-                          group state by state.Station.ID into deviceIDGroup
+                          point.Lat > latMin
+                          && point.Lat < latMax
+                          && point.Lng > lngMin
+                          && point.Lng < lngMax
+                          && point.InOrOut == false
+                          orderby point.Lat descending
+                          group point by point.Station.ID into stationPoints
                           select new
                           {
-                              MaxStateTime = deviceIDGroup.Max(station => station.StateTime)
-                          } into MaxStates
-                          join coordinates in db.DeviceStates
-                          on MaxStates.MaxStateTime equals coordinates.StateTime into latestStateGroup
-                          select latestStateGroup.FirstOrDefault();
-            */
+                              StationID = stationPoints.Key,
+                              point = stationPoints.OrderByDescending(a => a.MeasurementTime).FirstOrDefault()
+                          };
+
             SwaggerAMSList amses = new SwaggerAMSList();
 
-            /*
-            foreach (StationState d in results)
+            foreach (var result in results)
             {
-                amses.AddSwaggerDevice(d.Station.ID, d.Lat, d.Lng);
+                amses.AddSwaggerDevice(result.StationID, result.point.Lat, result.point.Lng);
             }
-            */
+
             return Ok(amses);
         }
         
