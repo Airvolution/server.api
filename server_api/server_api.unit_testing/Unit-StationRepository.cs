@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using server_api;
 using System.IO;
 using System.Data.Entity;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace server_api.unit_testing
 {
@@ -30,16 +32,132 @@ namespace server_api.unit_testing
             }
 
             _context = new AirUDBCOE(connectionString);
+            SetupDatabase();
+        }
 
-            Station existingStation = new Station();
-            existingStation.Agency = "Exist";
-            existingStation.Id = "MAC1234";
-            existingStation.Name = "Zach's Station";
-            existingStation.Purpose = "To win at life";
+        private static void SetupDatabase()
+        {
+            AddStations(10); // Number of Stations
+            AddParameters(); // Parameters (currently 8)
+            var task = AddDataPoints(100); // Number of Datapoints for each station
+            task.Wait();
+        }
 
-            _context.Stations.Add(existingStation);
+        private static async System.Threading.Tasks.Task AddDataPoints(int count)
+        {
+            Random rand = new Random();         
+
+            List<Station> stations = await _context.Stations.ToListAsync();
+            List<DataPoint> points = new List<DataPoint>();
+            foreach (Station station in stations)
+            {
+                decimal lat = (decimal)(rand.NextDouble() * 13 + 35.8);
+                decimal lng = (decimal)(rand.NextDouble() * 44.1 - 121);
+
+
+                List<Parameter> parameters = await _context.Parameters.ToListAsync();
+                for (int i = 0; i < count; i++)
+                {
+                    foreach (Parameter parameter in parameters)
+                    {
+                        DataPoint datapoint = new DataPoint();
+
+                        datapoint.Lat = lat;
+                        datapoint.Lng = lng;
+
+                        datapoint.AQI = rand.Next(400);
+                        datapoint.Category = GetHealthRiskCategory(datapoint.AQI);
+                        datapoint.Indoor = (datapoint.AQI % 2 == 0) ? true : false;
+
+                        datapoint.Parameter = parameter;
+                        datapoint.Station = station;
+                        datapoint.Value = DateTime.Now.Millisecond;
+                        datapoint.Time = DateTime.Now.AddMinutes(i*15);
+
+                        points.Add(datapoint);
+                    }
+                }
+            }
+            _context.DataPoints.AddRange(points);
             _context.SaveChanges();
         }
+
+        private static void AddParameters()
+        {
+            List<Tuple<string, string>> parameters = new List<Tuple<string, string>>() 
+            {
+                new Tuple<string,string>("PM2.5", "ppm"),
+                new Tuple<string,string>("PM10.0", "ppm"),
+                new Tuple<string,string>("CO", "ppm"),
+                new Tuple<string,string>("CO2", "ppm"),
+                new Tuple<string,string>("NO2", "ppm"),
+                new Tuple<string,string>("TEMPERATURE", "F"),
+                //new Tuple<string,string>("TEMPERATURE", "C"),
+                new Tuple<string,string>("HUMIDITY", "%"),
+                new Tuple<string,string>("PRESSURE", "in"),
+                //new Tuple<string,string>("PRESSURE", "mb")
+            };
+
+            foreach (Tuple<string, string> t in parameters)
+            {
+                Parameter parameter = new Parameter();
+                parameter.Name = t.Item1;
+                parameter.Unit = t.Item2;
+
+                _context.Parameters.Add(parameter);
+            }
+
+            _context.SaveChanges();
+        }
+
+        private static void AddStations(int count)
+        {
+            /*
+            Station oneStation = new Station();
+            oneStation.Agency = "One";
+            oneStation.Id = "ONE" + 0.ToString("D6");
+            oneStation.Name = "Name" + 0.ToString("D6");
+            oneStation.Purpose = "Testing";
+            _context.Stations.Add(oneStation);
+            _context.SaveChanges();
+            */
+            for (int i = 0; i < count; i++)
+            {
+                Station existingStation = new Station();
+                existingStation.Agency = "Exist";
+                existingStation.Id = "MAC" + i.ToString("D6");
+                existingStation.Name = "Name" + i.ToString("D6");
+                existingStation.Purpose = "Testing";
+                _context.Stations.Add(existingStation);
+            }
+            _context.SaveChanges();
+        }
+
+        private static int GetHealthRiskCategory(int AQI)
+        {
+            if (AQI < 40)
+                return 1;
+            else if (AQI < 80)
+                return 2;
+            else if (AQI < 120)
+                return 3;
+            else if (AQI < 160)
+                return 4;
+            else if (AQI < 200)
+                return 5;
+            else if (AQI < 240)
+                return 6;
+            else if (AQI < 280)
+                return 7;
+            else if (AQI < 320)
+                return 8;
+            else if (AQI < 360)
+                return 9;
+            else
+                return 10;
+        }
+
+
         [ClassCleanup]
         public static void ClassClean()
         {
@@ -63,7 +181,14 @@ namespace server_api.unit_testing
         public void StationDoesExist()
         {
             var stationRepository = new StationsRepository(connectionString);
-            Assert.IsTrue(stationRepository.StationExists("MAC1234"));
+            Assert.IsTrue(stationRepository.StationExists("MAC000000"));
+        }
+
+        [TestMethod]
+        public void DataPointDoesExist()
+        {
+            var stationRepository = new StationsRepository(connectionString);
+            Assert.IsTrue(_context.DataPoints.Find(1)!=null);
         }
     }
 }
