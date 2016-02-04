@@ -10,14 +10,17 @@ using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace server_api.Controllers {
+namespace server_api.Controllers
+{
     /// <summary>
     /// 
     /// </summary>
-    public class StationsController: ApiController {
+    public class StationsController : ApiController
+    {
         private StationsRepository _repo = null;
 
-        public StationsController() {
+        public StationsController()
+        {
             _repo = new StationsRepository();
         }
 
@@ -232,7 +235,8 @@ namespace server_api.Controllers {
         /// <returns></returns>
         [Route("stations/data")]
         [HttpPost]
-        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet) {
+        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
+        {
             var db = new AirUDBCOE();
 
             db.DataPoints.AddRange(dataSet);
@@ -242,7 +246,7 @@ namespace server_api.Controllers {
             return Ok(dataSet);
         }
 
-        
+
         /// <summary>
         ///   Returns the station locators based on the given coordinates.
         ///   
@@ -256,7 +260,8 @@ namespace server_api.Controllers {
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
         [Route("stations/locators")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
-        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal lngMin = -179, decimal lngMax = 179) {
+        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal lngMin = -179, decimal lngMax = 179)
+        {
             // SHOULD BE VARIABLE
             var db = new AirUDBCOE();
 
@@ -284,10 +289,10 @@ namespace server_api.Controllers {
 
             return Ok(amses);
         }
-        
- 
+
+
         /// <summary>
-        ///   Returns all datapoints for a Station given a DeviceID.
+        ///   Returns all datapoints for a Station given a StationID.
         /// 
         ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
@@ -296,8 +301,10 @@ namespace server_api.Controllers {
         [ResponseType(typeof(IEnumerable<DataPoint>))]
         [Route("stations/datapoints/{stationID}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]string stationID) {
-            if (!_repo.StationExists(stationID)) {
+        public IHttpActionResult DataPoints([FromUri]string stationID)
+        {
+            if (!_repo.StationExists(stationID))
+            {
                 return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
             }
             return Ok(_repo.GetDataPointsFromStation(stationID));
@@ -434,8 +441,8 @@ namespace server_api.Controllers {
             if (registeredDevice != null)
             {
                 Station toDelete = (from dev in db.Stations
-                                   where dev.Id == id
-                                   select dev).Single();
+                                    where dev.Id == id
+                                    select dev).Single();
 
                 db.Stations.Remove(toDelete);
                 db.SaveChanges();
