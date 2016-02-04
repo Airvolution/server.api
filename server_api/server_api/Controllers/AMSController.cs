@@ -22,9 +22,34 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
         {
+
+
+            /*
+             {
+                "station": {
+                    "Name": "Draper",
+                    "ID": "123",
+                    "Agency": "EPA",
+                    "Purpose": "Bad Stuff"
+                },
+                "datapoint": {
+                    "MeasurementTime": "2016-02-03T15:28:57.468Z",
+                    "InOrOut": false,
+                    "Lat": 123.456,
+                    "Lng": 789.101,
+                    "Value": 0.02,
+                    "Category": 1,
+                    "AQI": 27
+
+                }
+               "parameter": {
+              }
+            }
+             */
             var db = new AirUDBCOE();
 
             db.DataPoints.AddRange(dataSet);
+
 
             db.SaveChanges();
 

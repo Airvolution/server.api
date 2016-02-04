@@ -561,7 +561,7 @@ namespace server_api.Controllers
                           && point.Lat < latMax
                           && point.Lng > lngMin
                           && point.Lng < lngMax
-                          && point.InOrOut == false
+                          && point.Indoor == false
                           orderby point.Lat descending
                           group point by point.Station.ID into stationPoints
                           select new

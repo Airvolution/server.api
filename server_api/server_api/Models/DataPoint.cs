@@ -13,11 +13,10 @@ namespace server_api
         public int Id { get; set; }
 
         public DateTime MeasurementTime { get; set; }
-
         public virtual Station Station { get; set; }
         public virtual Parameter Parameter { get; set; }
 
-        public bool InOrOut { get; set; }
+        public bool Indoor { get; set; }
 
         public decimal Lat { get; set; }
         public decimal Lng { get; set; }
