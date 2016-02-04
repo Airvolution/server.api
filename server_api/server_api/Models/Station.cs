@@ -12,6 +12,7 @@ namespace server_api
         public string Id { get; set; }
         public decimal Lat { get; set; }
         public decimal Lng { get; set; }
+        public bool Indoor { get; set; }
 
         [StringLength(100)]
         public string Agency { get; set; }
