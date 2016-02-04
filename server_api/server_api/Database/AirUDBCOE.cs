@@ -16,6 +16,7 @@ namespace server_api
         public AirUDBCOE(string connectionString)
             : base(connectionString)
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<DataPoint> DataPoints { get; set; }

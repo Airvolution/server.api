@@ -11,6 +11,11 @@ namespace server_api {
             db = new AirUDBCOE();
         }
 
+        public StationsRepository(string connectionString)
+        {
+            db = new AirUDBCOE(connectionString);
+        }
+
         public bool StationExists(string stationID) {
             if (db.Stations.Find(stationID) == null) {
                 return false;
