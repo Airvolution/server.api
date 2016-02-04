@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace server_api {
-    public class StationsRepository : IDisposable {
+namespace server_api
+{
+    public class StationsRepository : IDisposable
+    {
         private AirUDBCOE db;
 
-        public StationsRepository() {
+        public StationsRepository()
+        {
             db = new AirUDBCOE();
         }
 
@@ -16,28 +19,33 @@ namespace server_api {
             db = new AirUDBCOE(connectionString);
         }
 
-        public bool StationExists(string stationID) {
-            if (db.Stations.Find(stationID) == null) {
+        public bool StationExists(string stationID)
+        {
+            if (db.Stations.Find(stationID) == null)
+            {
                 return false;
             }
             return true;
         }
 
-        public IEnumerable<Station> StationLocations(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax) {
+        public IEnumerable<Station> StationLocations(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
+        {
             IEnumerable<Station> data = from station in db.Stations
                                         where station.Lat >= latMin && station.Lat <= latMax && station.Lng >= lngMin && station.Lng <= lngMax
                                         select station;
             return data;
         }
 
-        public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID) {
+        public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID)
+        {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID
                                           select point;
             return data;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             db.Dispose();
         }
     }

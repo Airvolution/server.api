@@ -247,8 +247,8 @@ namespace server_api.Controllers
         }
 
 
-        [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
-        [Route("stations/locations/{latMin}/{latMax}/{lngMin}/{lngMax}/{withDataPoint}")] // TODO: properly configure the URL to specify lat/long min/max
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations/locations/{latMin}/{latMax}/{lngMin}/{lngMax}")]
         [HttpGet]
         public IHttpActionResult StationLocators(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
         {
