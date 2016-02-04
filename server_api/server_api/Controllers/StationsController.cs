@@ -6,15 +6,21 @@ using System.Text;
 using System.Web.Http;
 using System.Web.Http.Description;
 using server_api.Models;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace server_api.Controllers
-{
-    
+namespace server_api.Controllers {
     /// <summary>
     /// 
     /// </summary>
-    public class StationsController: ApiController
-    {
+    public class StationsController: ApiController {
+        private StationsRepository _repo = null;
+
+        public StationsController() {
+            _repo = new StationsRepository();
+        }
+
         /*
         /// <summary>
         ///   Returns the set of DeviceStates associated with the given user email.
@@ -226,8 +232,7 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/data")]
         [HttpPost]
-        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
-        {
+        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet) {
             var db = new AirUDBCOE();
 
             db.DataPoints.AddRange(dataSet);
@@ -251,11 +256,9 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
         [Route("stations/locators")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
-        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal lngMin = -179, decimal lngMax = 179)
-        {
+        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal lngMin = -179, decimal lngMax = 179) {
             // SHOULD BE VARIABLE
             var db = new AirUDBCOE();
-
 
             var results = from point in db.DataPoints
                           where
@@ -265,11 +268,11 @@ namespace server_api.Controllers
                           && point.Lng < lngMax
                           && point.Indoor == false
                           orderby point.Lat descending
-                          group point by point.Station.ID into stationPoints
+                          group point by point.Station.Id into stationPoints
                           select new
                           {
                               StationID = stationPoints.Key,
-                              point = stationPoints.OrderByDescending(a => a.MeasurementTime).FirstOrDefault()
+                              point = stationPoints.OrderByDescending(a => a.Time).FirstOrDefault()
                           };
 
             SwaggerAMSList amses = new SwaggerAMSList();
@@ -288,45 +291,16 @@ namespace server_api.Controllers
         /// 
         ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
-        /// <param name="deviceId"></param>
+        /// <param name="stationID"></param>
         /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerPollutantList>))]
-        [Route("stations/datapoints/{deviceID}")]
+        [ResponseType(typeof(IEnumerable<DataPoint>))]
+        [Route("stations/datapoints/{stationID}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]string deviceId)
-        {
-            var db = new AirUDBCOE();
-
-            Station existingStation = db.Stations.SingleOrDefault(x => x.ID == deviceId.ToString());
-
-            if (existingStation != null)
-            {
-                List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
-
-                foreach (Parameter parameter in existingStation.Parameters)
-                {
-                    if (parameter.Name.Equals("Altitude"))
-                    {
-                        SwaggerPollutantList pl = new SwaggerPollutantList(parameter.Name);
-                        foreach (DataPoint datapoint in parameter.DataPoints)
-                        {
-
-
-                            pl.values.Add(new object[2]);
-                            pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.MeasurementTime);
-                            pl.values.Last()[1] = (decimal)datapoint.Value;
-                        }
-                        data.Add(pl);
-                    }
-                }
-
-                return Ok(data);
+        public IHttpActionResult DataPoints([FromUri]string stationID) {
+            if (!_repo.StationExists(stationID)) {
+                return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
             }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Station with ID: " + deviceId + " does not exist. Please try a different Station ID.");
-            }
+            return Ok(_repo.GetDataPointsFromStation(stationID));
         }
 
         /// <summary>
@@ -344,7 +318,7 @@ namespace server_api.Controllers
             var db = new AirUDBCOE();
 
             // Validate DeviceID represents an actual AMS station.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == deviceId.ToString());
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == deviceId.ToString());
             /*
             if (registeredDevice != null)
             {
@@ -455,12 +429,12 @@ namespace server_api.Controllers
             AirUDBCOE db = new AirUDBCOE();
 
             // Validate Station from given DeviceId exists.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == id);
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == id);
 
             if (registeredDevice != null)
             {
                 Station toDelete = (from dev in db.Stations
-                                   where dev.ID == id
+                                   where dev.Id == id
                                    select dev).Single();
 
                 db.Stations.Remove(toDelete);

@@ -8,12 +8,6 @@ namespace server_api
 
     public partial class Parameter
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Parameter()
-        {
-            DataPoints = new HashSet<DataPoint>();
-        }
-
         [Key]
         [Column(Order = 0)]
         [StringLength(30)]
@@ -24,9 +18,5 @@ namespace server_api
         [StringLength(30)]
         public string Unit { get; set; }
 
-        public virtual ICollection<Station> Stations { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataPoint> DataPoints { get; set; }
     }
 }

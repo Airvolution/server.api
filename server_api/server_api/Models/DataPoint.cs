@@ -12,7 +12,7 @@ namespace server_api
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public DateTime MeasurementTime { get; set; }
+        public DateTime Time { get; set; }
         public virtual Station Station { get; set; }
         public virtual Parameter Parameter { get; set; }
 

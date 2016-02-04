@@ -8,16 +8,8 @@ namespace server_api
 
     public partial class Station
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Station()
-        {
-            DataPoints = new HashSet<DataPoint>();
-            StationGroups = new HashSet<StationGroup>();
-            Parameters = new HashSet<Parameter>();
-        }
-
         [StringLength(32)]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         [StringLength(100)]
         public string Agency { get; set; }
@@ -30,15 +22,7 @@ namespace server_api
         [StringLength(1000)]
         public string Purpose { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataPoint> DataPoints { get; set; }
-
         public virtual User User { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Parameter> Parameters { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StationGroup> StationGroups { get; set; }
     }
 }

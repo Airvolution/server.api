@@ -445,35 +445,37 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult GetAllDataPointsForDevice([FromBody]string deviceID)
         {
-            var db = new AirUDBCOE();
+            //var db = new AirUDBCOE();
 
-            Station existingStation = db.Stations.SingleOrDefault(x => x.ID == deviceID);
+            //Station existingStation = db.Stations.SingleOrDefault(x => x.Id == deviceID);
 
-            if (existingStation != null)
-            {
-                List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
+            //if (existingStation != null)
+            //{
+            //    List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
 
-                foreach (Parameter parameter in existingStation.Parameters){
-                    if (parameter.Name.Equals("Altitude")){
-                        SwaggerPollutantList pl = new SwaggerPollutantList(parameter.Name);
-                        foreach (DataPoint datapoint in parameter.DataPoints){
+            //    foreach (Parameter parameter in existingStation.Parameters){
+            //        if (parameter.Name.Equals("Altitude")){
+            //            SwaggerPollutantList pl = new SwaggerPollutantList(parameter.Name);
+            //            foreach (DataPoint datapoint in parameter.DataPoints){
                         
                             
-                            pl.values.Add(new object[2]);
-                            pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.MeasurementTime);
-                            pl.values.Last()[1] = (decimal)datapoint.Value;
-                        }
-                        data.Add(pl);
-                    }
-                }
+            //                pl.values.Add(new object[2]);
+            //                pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.Time);
+            //                pl.values.Last()[1] = (decimal)datapoint.Value;
+            //            }
+            //            data.Add(pl);
+            //        }
+            //    }
 
-                return Ok(data);
-            }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Station with ID: " + deviceID + " does not exist. Please try a different Station ID.");
-            }
+            //    return Ok(data);
+            //}
+            //else
+            //{
+            //    // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
+            //    return BadRequest("Station with ID: " + deviceID + " does not exist. Please try a different Station ID.");
+            //}
+
+            return Ok();
         }
 
         /// <summary>
@@ -515,7 +517,7 @@ namespace server_api.Controllers
 
             // IdentityUser existingUser = await _auth_repo.FindUser("lobato", "burritos");
 
-            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == station.ID);
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
             User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
 
             if (existingDevice == null)
@@ -563,11 +565,11 @@ namespace server_api.Controllers
                           && point.Lng < lngMax
                           && point.Indoor == false
                           orderby point.Lat descending
-                          group point by point.Station.ID into stationPoints
+                          group point by point.Station.Id into stationPoints
                           select new
                           {
                               StationID = stationPoints.Key,
-                              point = stationPoints.OrderByDescending(a => a.MeasurementTime).FirstOrDefault()
+                              point = stationPoints.OrderByDescending(a => a.Time).FirstOrDefault()
                           };
 
             SwaggerAMSList amses = new SwaggerAMSList();
@@ -686,7 +688,7 @@ namespace server_api.Controllers
             var db = new AirUDBCOE();
 
             // Validate DeviceID represents an actual AMS station.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == deviceID);
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == deviceID);
             if (registeredDevice != null)
             {
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
@@ -807,12 +809,12 @@ namespace server_api.Controllers
             AirUDBCOE db = new AirUDBCOE();
 
             // Validate Station from given DeviceId exists.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == id);
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == id);
 
             if (registeredDevice != null)
             {
                 Station toDelete = (from dev in db.Stations
-                                   where dev.ID == id
+                                   where dev.Id == id
                                    select dev).Single();
 
                 db.Stations.Remove(toDelete);
