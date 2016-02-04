@@ -14,7 +14,7 @@ namespace server_api
         }
         
         public AirUDBCOE(string connectionString)
-            : base(connectionString)
+            : base(connectionString.Equals("")?"name=AirUDBCOE":connectionString)
         {
             this.Configuration.LazyLoadingEnabled = false;
         }

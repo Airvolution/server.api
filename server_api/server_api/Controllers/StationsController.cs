@@ -272,22 +272,36 @@ namespace server_api.Controllers
                           && point.Lng > lngMin
                           && point.Lng < lngMax
                           && point.Indoor == false
-                          orderby point.Lat descending
                           group point by point.Station.Id into stationPoints
                           select new
                           {
-                              StationID = stationPoints.Key,
-                              point = stationPoints.OrderByDescending(a => a.Time).FirstOrDefault()
+                              location = stationPoints.OrderByDescending(a => a.Time).FirstOrDefault()
                           };
 
+            var newResults = db.DataPoints.GroupBy(x => new {x.Station}).Select(g => g.FirstOrDefault());
+            /*
             SwaggerAMSList amses = new SwaggerAMSList();
-
+            
             foreach (var result in results)
             {
                 amses.AddSwaggerDevice(result.StationID, result.point.Lat, result.point.Lng);
             }
+            */
+            return Ok(newResults);
+        }
 
-            return Ok(amses);
+        class CompareDPs : IEqualityComparer<DataPoint>
+        {
+
+            public bool Equals(DataPoint x, DataPoint y)
+            {
+                return x.Station.Id.Equals(y.Station.Id);
+            }
+
+            public int GetHashCode(DataPoint obj)
+            {
+                return obj.GetHashCode();
+            }
         }
 
 
