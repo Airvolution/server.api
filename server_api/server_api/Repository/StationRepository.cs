@@ -23,6 +23,13 @@ namespace server_api {
             return true;
         }
 
+        public IEnumerable<Station> StationLocations(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax) {
+            IEnumerable<Station> data = from station in db.Stations
+                                        where station.Lat >= latMin && station.Lat <= latMax && station.Lng >= lngMin && station.Lng <= lngMax
+                                        select station;
+            return data;
+        }
+
         public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID) {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID

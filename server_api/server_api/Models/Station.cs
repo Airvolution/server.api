@@ -10,6 +10,8 @@ namespace server_api
     {
         [StringLength(32)]
         public string Id { get; set; }
+        public decimal Lat { get; set; }
+        public decimal Lng { get; set; }
 
         [StringLength(100)]
         public string Agency { get; set; }

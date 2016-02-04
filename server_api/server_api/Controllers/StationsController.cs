@@ -247,63 +247,13 @@ namespace server_api.Controllers
         }
 
 
-        /// <summary>
-        ///   Returns the station locators based on the given coordinates.
-        ///   
-        ///   Primary Use: Populate the Map View with AMS station icons. 
-        /// </summary>
-        /// <param name="latMin"></param>
-        /// <param name="latMax"></param>
-        /// <param name="longMin"></param>
-        /// <param name="longMax"></param>
-        /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
-        [Route("stations/locators")] // TODO: properly configure the URL to specify lat/long min/max
+        [Route("stations/locations/{latMin}/{latMax}/{lngMin}/{lngMax}")] // TODO: properly configure the URL to specify lat/long min/max
         [HttpGet]
-        public IHttpActionResult StationLocators(decimal latMin = -89, decimal latMax = 89, decimal lngMin = -179, decimal lngMax = 179)
+        public IHttpActionResult StationLocators(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
         {
-            // SHOULD BE VARIABLE
-            var db = new AirUDBCOE();
-
-            var results = from point in db.DataPoints
-                          where
-                          point.Lat > latMin
-                          && point.Lat < latMax
-                          && point.Lng > lngMin
-                          && point.Lng < lngMax
-                          && point.Indoor == false
-                          group point by point.Station.Id into stationPoints
-                          select new
-                          {
-                              location = stationPoints.OrderByDescending(a => a.Time).FirstOrDefault()
-                          };
-
-            var newResults = db.DataPoints.GroupBy(x => new {x.Station}).Select(g => g.FirstOrDefault());
-            /*
-            SwaggerAMSList amses = new SwaggerAMSList();
-            
-            foreach (var result in results)
-            {
-                amses.AddSwaggerDevice(result.StationID, result.point.Lat, result.point.Lng);
-            }
-            */
-            return Ok(newResults);
+            return Ok(_repo.StationLocations(latMin, latMax, lngMin, lngMax));
         }
-
-        class CompareDPs : IEqualityComparer<DataPoint>
-        {
-
-            public bool Equals(DataPoint x, DataPoint y)
-            {
-                return x.Station.Id.Equals(y.Station.Id);
-            }
-
-            public int GetHashCode(DataPoint obj)
-            {
-                return obj.GetHashCode();
-            }
-        }
-
 
         /// <summary>
         ///   Returns all datapoints for a Station given a StationID.
