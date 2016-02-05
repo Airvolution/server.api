@@ -26,13 +26,13 @@ namespace server_api.unit_testing
                 File.Delete(logPath);
 
             /* Local Database */
-            connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
-            using (var context = new AirUDBCOE(connectionString))
-            {
-                context.Database.Create();
-            }
+            //connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
+            //using (var context = new AirUDBCOE(connectionString))
+            //{
+            //    context.Database.Create();
+            //}
             /* SQL Express Database */
-            //connectionString = @"";
+            connectionString = @"";
 
             _context = new AirUDBCOE(connectionString);
             SetupDatabase();

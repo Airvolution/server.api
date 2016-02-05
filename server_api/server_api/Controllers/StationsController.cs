@@ -269,7 +269,7 @@ namespace server_api.Controllers
         {
             if (!_repo.StationExists(stationID))
             {
-                return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
+                return NotFound();
             }
             return Ok(_repo.GetDataPointsFromStation(stationID));
         }
@@ -393,31 +393,16 @@ namespace server_api.Controllers
         ///   Deletes the selected station
         /// </summary>
         /// <param name="id"></param>
-        [Route("stations/{id}")]
+        [Route("stations/{stationID}")]
         [HttpDelete]
-        public IHttpActionResult Station(string id)
+        public IHttpActionResult Station(string stationID)
         {
-            AirUDBCOE db = new AirUDBCOE();
-
-            // Validate Station from given DeviceId exists.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == id);
-
-            if (registeredDevice != null)
+            if (_repo.DeleteStation(stationID))
             {
-                Station toDelete = (from dev in db.Stations
-                                    where dev.Id == id
-                                    select dev).Single();
-
-                db.Stations.Remove(toDelete);
-                db.SaveChanges();
-
-                return Ok("Delete Successful");
+                return Ok();
             }
-            else
-            {
-                // Station with DeviceID: <deviceID> does not exist.
-                return NotFound();
-            }
+
+            return NotFound();
         }
 
         /// <summary>

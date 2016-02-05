@@ -44,6 +44,20 @@ namespace server_api
             return data;
         }
 
+        public bool DeleteStation(string stationID)
+        {
+            Station station = db.Stations.SingleOrDefault(s => s.Id == stationID);
+
+            if (ReferenceEquals(station, null))
+            {
+                return false;
+            }
+
+            db.Stations.Remove(station);
+
+            return true;
+        }
+
         public void Dispose()
         {
             db.Dispose();
