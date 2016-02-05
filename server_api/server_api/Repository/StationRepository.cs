@@ -59,23 +59,37 @@ namespace server_api
             {
                 return false;
             }
+            
+            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();
+            //Dictionary<Tuple<string, string>, Parameter> existingParameters2 = new Dictionary<Tuple<string, string>, Parameter>();
 
-            Dictionary<Tuple<string, string>, Parameter> existingParameters = new Dictionary<Tuple<string, string>, Parameter>();
             foreach (Parameter p in db.Parameters.ToList())
-            {
-                existingParameters.Add(new Tuple<string,string>(p.Name, p.Unit), p);
+            {                
+                existingParameters.Add(p.Name + p.Unit, p);
+                //existingParameters2.Add(new Tuple<string,string>(p.Name, p.Unit), p);
             }
 
-            Parameter tempParameter = null;            
-
+            
+            Parameter tempParameter = null;
+            //Parameter tempParameter2 = null;
+            //for (int i = 0; i < 10000000; i++)
+            //{
             foreach (DataPoint point in dataSet)
             {
-                Tuple<string, string> tempKey = new Tuple<string, string>(point.Parameter.Name, point.Parameter.Unit);
-                existingParameters.TryGetValue(tempKey, out tempParameter);
+                // Okay
+                //Tuple<string, string> tempKey2 = new Tuple<string, string>(point.Parameter.Name, point.Parameter.Unit);
+                //existingParameters2.TryGetValue(tempKey2, out tempParameter);                
 
+                // Terrible idea, orders of magnitude slower (due to repeated hits to DB)
+                //point.Parameter = db.Parameters.Find(point.Parameter.Name, point.Parameter.Unit);
+                
+                // Best - Negligible slow down
+                existingParameters.TryGetValue(point.Parameter.Name + point.Parameter.Unit, out tempParameter);
                 point.Parameter = tempParameter;
+
                 point.Station = dataSetStation;
             }
+            //}
 
             db.DataPoints.AddRange(dataSet);
             db.SaveChanges();
