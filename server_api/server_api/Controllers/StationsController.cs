@@ -237,13 +237,12 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
         {
-            var db = new AirUDBCOE();
-
-            db.DataPoints.AddRange(dataSet);
-
-            db.SaveChanges();
-
-            return Ok(dataSet);
+            if (!_repo.SetDataPointsFromStation(dataSet))
+            {
+                return NotFound();
+            }
+            else 
+                return Ok();
         }
 
 

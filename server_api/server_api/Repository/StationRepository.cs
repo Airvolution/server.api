@@ -14,9 +14,9 @@ namespace server_api
             db = new AirUDBCOE();
         }
 
-        public StationsRepository(string connectionString)
+        public StationsRepository(AirUDBCOE existingContext)
         {
-            db = new AirUDBCOE(connectionString);
+            db = existingContext;
         }
 
         public bool StationExists(string stationID)
@@ -36,15 +36,15 @@ namespace server_api
             return data;
         }
 
-        public IEnumerable<DataPoint> GetLatestDataPointsFromStation(string stationID)
+        public List<DataPoint> GetLatestDataPointsFromStation(string stationID)
         {
-            IEnumerable<DataPoint> data = (from points in db.DataPoints
-                        where points.Station.Id == stationID
-                        group points by points.Parameter.Name into paramPoints
-                        select new
-                        {
-                            dataPoints = paramPoints.OrderByDescending(a => a.Time).FirstOrDefault()
-                        }).Select(c => c.dataPoints).ToList();
+            List<DataPoint> data = (from points in db.DataPoints
+                                           where points.Station.Id == stationID
+                                           group points by points.Parameter.Name into paramPoints
+                                           select new
+                                           {
+                                               dataPoints = paramPoints.OrderByDescending(a => a.Time).FirstOrDefault()
+                                           }).Select(c => c.dataPoints).ToList();
 
             return data;
         }
@@ -52,29 +52,33 @@ namespace server_api
         public bool SetDataPointsFromStation(DataPoint[] dataSet)
         {
             string stationId = dataSet[0].Station.Id;
-            Station dataSetStation = db.Stations.SingleOrDefault(s => s.Id == stationId);
+            Station dataSetStation = db.Stations.Find(stationId);
+            
             
             if (dataSetStation == null)
             {
                 return false;
             }
 
-            foreach(DataPoint point in dataSet){
-                db.Parameters.Attach(point.Parameter);
+            Dictionary<Tuple<string, string>, Parameter> existingParameters = new Dictionary<Tuple<string, string>, Parameter>();
+            foreach (Parameter p in db.Parameters.ToList())
+            {
+                existingParameters.Add(new Tuple<string,string>(p.Name, p.Unit), p);
+            }
+
+            Parameter tempParameter = null;            
+
+            foreach (DataPoint point in dataSet)
+            {
+                Tuple<string, string> tempKey = new Tuple<string, string>(point.Parameter.Name, point.Parameter.Unit);
+                existingParameters.TryGetValue(tempKey, out tempParameter);
+
+                point.Parameter = tempParameter;
                 point.Station = dataSetStation;
             }
 
             db.DataPoints.AddRange(dataSet);
-
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            db.SaveChanges();
 
             return true;
         }

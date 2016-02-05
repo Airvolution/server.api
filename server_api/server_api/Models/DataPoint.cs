@@ -8,6 +8,7 @@ namespace server_api
 
     public partial class DataPoint
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -15,6 +16,7 @@ namespace server_api
         public DateTime Time { get; set; }
 
         public virtual Station Station { get; set; }
+
         public virtual Parameter Parameter { get; set; }
 
         public bool Indoor { get; set; }

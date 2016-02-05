@@ -12,6 +12,7 @@ namespace server_api.unit_testing
     public class UnitTestingStationRepository
     {
         private static AirUDBCOE _context;
+        private static StationsRepository _repo;
         private static string connectionString;
 
         [ClassInitialize]
@@ -35,14 +36,15 @@ namespace server_api.unit_testing
             //connectionString = @"";
 
             _context = new AirUDBCOE(connectionString);
+            _repo = new StationsRepository(_context);
             SetupDatabase();
         }
 
         private static void SetupDatabase()
         {
-            AddStations(10); // Number of Stations
+            AddStations(3); // Number of Stations
             AddParameters(); // Parameters (currently 8)
-            var task = AddDataPoints(10); // Number of Datapoints for each station
+            var task = AddDataPoints(3); // Number of Datapoints for each station
             task.Wait();
         }
 
@@ -51,14 +53,14 @@ namespace server_api.unit_testing
             Random rand = new Random();         
 
             List<Station> stations = await _context.Stations.ToListAsync();
+            List<Parameter> parameters = await _context.Parameters.ToListAsync();
+
             List<DataPoint> points = new List<DataPoint>();
             foreach (Station station in stations)
             {
                 decimal lat = (decimal)(rand.NextDouble() * 13 + 35.8);
                 decimal lng = (decimal)(rand.NextDouble() * 44.1 - 121);
 
-
-                List<Parameter> parameters = await _context.Parameters.ToListAsync();
                 for (int i = 0; i < count; i++)
                 {
                     foreach (Parameter parameter in parameters)
@@ -133,8 +135,8 @@ namespace server_api.unit_testing
                 existingStation.Name = "Name" + i.ToString("D6");
                 existingStation.Purpose = "Testing";
                 existingStation.Indoor = false;
-                existingStation.Lat = 77;
-                existingStation.Lng = 77;
+                existingStation.Lat = 77m;
+                existingStation.Lng = 77m;
                 _context.Stations.Add(existingStation);
             }
             _context.SaveChanges();
@@ -180,22 +182,62 @@ namespace server_api.unit_testing
         [TestMethod]
         public void StationDoesNotExist()
         {
-            var stationRepository = new StationsRepository(connectionString);
-            Assert.IsFalse(stationRepository.StationExists("I-Do-Not-Exist"));
+            Assert.IsFalse(_repo.StationExists("I-Do-Not-Exist"));
         }
 
         [TestMethod]
         public void StationDoesExist()
         {
-            var stationRepository = new StationsRepository(connectionString);
-            Assert.IsTrue(stationRepository.StationExists("MAC000000"));
+            Assert.IsTrue(_repo.StationExists("MAC000000"));
         }
 
         [TestMethod]
         public void DataPointDoesExist()
         {
-            var stationRepository = new StationsRepository(connectionString);
             Assert.IsTrue(_context.DataPoints.Find(1)!=null);
+        }
+        
+        [TestMethod]
+        public void SetDataPoint()
+        {
+            
+            DataPoint validDataPoint = new DataPoint();
+            validDataPoint.Indoor = true;
+            validDataPoint.Lat = 123;
+            validDataPoint.Lng = 123;
+
+            Parameter newParameter = new Parameter();
+            newParameter.Name = "CO";
+            newParameter.Unit = "ppm";
+            validDataPoint.Parameter = newParameter;
+
+            Station newStation = new Station();
+            newStation.Id = "MAC000000";
+            validDataPoint.Station = newStation;
+
+            validDataPoint.Time = DateTime.Now.AddYears(5);
+            validDataPoint.Value = 25;
+            validDataPoint.AQI = 234;
+            validDataPoint.Category = 8;
+
+            List<DataPoint> points = new List<DataPoint>();
+            points.Add(validDataPoint);
+
+            Assert.IsTrue(_repo.SetDataPointsFromStation(points.ToArray()));
+
+            IEnumerable<DataPoint> latestPoints = _repo.GetLatestDataPointsFromStation("MAC000000");
+
+            bool isNotThere = true;
+
+            foreach (DataPoint point in latestPoints)
+            {
+                if (point.Parameter.Name.Equals("CO"))
+                    if (point.Value == validDataPoint.Value)
+                        if (point.AQI == validDataPoint.AQI)
+                            isNotThere = false;
+            }
+
+            Assert.IsFalse(isNotThere);            
         }
     }
 }
