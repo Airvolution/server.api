@@ -237,7 +237,14 @@ namespace server_api.unit_testing
                             isNotThere = false;
             }
 
-            Assert.IsFalse(isNotThere);            
+            Assert.IsFalse(isNotThere);
+
+
+            Station mac000000 = _context.Stations.Find("MAC000000");
+
+            Assert.IsTrue(mac000000.Lat == validDataPoint.Lat);
+            Assert.IsTrue(mac000000.Lng == validDataPoint.Lng);
+            Assert.IsTrue(mac000000.Indoor == validDataPoint.Indoor);
         }
     }
 }

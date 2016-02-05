@@ -36,7 +36,9 @@ namespace server_api
             return data;
         }
 
-        public List<DataPoint> GetLatestDataPointsFromStation(string stationID)
+
+
+        public IEnumerable<DataPoint> GetLatestDataPointsFromStation(string stationID)
         {
             List<DataPoint> data = (from points in db.DataPoints
                                            where points.Station.Id == stationID
@@ -61,7 +63,7 @@ namespace server_api
             }
             
             Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();
-            //Dictionary<Tuple<string, string>, Parameter> existingParameters2 = new Dictionary<Tuple<string, string>, Parameter>();
+            //Dictionary<Tuple<string, string>, Parameter> existingParameters2 = new Dictionary<Tuple<string, string>, Parameter>();            
 
             foreach (Parameter p in db.Parameters.ToList())
             {                
@@ -71,6 +73,7 @@ namespace server_api
 
             
             Parameter tempParameter = null;
+            DataPoint latestPoint = dataSet[0];
             //Parameter tempParameter2 = null;
             //for (int i = 0; i < 10000000; i++)
             //{
@@ -88,9 +91,18 @@ namespace server_api
                 point.Parameter = tempParameter;
 
                 point.Station = dataSetStation;
+
+                if (latestPoint.Time < point.Time)
+                {
+                    latestPoint = point;
+                }
             }
             //}
 
+            dataSetStation.Indoor = latestPoint.Indoor;
+            dataSetStation.Lat = latestPoint.Lat;
+            dataSetStation.Lng = latestPoint.Lng;
+           
             db.DataPoints.AddRange(dataSet);
             db.SaveChanges();
 
