@@ -30,6 +30,18 @@ namespace server_api {
             return data;
         }
 
+        public IQueryable GetLatestDataPointsFromStation(string stationID)
+        {
+            var data = (from points in db.DataPoints
+                                          where points.Station.Id == stationID
+                                          group points by points.Parameter.Name into paramPoints
+                                          select new
+                                          {
+                                              dataPoints = paramPoints.OrderByDescending(a => a.Time).FirstOrDefault()
+                                          });
+            return data;
+        }
+
         public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID) {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID

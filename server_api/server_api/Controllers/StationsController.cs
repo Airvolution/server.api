@@ -281,112 +281,19 @@ namespace server_api.Controllers
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
-        [ResponseType(typeof(SwaggerLatestDataPoints))]
-        [Route("stations/latestDataPoint/{deviceId}")]
+        [ResponseType(typeof(IEnumerable<DataPoint>))]
+        [Route("stations/latestDataPoint/{stationID}")]
         [HttpGet]
-        public IHttpActionResult LatestDataPoint([FromUri]string deviceId)
+        public IHttpActionResult LatestDataPoint([FromUri]string stationID)
         {
             var db = new AirUDBCOE();
 
-            // Validate DeviceID represents an actual AMS station.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == deviceId.ToString());
-            /*
-            if (registeredDevice != null)
+            if (!_repo.StationExists(stationID))
             {
-                // TODO: Should not be using hard coded db link
-                // Performs database query to obtain the latest Datapoints for specific DeviceID.
-                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=air;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
-                SwaggerLatestPollutantsList latestPollutants = new SwaggerLatestPollutantsList();
-                SwaggerLatestDataPoints latest = new SwaggerLatestDataPoints();
-                using (SqlConnection myConnection = conn)
-                {
-                    string oString = @"select Devices_States_and_DataPoints.DeviceID,
-		                                        Devices_States_and_DataPoints.StateTime,
-		                                        Devices_States_and_DataPoints.MeasurementTime,
-		                                        Devices_States_and_DataPoints.Lat,
-		                                        Devices_States_and_DataPoints.Lng,
-		                                        Devices_States_and_DataPoints.InOrOut,
-		                                        Devices_States_and_DataPoints.Privacy,
-		                                        Devices_States_and_DataPoints.Value,
-		                                        Devices_States_and_DataPoints.PollutantName
-                                        from(select DeviceID, Max(MeasurementTime) as MaxMeasurementTime, PollutantName
-	                                        from (select MaxStates.DeviceID, MaxStates.MaxStateTime, MeasurementTime, PollutantName
-			                                        from (select DeviceID, Max(StateTime) as MaxStateTime
-					                                        from DeviceStates
-					                                        where DeviceID=@deviceID
-					                                        group by DeviceID) as MaxStates
-			                                        left join Devices_States_and_DataPoints
-			                                        on MaxStates.DeviceID = Devices_States_and_DataPoints.DeviceID
-			                                        and MaxStates.MaxStateTime = Devices_States_and_DataPoints.StateTime) as MaxStatesAndMeasurementTime
-	                                        group by DeviceID, PollutantName) as MaxMeasurementTimeForPollutants
-                                        left join Devices_States_and_DataPoints
-			                                        on MaxMeasurementTimeForPollutants.DeviceID = Devices_States_and_DataPoints.DeviceID
-			                                        and MaxMeasurementTimeForPollutants.PollutantName = Devices_States_and_DataPoints.PollutantName
-			                                        and MaxMeasurementTimeForPollutants.MaxMeasurementTime = Devices_States_and_DataPoints.MeasurementTime";
-                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
-                    oCmd.Parameters.AddWithValue("@deviceID", deviceId);
-
-                    myConnection.Open();
-                    using (SqlDataReader oReader = oCmd.ExecuteReader())
-                    {
-                        while (oReader.Read())
-                        {
-                            latestPollutants.AddPollutantAndValue(oReader["PollutantName"].ToString(), (double)oReader["Value"]);
-                        }
-
-                        foreach (var item in latestPollutants.latest)
-                        {
-                            switch (item.pollutantName)
-                            {
-                                case "Altitude":
-                                    latest.altitude = item.value.ToString();
-                                    break;
-
-                                case "CO":
-                                    latest.co = item.value.ToString();
-                                    break;
-
-                                case "CO2":
-                                    latest.co2 = item.value.ToString();
-                                    break;
-
-                                case "Humidity":
-                                    latest.humidity = item.value.ToString();
-                                    break;
-
-                                case "NO2":
-                                    latest.no2 = item.value.ToString();
-                                    break;
-
-                                case "PM":
-                                    latest.pm = item.value.ToString();
-                                    break;
-
-                                case "Pressure":
-                                    latest.pressure = item.value.ToString();
-                                    break;
-
-                                case "Temperature":
-                                    latest.temp = item.value.ToString();
-                                    break;
-
-                                case "O3":
-                                    latest.o3 = item.value.ToString();
-                                    break;
-                            }
-                        }
-                        myConnection.Close();
-                    }
-                }
-                return Ok(latest);
+                return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
             }
-            else
-            {
-                // Station with DeviceID: <deviceID> does not exist.
-                return NotFound();
-            }
-             * */
-            return Ok();
+
+            return Ok(_repo.GetLatestDataPointsFromStation(stationID));
         }
 
         /// <summary>
