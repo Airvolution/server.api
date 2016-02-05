@@ -26,13 +26,13 @@ namespace server_api.unit_testing
                 File.Delete(logPath);
 
             /* Local Database */
-            //connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
-            //using (var context = new AirUDBCOE(connectionString))
-            //{
-            //    context.Database.Create();
-            //}
+            connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
+            using (var context = new AirUDBCOE(connectionString))
+            {
+                context.Database.Create();
+            }
             /* SQL Express Database */
-            connectionString = @"";
+            //connectionString = @"";
 
             _context = new AirUDBCOE(connectionString);
             SetupDatabase();
@@ -42,7 +42,7 @@ namespace server_api.unit_testing
         {
             AddStations(10); // Number of Stations
             AddParameters(); // Parameters (currently 8)
-            var task = AddDataPoints(100); // Number of Datapoints for each station
+            var task = AddDataPoints(10); // Number of Datapoints for each station
             task.Wait();
         }
 
@@ -67,6 +67,7 @@ namespace server_api.unit_testing
 
                         datapoint.Lat = lat;
                         datapoint.Lng = lng;
+
 
                         datapoint.AQI = rand.Next(400);
                         datapoint.Category = GetHealthRiskCategory(datapoint.AQI);
@@ -131,6 +132,9 @@ namespace server_api.unit_testing
                 existingStation.Id = "MAC" + i.ToString("D6");
                 existingStation.Name = "Name" + i.ToString("D6");
                 existingStation.Purpose = "Testing";
+                existingStation.Indoor = false;
+                existingStation.Lat = 77;
+                existingStation.Lng = 77;
                 _context.Stations.Add(existingStation);
             }
             _context.SaveChanges();
