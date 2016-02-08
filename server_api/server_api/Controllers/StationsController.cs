@@ -274,6 +274,47 @@ namespace server_api.Controllers
         }
 
         /// <summary>
+        ///   Returns all datapoints for a Station given a StationID after a specified time.
+        ///   On Javascript Side, use encodeURIComponent when sending DateTime
+        ///   Primary Use: Compare View and single AMS station Map View "data graph"
+        /// </summary>
+        /// <param name="stationID"></param>
+        /// <returns></returns>
+        [ResponseType(typeof(IEnumerable<DataPoint>))]
+        [Route("stations/datapoints/{stationID}/{after}")]
+        [HttpGet]
+        public IHttpActionResult DataPoints([FromUri]string stationID, [FromUri]DateTime after)
+        {
+            if (!_repo.StationExists(stationID))
+            {
+                return NotFound();
+            }
+            return Ok(_repo.GetDataPointsFromStationAfterTime(stationID, after));
+        }
+
+
+        /// <summary>
+        ///   Returns all datapoints for a Station given a StationID between two times.
+        ///   On Javascript Side, use encodeURIComponent when sending DateTime
+        ///   Primary Use: Compare View and single AMS station Map View "data graph"
+        /// </summary>
+        /// <param name="stationID"></param>
+        /// <returns></returns>
+        [ResponseType(typeof(IEnumerable<DataPoint>))]
+        [Route("stations/datapoints/{stationID}/{after}/{before}")]
+        [HttpGet]
+        public IHttpActionResult DataPoints([FromUri]string stationID, [FromUri]DateTime after, [FromUri]DateTime before)
+        {
+            if (!_repo.StationExists(stationID))
+            {
+                return NotFound();
+            }
+            return Ok(_repo.GetDataPointsFromStationBetweenTimes(stationID, after, before));
+        }
+
+
+
+        /// <summary>
         ///   Returns the latest datapoints for a single AMS station based on specified DeviceId. 
         ///   
         ///   Primary Use: "details" panel on Map View after selecting AMS station on map. 

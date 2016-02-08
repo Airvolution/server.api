@@ -117,6 +117,21 @@ namespace server_api
             return data;
         }
 
+        public IEnumerable<DataPoint> GetDataPointsFromStationAfterTime(string stationID, DateTime after)
+        {
+            return GetDataPointsFromStationBetweenTimes(stationID, after, DateTime.Now);
+        }
+
+        public IEnumerable<DataPoint> GetDataPointsFromStationBetweenTimes(string stationID, DateTime after, DateTime before)
+        {
+            IEnumerable<DataPoint> data = from point in db.DataPoints
+                                          where point.Station.Id == stationID &&
+                                                point.Time > after &&
+                                                point.Time < before
+                                          select point;
+            return data;
+        }
+
         public bool DeleteStation(string stationID)
         {
             Station station = db.Stations.SingleOrDefault(s => s.Id == stationID);
