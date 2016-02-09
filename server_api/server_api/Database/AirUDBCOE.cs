@@ -14,17 +14,16 @@ namespace server_api
         }
         
         public AirUDBCOE(string connectionString)
-            : base(connectionString)
+            : base(connectionString.Equals("")?"name=AirUDBCOE":connectionString)
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<DataPoint> DataPoints { get; set; }
-        public virtual DbSet<DeviceGroup> DeviceGroups { get; set; }
-        public virtual DbSet<Device> Devices { get; set; }
-        public virtual DbSet<DeviceState> DeviceStates { get; set; }
-        public virtual DbSet<Pollutant> Pollutants { get; set; }
+        public virtual DbSet<StationGroup> DeviceGroups { get; set; }
+        public virtual DbSet<Station> Stations { get; set; }
+        public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Devices_States_and_Datapoints> Devices_States_and_Datapoints { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

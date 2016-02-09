@@ -224,6 +224,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -308,7 +309,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
+    <Compile Include="Controllers\WeatherController.cs" />
     <Compile Include="Database\AirUDBCOE.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -320,14 +324,14 @@
     <Compile Include="Controllers\Vendors\US\US-UTController.cs" />
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="Database\AuthContext.cs" />
-    <Compile Include="Models\Device.cs" />
-    <Compile Include="Models\DeviceGroup.cs" />
-    <Compile Include="Models\DeviceState.cs" />
-    <Compile Include="Models\Devices_States_and_Datapoints.cs" />
+    <Compile Include="Models\StationGroup.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\GpsBounds.cs" />
+    <Compile Include="Models\GpsCoordinates.cs" />
     <Compile Include="Models\SwaggerModels.cs" />
-    <Compile Include="Models\Pollutant.cs" />
+    <Compile Include="Models\WeatherResponse.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
+    <Compile Include="Repository\StationRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
@@ -477,12 +481,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Weather\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -222,7 +222,7 @@ namespace server_api.Models
     }
 
     /// <summary>
-    ///   Used to return Device locations on the map view.
+    ///   Used to return Station locations on the map view.
     /// 
     ///   {
     ///   "ams": [{
