@@ -24,6 +24,39 @@ namespace server_api.Controllers
             _repo = new StationsRepository();
         }
 
+
+
+         /// <summary>
+        ///   Returns all datapoints for a Station given a DeviceID.
+        /// 
+        ///   Primary Use: Compare View and single AMS station Map View "data graph"
+        /// </summary>
+        /// <param name="deviceID"></param>
+        /// <returns></returns>
+        //[ResponseType(typeof(IEnumerable<SwaggerPollutantList>))]
+        [Route("stations/parameterValues")]
+        [HttpGet]
+        public IHttpActionResult GetAllDataPointsForParameters(string stationID, string parameter)
+        {
+            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
+
+            Station existingStation = _repo.GetStation(stationID);
+
+            List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
+
+            SwaggerPollutantList pl = new SwaggerPollutantList(parameter);
+            foreach (DataPoint datapoint in points)
+            {
+                pl.values.Add(new object[2]);
+                pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.Time);
+                pl.values.Last()[1] = (decimal)datapoint.Value;
+            }
+
+            return Ok(pl);
+        }
+
+
+
         [ResponseType(typeof(Station))]
         [Route("stations/register")]
         [HttpPost]

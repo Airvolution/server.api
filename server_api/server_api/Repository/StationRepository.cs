@@ -28,6 +28,15 @@ namespace server_api
             return true;
         }
 
+        public Station GetStation(string stationID)
+        {
+            if (!StationExists(stationID))
+            {
+                return null;
+            }
+            return db.Stations.Find(stationID);
+        }
+
         public IEnumerable<Station> StationLocations(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
         {
             IEnumerable<Station> data = from station in db.Stations
@@ -113,6 +122,15 @@ namespace server_api
         {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID
+                                          select point;
+            return data;
+        }
+
+        public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID, string parameter)
+        {
+            IEnumerable<DataPoint> data = from point in db.DataPoints
+                                          where point.Station.Id == stationID
+                                          where point.Parameter.Name == parameter
                                           select point;
             return data;
         }
