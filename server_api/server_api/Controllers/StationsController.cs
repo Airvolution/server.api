@@ -94,7 +94,7 @@ namespace server_api.Controllers
 
 
         [ResponseType(typeof(IEnumerable<Station>))]
-        [Route("stations/locations/{latMin}/{latMax}/{lngMin}/{lngMax}")]
+        [Route("stations/locations")]
         [HttpGet]
         public IHttpActionResult StationLocators(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
         {
