@@ -22,15 +22,41 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
         {
+
+
+            /*
+             {
+                "station": {
+                    "Name": "Draper",
+                    "ID": "123",
+                    "Agency": "EPA",
+                    "Purpose": "Bad Stuff"
+                },
+                "datapoint": {
+                    "MeasurementTime": "2016-02-03T15:28:57.468Z",
+                    "InOrOut": false,
+                    "Lat": 123.456,
+                    "Lng": 789.101,
+                    "Value": 0.02,
+                    "Category": 1,
+                    "AQI": 27
+
+                }
+               "parameter": {
+              }
+            }
+             */
             var db = new AirUDBCOE();
 
             db.DataPoints.AddRange(dataSet);
+
 
             db.SaveChanges();
 
             return Ok(dataSet);
         }
 
+        /*
         /// <summary>
         /// 
         /// </summary>
@@ -38,16 +64,15 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("ams/state")]
         [HttpPost]
-        public IHttpActionResult UpdateAMSDeviceState([FromBody]DeviceState[] states)
+        public IHttpActionResult UpdateAMSDeviceState([FromBody]StationState[] states)
         {
             var db = new AirUDBCOE();
-            string deviceID = states[0].DeviceID;
-            Device device = db.Devices.SingleOrDefault(x => x.DeviceID == deviceID);
+            Station station = states[0].Station;
 
-            if (device == null)
+            if (station == null)
             {
-                // Failed to add DeviceState.
-                return Ok("Failed to add device state with Device with ID = " + states[0].DeviceID + " not found.");                
+                // Failed to add StationState.
+                return Ok("Failed to add station state with Station with ID = " + states[0].Station + " not found.");                
             }
 
             db.DeviceStates.AddRange(states);
@@ -57,6 +82,7 @@ namespace server_api.Controllers
             // Success.
             return Ok(states);
         }
+        */
 
         /// <summary>
         /// *xml comment*

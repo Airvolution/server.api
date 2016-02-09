@@ -6,19 +6,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Web;
 using System.Web.Http;
-using Swashbuckle.Swagger.Annotations;
 using System.Web.Http.Description;
 using server_api.Models;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using System.Globalization;
-
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace server_api.Controllers
 {
@@ -27,6 +23,15 @@ namespace server_api.Controllers
     /// </summary>
     public class FrontEndController : ApiController
     {
+        private AuthRepository _auth_repo = null;
+        private AirUDBCOE _db_repo = null;
+
+        public FrontEndController()
+        {
+            _auth_repo = new AuthRepository();
+            _db_repo = new AirUDBCOE();
+        }
+
         /*
          * + = Working as expected
          * - = Needs work
@@ -36,23 +41,23 @@ namespace server_api.Controllers
          * + ServerAndDatabaseTest() - This method performs a database query and returns result.
          * 
          * // Map View (DONE)
-         * + GetAllDataPointsForDevice() - Returns all datapoints for a Device given a DeviceID. (Line Chart)
-         * + GetLatestDataFromSingleAMSDevice() - Returns the latest datapoints for a single AMS device based on specified DeviceID. (Details Panel)
+         * + GetAllDataPointsForDevice() - Returns all datapoints for a Station given a DeviceID. (Line Chart)
+         * + GetLatestDataFromSingleAMSDevice() - Returns the latest datapoints for a single AMS station based on specified DeviceID. (Details Panel)
          * + GetAllDevicesInMapRange() -  Returns the AMS DeviceStates for all AMS devices within specified MapParameters. (Map)
          * 
          * // Heat Map View (DONE)
          * + GetAllDevicesInMapRange() -  Returns the AMS DeviceStates for all AMS devices within specified MapParameters. (Map)
          * + GetLatestValuesForSpecifiedPollutantInMapRange - Returns the values of the pollutants within the specified map range. (HeatMap Layer)
          * 
-         * // Device Compare View (DONE)
-         * + GetAllDataPointsForDevice() - Returns all datapoints for a Device given a DeviceID. (Compare Chart)
+         * // Station Compare View (DONE)
+         * + GetAllDataPointsForDevice() - Returns all datapoints for a Station given a DeviceID. (Compare Chart)
          * 
-         * // Device Registration View (DONE)
-         * + DeviceRegistration() - Registers an AMS device.
+         * // Station Registration View (DONE)
+         * + DeviceRegistration() - Registers an AMS station.
          * 
-         * // Device Settings View
+         * // Station Settings View
          * + GetUsersDeviceStates() - Returns the set of DeviceStates associated with the given user email.
-         * - UpdateDeviceState() - Updates a single AMS DeviceState from the "my devices" settings web page.
+         * - UpdateDeviceState() - Updates a single AMS StationState from the "my devices" settings web page.
          *   - Need output format
          * 
          * // User Registration View (DONE)
@@ -429,9 +434,9 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        ///   Returns all datapoints for a Device given a DeviceID.
+        ///   Returns all datapoints for a Station given a DeviceID.
         /// 
-        ///   Primary Use: Compare View and single AMS device Map View "data graph"
+        ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
         /// <param name="deviceID"></param>
         /// <returns></returns>
@@ -440,330 +445,139 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult GetAllDataPointsForDevice([FromBody]string deviceID)
         {
-            var db = new AirUDBCOE();
+            //var db = new AirUDBCOE();
 
+            //Station existingStation = db.Stations.SingleOrDefault(x => x.Id == deviceID);
 
-            Device existingDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceID);
+            //if (existingStation != null)
+            //{
+            //    List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
 
-            if (existingDevice != null)
-            {
+            //    foreach (Parameter parameter in existingStation.Parameters){
+            //        if (parameter.Name.Equals("Altitude")){
+            //            SwaggerPollutantList pl = new SwaggerPollutantList(parameter.Name);
+            //            foreach (DataPoint datapoint in parameter.DataPoints){
+                        
+                            
+            //                pl.values.Add(new object[2]);
+            //                pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.Time);
+            //                pl.values.Last()[1] = (decimal)datapoint.Value;
+            //            }
+            //            data.Add(pl);
+            //        }
+            //    }
 
-                List<Pollutant> pollutants = db.Pollutants.Select(x => x).ToList<Pollutant>();
+            //    return Ok(data);
+            //}
+            //else
+            //{
+            //    // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
+            //    return BadRequest("Station with ID: " + deviceID + " does not exist. Please try a different Station ID.");
+            //}
 
-                List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
-
-                StringBuilder msg = new StringBuilder();
-
-                foreach (Pollutant p in pollutants)
-                {
-                    var amsDataForPollutant = from a in db.Devices_States_and_Datapoints
-                                              where a.DeviceID == deviceID
-                                              && a.PollutantName == p.PollutantName
-                                              orderby a.MeasurementTime
-                                              select a;
-
-                    /* MOVE ALTITUDE TO STATE */
-                    if (amsDataForPollutant.Count() != 0 && !p.PollutantName.Equals("Altitude"))
-                    {
-                        SwaggerPollutantList pl = new SwaggerPollutantList(p.PollutantName);
-
-                        foreach (var item in amsDataForPollutant)
-                        {
-                            pl.values.Add(new object[2]);
-                            pl.values.Last()[0] = ConvertDateTimeToMilliseconds(item.MeasurementTime);
-                            pl.values.Last()[1] = (decimal)item.Value;
-                        }
-                        data.Add(pl);
-                    }
-                }
-
-                return Ok(data);
-            }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Device with ID: " + deviceID + " does not exist. Please try a different Device ID.");
-            }
+            return Ok();
         }
 
         /// <summary>
-        ///   Validates user is not already in database and if not, creates new User in database.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        [Route("frontend/registerUser")]
-        [HttpPost]
-        public IHttpActionResult UserRegistration([FromBody]SwaggerUser user)
-        {
-            var db = new AirUDBCOE();
-
-            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.email);
-
-            if (existingUser == null)
-            {
-                // Perform queries to insert new user into database.
-                User newUser = new User();
-                newUser.Email = user.email;
-                newUser.Pass = user.pass;
-
-                db.Users.Add(newUser);
-                db.SaveChanges();
-
-                // Account register success.
-                return Ok("Account registration successful! Welcome, " + user.email);
-            }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return BadRequest("Account registration failed! Account with email address: " + 
-                                                                             user.email + 
-                                                                             " already exists. Please try a different email address.");
-            }
-        }
-
-        /// <summary>
-        ///   Validates user based on Email and Pass.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        [Route("frontend/login")]
-        [HttpPost]
-        public IHttpActionResult UserLogin([FromBody]SwaggerUser user)
-        {
-            var db = new AirUDBCOE();
-
-            User validUserAndPass = db.Users.SingleOrDefault(x => x.Email == user.email && x.Pass == user.pass);
-
-            if (validUserAndPass != null)
-            {
-                // Login success.
-                return Ok("Login Successful! Welcome, " + user.email);
-            }
-            else
-            {
-                // Login fail.
-                return BadRequest("Login failed! Please check email and password.");
-            }
-        }
-
-        /// <summary>
-        /// Registers an AMS device:
+        /// Registers an AMS station:
         /// - Validates request
         /// - Updates Database to represent new association between existing user and 
-        ///    new device.
+        ///    new station.
         /// </summary>
-        /// <param name="newDeviceState">The current Device and its DeviceState</param>
+        /// <param name="newDeviceState">The current Station and its StationState</param>
         /// <returns></returns>
         [ResponseType(typeof(SwaggerDeviceState))]
         [Route("frontend/registerUserDevice")]
         [HttpPost]
-        public IHttpActionResult RegisterUserDevice([FromBody]SwaggerDeviceState newDeviceState)
+        public IHttpActionResult RegisterUserDevice([FromBody]JObject jsonData)
         {
             var db = new AirUDBCOE();
 
-            Device existingDevice = db.Devices.SingleOrDefault(x => x.DeviceID == newDeviceState.Id);
+            /*Register Station
+            {
+	            "station": {
+		            "Name": "Draper",
+		            "ID": "123",
+		            "Agency": "EPA",
+		            "Purpose": "Bad Stuff"
+	            },
+	            "user": {
+		            "Email": "zacharyisaiahlobato@gmail.com"
+	            }
+            }
+            */
+            
+            dynamic newDeviceState = jsonData;
+
+            JObject userJObj = newDeviceState.user;
+            JObject stationJObj = newDeviceState.station;
+
+            User user = userJObj.ToObject<User>();
+            Station station = stationJObj.ToObject<Station>();
+
+            // IdentityUser existingUser = await _auth_repo.FindUser("lobato", "burritos");
+
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
+            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
+
             if (existingDevice == null)
             {
-                // Add device success.
-                Device device = new Device();
-                device.Name = newDeviceState.Name;
-                device.DeviceID = newDeviceState.Id;
-                device.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
-                device.DevicePrivacy = newDeviceState.Privacy;
-                device.Purpose = newDeviceState.Purpose;
-                db.Devices.Add(device);
-                db.SaveChanges();
-
-                DeviceState state = new DeviceState();
-                state.Device = device;
-                state.DeviceID = newDeviceState.Id;
-                state.InOrOut = newDeviceState.Indoor;
-                state.StatePrivacy = newDeviceState.Privacy;
-                state.StateTime = new DateTime(1900, 1, 1);
-                state.Long = 0.0m;
-                state.Lat = 90.0m;
-                db.DeviceStates.Add(state);
+                // Add station success.
+                station.User = existingUser;
+                db.Stations.Add(station);
                 db.SaveChanges();
 
                 return Ok(newDeviceState);
             }
             else
             {
-                // Add device fail.
-                return BadRequest("Existing Device");
+                // Add station fail.
+                return BadRequest("Existing Station");
             }
         }
-
-        /// <summary>
-        ///   Returns the set of DeviceStates associated with the given user email.
-        /// </summary>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
-        [Route("frontend/getUserDeviceStates")]
-        [HttpGet]
-        public IHttpActionResult GetUserDeviceStates()
-        {
-            var db = new AirUDBCOE();
-
-            string email = "jaredpotter1@gmail.com";
-
-            // Validate given email has associated User.
-            User registeredUser = db.Users.SingleOrDefault(x => x.Email == email);
-
-            if (registeredUser != null)
-            {
-                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=lobato;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
-                List<SwaggerDeviceState> swaggerDeviceStates = new List<SwaggerDeviceState>();
-                using (SqlConnection myConnection = conn)
-                {
-                    string oString = @"select MaxCompleteStates.DeviceID, Devices.Name, Devices.Purpose, MaxCompleteStates.StateTime, MaxCompleteStates.Lat, MaxCompleteStates.Long, MaxCompleteStates.InOrOut, MaxCompleteStates.StatePrivacy from
-                                        (select MaxStates.DeviceID, MaxStates.StateTime, DeviceStates.Lat, DeviceStates.Long, DeviceStates.InOrOut, DeviceStates.StatePrivacy from
-	                                        (select DeviceID, Max(StateTime) as StateTime
-				                                        from DeviceStates
-				                                        group by DeviceID) as MaxStates
-		                                        left join DeviceStates
-		                                        on MaxStates.DeviceID=DeviceStates.DeviceID
-		                                        and MaxStates.StateTime = DeviceStates.StateTime) as MaxCompleteStates
-		                                        left join Devices
-		                                        on Devices.DeviceID=MaxCompleteStates.DeviceID
-		                                        where Devices.Email = @owner;";
-                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
-
-                    oCmd.Parameters.AddWithValue("@owner", email);
-
-                    myConnection.Open();
-                    using (SqlDataReader oReader = oCmd.ExecuteReader())
-                    {
-                        while (oReader.Read())
-                        {
-                            swaggerDeviceStates.Add(new SwaggerDeviceState(
-                                                                    (string)oReader["Name"],
-                                                                    (string)oReader["DeviceID"],
-                                                                    (bool)oReader["StatePrivacy"],
-                                                                    (string)oReader["Purpose"],
-                                                                    (bool) oReader["InOrOut"],
-                                                                    (decimal)oReader["Lat"],
-                                                                    (decimal)oReader["Long"],
-                                                                    email));
-                        }
-
-                        myConnection.Close();
-                    }
-                }
-                return Ok(swaggerDeviceStates);
-            }
-            else
-            {
-                // User with email address: <email> does not exist.
-                return NotFound();
-            }
-        }
-
-        /// <summary>
-        ///   Updates a single AMS DeviceState from the "my devices" settings web page.
-        /// </summary>
-        /// <param name="state">The state of the device</param>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
-        [Route("frontend/updateUserDeviceState")]
-        [HttpPut]
-        public IHttpActionResult UpdateUserDeviceState([FromBody]SwaggerDeviceState state)
-        {
-            var db = new AirUDBCOE();
-            
-            // Validate Device from given DeviceId exists.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == state.Id);
-
-            if (registeredDevice != null)
-            {
-                // Request previous state from database based on state.DeviceID
-                DeviceState previousState = (
-                                    from device in db.DeviceStates
-                                    where device.DeviceID == state.Id
-                                    && device.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
-                                    group device by device.DeviceID into deviceIDGroup
-                                    select new
-                                    {
-                                        DeviceID = deviceIDGroup.Key,
-                                        MaxMeasurementTime = deviceIDGroup.Max(device => device.StateTime)
-                                    } into MaxStates
-                                    join coordinates in db.DeviceStates
-                                                            on MaxStates.MaxMeasurementTime equals coordinates.StateTime into latestStateGroup
-                                    select latestStateGroup.FirstOrDefault()).Single();
-
-                // Inherit lat and long from previous state
-
-                DeviceState newDeviceState = new DeviceState();
-                newDeviceState.Device = previousState.Device;
-                newDeviceState.DeviceID = state.Id;
-                newDeviceState.InOrOut = state.Indoor;
-                newDeviceState.StatePrivacy = state.Privacy;
-                newDeviceState.Lat = previousState.Lat;
-                newDeviceState.Long = previousState.Long;
-                newDeviceState.StateTime = DateTime.Now;
-                db.DeviceStates.Add(newDeviceState);
-                db.SaveChanges();
-
-                registeredDevice.Name = state.Name;
-                registeredDevice.Purpose = state.Purpose;
-
-                //db.Devices.Add(registeredDevice);
-                db.SaveChanges();
-
-                // Send user newly updated state back to user
-                return Ok(state);
-            }
-            else
-            {
-                // Device with DeviceID: <deviceID> does not exist.
-                return NotFound();
-            }
-        }
-
+        
         /// <summary>
         ///   Returns the AMS DeviceStates for all AMS devices within specified MapParameters.
         ///   
-        ///   Primary Use: Populate the Map View with AMS device icons. 
+        ///   Primary Use: Populate the Map View with AMS station icons. 
         /// </summary>
         /// <param name="para">The NE and SW bounds of a map</param>
         /// <returns></returns>
         [ResponseType(typeof(IEnumerable<SwaggerAMSList>))]
         [Route("frontend/map")]
         [HttpPost]
-        public IHttpActionResult GetAllDevicesInMapRange([FromBody]SwaggerMapParameters para)
+        public IHttpActionResult GetAllDevicesInMapRange([FromBody]GpsBounds para)
         {
             // SHOULD BE VARIABLE
-            decimal latMin = para.southWest.lat;
-            decimal latMax = para.northEast.lat;
-            decimal longMin = para.southWest.lng;
-            decimal longMax = para.northEast.lng;
+            decimal latMin = para.latMin;
+            decimal latMax = para.latMax;
+            decimal lngMin = para.longMin;
+            decimal lngMax = para.longMax;
 
             var db = new AirUDBCOE();
 
-            var results = from state in db.DeviceStates
+
+            var results = from point in db.DataPoints
                           where
-                          state.Lat > latMin
-                          && state.Lat < latMax
-                          && state.Long > longMin
-                          && state.Long < longMax
-                          && state.StatePrivacy == false // Can create add in Spring
-                          && state.InOrOut == false // Can create add in Spring
-                          group state by state.DeviceID into deviceIDGroup
+                          point.Lat > latMin
+                          && point.Lat < latMax
+                          && point.Lng > lngMin
+                          && point.Lng < lngMax
+                          && point.Indoor == false
+                          group point by point.Station.Id into stationPoints
                           select new
                           {
-                              MaxStateTime = deviceIDGroup.Max(device => device.StateTime)
-                          } into MaxStates
-                          join coordinates in db.DeviceStates
-                          on MaxStates.MaxStateTime equals coordinates.StateTime into latestStateGroup
-                          select latestStateGroup.FirstOrDefault();
+                              StationID = stationPoints.Key,
+                              point = stationPoints.OrderByDescending(a => a.Time).FirstOrDefault()
+                          };
 
             SwaggerAMSList amses = new SwaggerAMSList();
 
-            foreach (DeviceState d in results)
+            foreach (var result in results)
             {
-                amses.AddSwaggerDevice(d.DeviceID, d.Lat, d.Long);
+                amses.AddSwaggerDevice(result.StationID, result.point.Lat, result.point.Lng);
             }
-
+            
             return Ok(amses);
         }
         
@@ -797,7 +611,8 @@ namespace server_api.Controllers
             DateTime measurementTimeMin = measurementTimeMax.AddHours(-12);
             */
             
-            SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=lobato;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
+            // TODO: database connection should not be manual 
+            SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=air;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
             SwaggerHeatMapValueList pollutantCoordinatesAndValues = new SwaggerHeatMapValueList(pollutantName);
 
             using (SqlConnection myConnection = conn)
@@ -806,9 +621,9 @@ namespace server_api.Controllers
 		                            Devices_States_and_DataPoints.StateTime,
 		                            Devices_States_and_DataPoints.MeasurementTime,
 		                            Devices_States_and_DataPoints.Lat,
-		                            Devices_States_and_DataPoints.Long,
+		                            Devices_States_and_DataPoints.Lng,
 		                            Devices_States_and_DataPoints.InOrOut,
-		                            Devices_States_and_DataPoints.StatePrivacy,
+		                            Devices_States_and_DataPoints.Privacy,
 		                            Devices_States_and_DataPoints.Value,
 		                            Devices_States_and_DataPoints.PollutantName
                             from(select DeviceID, Max(MeasurementTime) as MaxMeasurementTime, PollutantName
@@ -817,9 +632,9 @@ namespace server_api.Controllers
 					                            from DeviceStates
 												where Lat > @latMin
 												and Lat < @latMax
-												and Long > @longMin
-												and Long < @longMax
-												and StatePrivacy=@statePrivacy
+												and Lng > @longMin
+												and Lng < @longMax
+												and Privacy=@statePrivacy
 												and InOrOut=@inOrOut
 					                            group by DeviceID) as MaxStates
 			                            left join Devices_States_and_DataPoints
@@ -847,7 +662,7 @@ namespace server_api.Controllers
                 {
                     while (oReader.Read())
                     {
-                        pollutantCoordinatesAndValues.AddSwaggerCoordinateAndValue((decimal)oReader["Lat"], (decimal)oReader["Long"], (double)oReader["Value"]);
+                        pollutantCoordinatesAndValues.AddSwaggerCoordinateAndValue((decimal)oReader["Lat"], (decimal)oReader["Lng"], (double)oReader["Value"]);
                     }
 
                     myConnection.Close();
@@ -858,9 +673,9 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        ///   Returns the latest datapoints for a single AMS device based on specified DeviceID. 
+        ///   Returns the latest datapoints for a single AMS station based on specified DeviceID. 
         ///   
-        ///   Primary Use: "details" panel on Map View after selecting AMS device on map. 
+        ///   Primary Use: "details" panel on Map View after selecting AMS station on map. 
         /// </summary>
         /// <param name="deviceID"></param>
         /// <returns></returns>
@@ -871,8 +686,8 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            // Validate DeviceID represents an actual AMS device.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == deviceID);
+            // Validate DeviceID represents an actual AMS station.
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == deviceID);
             if (registeredDevice != null)
             {
                 // Performs database query to obtain the latest Datapoints for specific DeviceID.
@@ -885,9 +700,9 @@ namespace server_api.Controllers
 		                                        Devices_States_and_DataPoints.StateTime,
 		                                        Devices_States_and_DataPoints.MeasurementTime,
 		                                        Devices_States_and_DataPoints.Lat,
-		                                        Devices_States_and_DataPoints.Long,
+		                                        Devices_States_and_DataPoints.Lng,
 		                                        Devices_States_and_DataPoints.InOrOut,
-		                                        Devices_States_and_DataPoints.StatePrivacy,
+		                                        Devices_States_and_DataPoints.Privacy,
 		                                        Devices_States_and_DataPoints.Value,
 		                                        Devices_States_and_DataPoints.PollutantName
                                         from(select DeviceID, Max(MeasurementTime) as MaxMeasurementTime, PollutantName
@@ -963,7 +778,7 @@ namespace server_api.Controllers
             }
             else
             {
-                // Device with DeviceID: <deviceID> does not exist.
+                // Station with DeviceID: <deviceID> does not exist.
                 return NotFound();
             }
         }
@@ -992,23 +807,23 @@ namespace server_api.Controllers
         {
             AirUDBCOE db = new AirUDBCOE();
 
-            // Validate Device from given DeviceId exists.
-            Device registeredDevice = db.Devices.SingleOrDefault(x => x.DeviceID == id);
+            // Validate Station from given DeviceId exists.
+            Station registeredDevice = db.Stations.SingleOrDefault(x => x.Id == id);
 
             if (registeredDevice != null)
             {
-                Device toDelete = (from dev in db.Devices
-                                   where dev.DeviceID == id
+                Station toDelete = (from dev in db.Stations
+                                   where dev.Id == id
                                    select dev).Single();
 
-                db.Devices.Remove(toDelete);
+                db.Stations.Remove(toDelete);
                 db.SaveChanges();
 
                 return Ok("Delete Successful");
             }
             else
             {
-                // Device with DeviceID: <deviceID> does not exist.
+                // Station with DeviceID: <deviceID> does not exist.
                 return NotFound();
             }
         }
