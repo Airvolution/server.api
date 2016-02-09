@@ -24,112 +24,48 @@ namespace server_api.Controllers
             _repo = new StationsRepository();
         }
 
-        /*
-        /// <summary>
-        ///   Returns the set of DeviceStates associated with the given user email.
-        /// </summary>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
-        [Route("stations/state/{email}")]
-        [HttpGet]
-        public IHttpActionResult StationStates([FromUri]string email)
-        {
-            var db = new AirUDBCOE();
-
-            email = "jaredpotter1@gmail.com";
-
-            // Validate given email has associated User.
-            User registeredUser = db.Users.SingleOrDefault(x => x.Email == email);
-
-            if (registeredUser != null)
-            {
-                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=lobato;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
-                List<SwaggerDeviceState> swaggerDeviceStates = new List<SwaggerDeviceState>();
-                using (SqlConnection myConnection = conn)
-                {
-                    string oString = @"select MaxCompleteStates.DeviceID, Devices.Name, Devices.Purpose, MaxCompleteStates.StateTime, MaxCompleteStates.Lat, MaxCompleteStates.Lng, MaxCompleteStates.InOrOut, MaxCompleteStates.Privacy from
-                                        (select MaxStates.DeviceID, MaxStates.StateTime, DeviceStates.Lat, DeviceStates.Lng, DeviceStates.InOrOut, DeviceStates.Privacy from
-	                                        (select DeviceID, Max(StateTime) as StateTime
-				                                        from DeviceStates
-				                                        group by DeviceID) as MaxStates
-		                                        left join DeviceStates
-		                                        on MaxStates.DeviceID=DeviceStates.DeviceID
-		                                        and MaxStates.StateTime = DeviceStates.StateTime) as MaxCompleteStates
-		                                        left join Devices
-		                                        on Devices.DeviceID=MaxCompleteStates.DeviceID
-		                                        where Devices.Email = @owner;";
-                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
-
-                    oCmd.Parameters.AddWithValue("@owner", email);
-
-                    myConnection.Open();
-                    using (SqlDataReader oReader = oCmd.ExecuteReader())
-                    {
-                        while (oReader.Read())
-                        {
-                            swaggerDeviceStates.Add(new SwaggerDeviceState(
-                                                                    (string)oReader["Name"],
-                                                                    (string)oReader["DeviceID"],
-                                                                    (bool)oReader["Privacy"],
-                                                                    (string)oReader["Purpose"],
-                                                                    (bool)oReader["InOrOut"],
-                                                                    (decimal)oReader["Lat"],
-                                                                    (decimal)oReader["Lng"],
-                                                                    email));
-                        }
-
-                        myConnection.Close();
-                    }
-                }
-                return Ok(swaggerDeviceStates);
-            }
-            else
-            {
-                // User with email address: <email> does not exist.
-                return NotFound();
-            }
-        }
-       */
-        /*
-        /// <summary>
-        /// Registers an AMS station:
-        /// - Validates request
-        /// - Updates Database to represent new association between existing user and 
-        ///    new station.
-        /// </summary>
-        /// <param name="newDeviceState">The current Station and its StationState</param>
-        /// <returns></returns>
-        [ResponseType(typeof(SwaggerDeviceState))]
+        [ResponseType(typeof(Station))]
         [Route("stations/register")]
         [HttpPost]
-        public IHttpActionResult RegisterStation([FromBody]SwaggerDeviceState newDeviceState) // TODO: why can't methods share the same name if they are different endpoints?
+        public IHttpActionResult RegisterUserDevice([FromBody]JObject jsonData)
         {
             var db = new AirUDBCOE();
 
-            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == newDeviceState.Id);
+            /*Register Station
+            {
+                "station": {
+                    "Name": "Draper",
+                    "ID": "123",
+                    "Agency": "EPA",
+                    "Purpose": "Bad Stuff"
+                },
+                "user": {
+                    "Email": "zacharyisaiahlobato@gmail.com"
+                }
+            }
+            */
+
+            dynamic userPostData = jsonData;
+
+            JObject userJObj = userPostData.user;
+            JObject stationJObj = userPostData.station;
+
+            User user = userJObj.ToObject<User>();
+            Station station = stationJObj.ToObject<Station>();
+
+            // IdentityUser existingUser = await _auth_repo.FindUser("lobato", "burritos");
+
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
+            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
+
             if (existingDevice == null)
             {
                 // Add station success.
-                Station station = new Station();
-                station.Name = newDeviceState.Name;
-                station.ID = newDeviceState.Id;
-                station.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
-                station.Privacy = newDeviceState.Privacy;
-                station.Purpose = newDeviceState.Purpose;
+                station.User = existingUser;
                 db.Stations.Add(station);
                 db.SaveChanges();
 
-                StationState state = new StationState();
-                state.Station = station;
-                state.InOrOut = newDeviceState.Indoor;
-                state.Privacy = newDeviceState.Privacy;
-                state.StateTime = new DateTime(1900, 1, 1);
-                state.Lng = 0.0m;
-                state.Lat = 90.0m;
-                db.DeviceStates.Add(state);
-                db.SaveChanges();
-
-                return Ok(newDeviceState);
+                return Ok(station);
             }
             else
             {
@@ -137,96 +73,6 @@ namespace server_api.Controllers
                 return BadRequest("Existing Station");
             }
         }
-        */
-
-        /*
-        /// <summary>
-        ///   Adds one or many DeviceStates (from a station)
-        /// </summary>
-        /// <param name="state">*xml comment*</param>
-        /// <returns></returns>
-        [Route("stations/states")]
-        [HttpPost]
-        public IHttpActionResult AddAMSDeviceStates([FromBody]StationState[] states)
-        {
-            var db = new AirUDBCOE();
-            Station station = states[0].Station;
-
-            if (station == null)
-            {
-                // Failed to add StationState.
-                return Ok("Failed to add station state with Station with ID = " + states[0].Station.ID + " not found.");
-            }
-
-            db.DeviceStates.AddRange(states);
-
-            db.SaveChanges();
-
-            // Success.
-            return Ok(states);
-        }
-        */
-        /*
-        /// <summary>
-        ///   Updates a single AMS StationState from the "my devices" settings web page.
-        /// </summary>
-        /// <param name="state">The state of the station</param>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
-        [Route("stations/state/{deviceId}")]
-        [HttpPut]
-        public IHttpActionResult Station([FromBody]SwaggerDeviceState state)
-        {
-            var db = new AirUDBCOE();
-
-            // Validate Station from given DeviceId exists.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == state.Id);
-
-            if (registeredDevice != null)
-            {
-                // Request previous state from database based on state.DeviceID
-                StationState previousState = (
-                                    from station in db.DeviceStates
-                                    where station.Station.ID == state.Id
-                                    && station.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
-                                    group station by station.Station.ID into deviceIDGroup
-                                    select new
-                                    {
-                                        DeviceID = deviceIDGroup.Key,
-                                        MaxMeasurementTime = deviceIDGroup.Max(station => station.StateTime)
-                                    } into MaxStates
-                                    join coordinates in db.DeviceStates
-                                                            on MaxStates.MaxMeasurementTime equals coordinates.StateTime into latestStateGroup
-                                    select latestStateGroup.FirstOrDefault()).Single();
-
-                // Inherit lat and long from previous state
-
-                StationState newDeviceState = new StationState();
-                newDeviceState.Station = previousState.Station;
-                newDeviceState.InOrOut = state.Indoor;
-                newDeviceState.Privacy = state.Privacy;
-                newDeviceState.Lat = previousState.Lat;
-                newDeviceState.Lng = previousState.Lng;
-                newDeviceState.StateTime = DateTime.Now;
-                db.DeviceStates.Add(newDeviceState);
-                db.SaveChanges();
-
-                registeredDevice.Name = state.Name;
-                registeredDevice.Purpose = state.Purpose;
-
-                //db.Devices.Add(registeredDevice);
-                db.SaveChanges();
-
-                // Send user newly updated state back to user
-                return Ok(state);
-            }
-            else
-            {
-                // Station with DeviceID: <deviceID> does not exist.
-                return NotFound();
-            }
-        }
-        */
 
         /// <summary>
         ///   Adds one or many DevicePoints (from a station)
