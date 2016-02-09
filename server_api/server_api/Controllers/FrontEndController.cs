@@ -117,7 +117,24 @@ namespace server_api.Controllers
 
                 var json = JsonConvert.DeserializeObject<SwaggerAQIData[]>(jsonString);
 
-                cacheAQI = json[0];
+                dynamic aqiData = json;
+
+                int returnIndex = 0;
+                int maxIndex = 0;
+                int maxAQI = 0;
+                foreach (dynamic returnElement in aqiData)
+                {
+                    int tempAQI = returnElement.AQI;
+                    if (tempAQI > maxAQI)
+                    {
+                        maxAQI = tempAQI;
+                        returnIndex = maxIndex;
+                    }
+
+                    maxIndex++;
+                }
+        
+                cacheAQI = json[returnIndex];
                 
                 return Ok(cacheAQI);
             }
