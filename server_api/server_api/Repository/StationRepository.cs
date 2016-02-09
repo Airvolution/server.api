@@ -89,8 +89,8 @@ namespace server_api
                 // Best - Negligible slow down
                 existingParameters.TryGetValue(point.Parameter.Name + point.Parameter.Unit, out tempParameter);
                 point.Parameter = tempParameter;
-
                 point.Station = dataSetStation;
+                point.Indoor = dataSetStation.Indoor;
 
                 if (latestPoint.Time < point.Time)
                 {

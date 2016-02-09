@@ -37,7 +37,8 @@ namespace server_api.Controllers
                     "Name": "Draper",
                     "ID": "123",
                     "Agency": "EPA",
-                    "Purpose": "Bad Stuff"
+                    "Purpose": "Bad Stuff",
+                    "Indoor" : false
                 },
                 "user": {
                     "Email": "zacharyisaiahlobato@gmail.com"
