@@ -25,6 +25,15 @@ namespace server_api
         [StringLength(1000)]
         public string Purpose { get; set; }
 
+        [StringLength(50)]
+        public string City { get; set; }
+
+        [StringLength(10)]
+        public string State { get; set; }
+
+        [StringLength(10)]
+        public string Postal { get; set; }
+
         public virtual User User { get; set; }
 
     }
