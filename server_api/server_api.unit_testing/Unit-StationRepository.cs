@@ -247,7 +247,7 @@ namespace server_api.unit_testing
             List<DataPoint> points = new List<DataPoint>();
             points.Add(validDataPoint);
 
-            Assert.IsTrue(_repo.SetDataPointsFromStation(points.ToArray()));
+            _repo.SetDataPointsFromStation(points.ToArray());
 
             IEnumerable<DataPoint> latestPoints = _repo.GetLatestDataPointsFromStation("MAC000000");
 

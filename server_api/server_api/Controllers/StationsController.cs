@@ -68,9 +68,9 @@ namespace server_api.Controllers
             {
                 "station": {
                     "Name": "Draper",
-                    "ID": "123",
-                    "Agency": "EPA",
-                    "Purpose": "Bad Stuff",
+                    "ID": "MAC000001",
+                    "Agency": "AirU",
+                    "Purpose": "Testing",
                     "Indoor" : false
                 },
                 "user": {
@@ -92,19 +92,26 @@ namespace server_api.Controllers
             Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
             User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
 
-            if (existingDevice == null)
+            if (existingUser != null)
             {
-                // Add station success.
-                station.User = existingUser;
-                db.Stations.Add(station);
-                db.SaveChanges();
+                if (existingDevice == null)
+                {
+                    // Add station success.
+                    station.User = existingUser;
+                    db.Stations.Add(station);
+                    db.SaveChanges();
 
-                return Ok(station);
+                    return Ok(station);
+                }
+                else
+                {
+                    // Add station fail.
+                    return BadRequest("Existing Station");
+                }
             }
             else
             {
-                // Add station fail.
-                return BadRequest("Existing Station");
+                return BadRequest("User does not exist.");
             }
         }
 
@@ -115,14 +122,15 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/data")]
         [HttpPost]
-        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
+        public IHttpActionResult AddStationDataPointSet([FromBody]DataPoint[] dataSet)
         {
-            if (!_repo.SetDataPointsFromStation(dataSet))
+            IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
+            if (response==null)
             {
-                return NotFound();
+                return BadRequest("Station does not exist");
             }
             else 
-                return Ok();
+                return Ok(response);
         }
 
 

@@ -1,5 +1,6 @@
 namespace server_api
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,10 @@ namespace server_api
 
     public partial class User
     {
-        public User() { }
+        public User()
+        {
+            Stations = new HashSet<Station>();
+        }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -30,14 +34,19 @@ namespace server_api
         public string Email { get; set; }
 
         [Required]
+        [JsonIgnore]
         [StringLength(100, MinimumLength = 1)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [StringLength(100)]
+        [JsonIgnore]
         [Display(Name = "Confirm Password")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<Station> Stations { get; set; }
     }
 }

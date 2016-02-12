@@ -5,6 +5,49 @@ using System.Web;
 
 namespace server_api
 {
+
+    public class DataPointComparer : IEqualityComparer<DataPoint>
+    {
+
+        public bool Equals(DataPoint x, DataPoint y)
+        {
+            return (x.Time.Equals(y.Time) &&
+                   x.Parameter.Name.Equals(y.Parameter.Name) &&
+                   x.Parameter.Unit.Equals(y.Parameter.Unit) &&
+                   x.Station.Id.Equals(y.Station.Id)) ||
+                   (x.Time.Equals(y.Time) &&
+                   x.Station_Id.Equals(y.Station_Id) &&
+                   x.Parameter_Name.Equals(y.Parameter_Name) &&
+                   x.Parameter_Unit.Equals(y.Parameter_Unit));
+        }
+
+        public int GetHashCode(DataPoint obj)
+        {
+            string id = "";
+            string p_name = "";
+            string p_unit = "";
+
+            if (obj.Station_Id != null)
+                id = obj.Station_Id;
+            else
+                id = obj.Station.Id;
+
+            if (obj.Parameter_Name != null)
+                p_name = obj.Parameter_Name;
+            else
+                p_name = obj.Parameter.Name;
+
+            if (obj.Parameter_Unit != null)
+                p_unit = obj.Parameter_Unit;
+            else
+                p_unit = obj.Parameter.Unit;
+
+            return StringComparer.InvariantCultureIgnoreCase.GetHashCode(id + 
+                                                                         p_name + 
+                                                                         p_unit);
+        }
+    }
+
     public class StationsRepository : IDisposable
     {
         private AirUDBCOE db;
@@ -60,41 +103,42 @@ namespace server_api
             return data;
         }
 
-        public bool SetDataPointsFromStation(DataPoint[] dataSet)
+        public IEnumerable<DataPoint> SetDataPointsFromStation(DataPoint[] dataSet)
         {
             string stationId = dataSet[0].Station.Id;
             Station dataSetStation = db.Stations.Find(stationId);
-            
+
+            IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStation(stationId);
+            //IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStationAfterTime(stationId, DateTime.UtcNow.AddHours(-2));
+            DataPointComparer comparer = new DataPointComparer();
+            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);
+
+            List<DataPoint> addingDataPoints = new List<DataPoint>();
+
+            foreach (DataPoint d in existingDataPointsList)
+            {
+                exisitingDataPoints.Add(d);
+            }
+
             
             if (dataSetStation == null)
             {
-                return false;
+                return null;
             }
-            
-            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();
-            //Dictionary<Tuple<string, string>, Parameter> existingParameters2 = new Dictionary<Tuple<string, string>, Parameter>();            
+
+            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();           
 
             foreach (Parameter p in db.Parameters.ToList())
             {                
                 existingParameters.Add(p.Name + p.Unit, p);
-                //existingParameters2.Add(new Tuple<string,string>(p.Name, p.Unit), p);
             }
 
             
             Parameter tempParameter = null;
             DataPoint latestPoint = dataSet[0];
-            //Parameter tempParameter2 = null;
-            //for (int i = 0; i < 10000000; i++)
-            //{
+
             foreach (DataPoint point in dataSet)
             {
-                // Okay
-                //Tuple<string, string> tempKey2 = new Tuple<string, string>(point.Parameter.Name, point.Parameter.Unit);
-                //existingParameters2.TryGetValue(tempKey2, out tempParameter);                
-
-                // Terrible idea, orders of magnitude slower (due to repeated hits to DB)
-                //point.Parameter = db.Parameters.Find(point.Parameter.Name, point.Parameter.Unit);
-                
                 // Best - Negligible slow down
                 existingParameters.TryGetValue(point.Parameter.Name + point.Parameter.Unit, out tempParameter);
                 point.Parameter = tempParameter;
@@ -105,17 +149,19 @@ namespace server_api
                 {
                     latestPoint = point;
                 }
+
+                if (!exisitingDataPoints.Contains(point))
+                    addingDataPoints.Add(point);
             }
-            //}
 
             dataSetStation.Indoor = latestPoint.Indoor;
             dataSetStation.Lat = latestPoint.Lat;
             dataSetStation.Lng = latestPoint.Lng;
            
-            db.DataPoints.AddRange(dataSet);
+            db.DataPoints.AddRange(addingDataPoints);
             db.SaveChanges();
 
-            return true;
+            return addingDataPoints;
         }
 
         public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID)

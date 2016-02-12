@@ -28,6 +28,24 @@ namespace server_api
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Parameter>()
+                .HasMany(e => e.DataPoints)
+                .WithRequired(e => e.Parameter)
+                .HasForeignKey(e => new { e.Parameter_Name, e.Parameter_Unit })
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Station>()
+                .HasMany(e => e.DataPoints)
+                .WithRequired(e => e.Station)
+                .HasForeignKey(e => e.Station_Id)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Stations)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.User_Id)
+                .WillCascadeOnDelete(false);
         }
 
     }
