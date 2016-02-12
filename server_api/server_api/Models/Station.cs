@@ -28,7 +28,7 @@ namespace server_api
         [StringLength(50)]
         public string City { get; set; }
 
-        [StringLength(2)]
+        [StringLength(10)]
         public string State { get; set; }
 
         [StringLength(10)]
