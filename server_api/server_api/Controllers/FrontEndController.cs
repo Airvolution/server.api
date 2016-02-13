@@ -77,7 +77,8 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult ServerTest()
         {
-            return Ok("Success");
+            return BadRequest("Yikes!");
+            //return Ok("Success");
         }
 
         static SwaggerAQIData cacheAQI = null;

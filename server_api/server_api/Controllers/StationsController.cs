@@ -60,7 +60,7 @@ namespace server_api.Controllers
         [ResponseType(typeof(Station))]
         [Route("stations/register")]
         [HttpPost]
-        public IHttpActionResult RegisterUserDevice([FromBody]JObject jsonData)
+        public IHttpActionResult RegisterUserStation([FromBody]JObject jsonData)
         {
             var db = new AirUDBCOE();
 
@@ -106,7 +106,7 @@ namespace server_api.Controllers
                 else
                 {
                     // Add station fail.
-                    return BadRequest("Existing Station");
+                    return BadRequest("Station already exists.");
                 }
             }
             else
@@ -127,7 +127,7 @@ namespace server_api.Controllers
             IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
             if (response==null)
             {
-                return BadRequest("Station does not exist");
+                return BadRequest("Station does not exist.");
             }
             else 
                 return Ok(response);

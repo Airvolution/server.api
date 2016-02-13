@@ -8,43 +8,40 @@ namespace server_api
 
     public class DataPointComparer : IEqualityComparer<DataPoint>
     {
+        public string setNonNull(string a, string b)
+        {
+            if (a != null)
+                return a;
+            else
+                return b;
+        }
 
         public bool Equals(DataPoint x, DataPoint y)
         {
-            return (x.Time.Equals(y.Time) &&
-                   x.Parameter.Name.Equals(y.Parameter.Name) &&
-                   x.Parameter.Unit.Equals(y.Parameter.Unit) &&
-                   x.Station.Id.Equals(y.Station.Id)) ||
-                   (x.Time.Equals(y.Time) &&
-                   x.Station_Id.Equals(y.Station_Id) &&
-                   x.Parameter_Name.Equals(y.Parameter_Name) &&
-                   x.Parameter_Unit.Equals(y.Parameter_Unit));
+            string sIdX = setNonNull(x.Station_Id, x.Station.Id);
+            string pNameX = setNonNull(x.Parameter_Name, x.Parameter.Name);
+            string pUnitX = setNonNull(x.Parameter_Unit, x.Parameter.Unit);
+
+            string sIdY = setNonNull(y.Station_Id, y.Station.Id);
+            string pNameY = setNonNull(y.Parameter_Name, y.Parameter.Name);
+            string pUnitY = setNonNull(y.Parameter_Unit, y.Parameter.Unit);
+
+
+            return x.Time.Equals(y.Time) &&
+                   sIdX.Equals(sIdY) &&
+                   pNameX.Equals(pNameY) &&
+                   pUnitX.Equals(pUnitY);
         }
 
         public int GetHashCode(DataPoint obj)
         {
-            string id = "";
-            string p_name = "";
-            string p_unit = "";
+            string sId = setNonNull(obj.Station_Id, obj.Station.Id);
+            string pName = setNonNull(obj.Parameter_Name, obj.Parameter.Name);
+            string pUnit = setNonNull(obj.Parameter_Unit, obj.Parameter.Unit);
 
-            if (obj.Station_Id != null)
-                id = obj.Station_Id;
-            else
-                id = obj.Station.Id;
-
-            if (obj.Parameter_Name != null)
-                p_name = obj.Parameter_Name;
-            else
-                p_name = obj.Parameter.Name;
-
-            if (obj.Parameter_Unit != null)
-                p_unit = obj.Parameter_Unit;
-            else
-                p_unit = obj.Parameter.Unit;
-
-            return StringComparer.InvariantCultureIgnoreCase.GetHashCode(id + 
-                                                                         p_name + 
-                                                                         p_unit);
+            return StringComparer.InvariantCultureIgnoreCase.GetHashCode(sId + 
+                                                                         pName + 
+                                                                         pUnit);
         }
     }
 
@@ -142,7 +139,12 @@ namespace server_api
                 // Best - Negligible slow down
                 existingParameters.TryGetValue(point.Parameter.Name + point.Parameter.Unit, out tempParameter);
                 point.Parameter = tempParameter;
+                point.Parameter_Name = tempParameter.Name;
+                point.Parameter_Unit = tempParameter.Unit;
+
                 point.Station = dataSetStation;
+                point.Station_Id = dataSetStation.Id;
+
                 point.Indoor = dataSetStation.Indoor;
 
                 if (latestPoint.Time < point.Time)
