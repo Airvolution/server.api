@@ -9,6 +9,11 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
+
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
+
 namespace AirnowRetrieval
 {
     class Program
@@ -19,44 +24,49 @@ namespace AirnowRetrieval
             NullValueHandling = NullValueHandling.Ignore
         };
 
+        static string logPath = null;
+        static string hostUrl = "http://localhost:2307/";
+
         static void Main(string[] args)
         {
             string currentPath = Directory.GetCurrentDirectory();
-            string logPath = currentPath + "\\" + "airNowApiLog.txt";
-            string stationDictionaryPath = currentPath + "\\" + "station_dictionary.txt";
+            logPath = currentPath + "\\" + "airNowApiLog.txt";
+            //string logPath = "C:\\dev\\airnow_retrieval\\ConsoleApplication1\\bin\\Debug\\" + "airNowApiLog.txt";
+            //string stationDictionaryPath = currentPath + "\\" + "station_dictionary.txt";
 
             if (!File.Exists(logPath))
             {
                 File.Create(logPath);
             }
 
-            if (!File.Exists(stationDictionaryPath))
-            {
-                File.Create(stationDictionaryPath);
-            }
+            //if (!File.Exists(stationDictionaryPath))
+            //{
+            //    File.Create(stationDictionaryPath);
+            //}
 
             // Log the time.
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
-            {
-                file.WriteLine("Time: " + DateTime.Now.ToString());
-            }
+            Log("UTC Time: " + DateTime.UtcNow.ToString());
 
             // Get data from airnowapi.org.
             AirNowDataPoint[] data = GetAirNowApiDataPoints();
 
             foreach(var dataPoint in data)
             {
-                if (!SetAirUDataPoint(dataPoint, logPath))
+                if (!SetAirUDataPoint(dataPoint))
                 {
                     Console.WriteLine("Sending datapoints to AirU Failed.");
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
-                    {
-                        file.WriteLine("Sending datapoints to AirU Failed.");
-                    }
+                    Log("Sending DataPoints to AirU - FAILED");
                 }
             }
+        }
 
-            Console.Write("");
+        private static void Log(String msg)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
+            {
+                file.WriteLine(msg);
+                file.Dispose();
+            }
         }
 
         public static AirNowDataPoint[] GetAirNowApiDataPoints()
@@ -117,17 +127,14 @@ namespace AirnowRetrieval
             return airNowApiData;
         }
 
-        public static bool SetAirUDataPoint(AirNowDataPoint dataPoint, string logPath)
+        public static bool SetAirUDataPoint(AirNowDataPoint dataPoint)
         {
             // WebClient performing the POST to airu.
             WebClient airuApiWebClient = new WebClient();
 
-            // POST Url.
-            string postUrl = "http://dev.air.eng.utah.edu/api/stations/data";
-
             string datePattern = "yyyy-MM-ddTHH:mm";
 
-            var item = new DataPoint
+            DataPoint item = new DataPoint
             {
                 Time = DateTime.ParseExact(dataPoint.UTC, datePattern, CultureInfo.InvariantCulture),
                 Station = new Station
@@ -151,59 +158,81 @@ namespace AirnowRetrieval
 
             tempDataPoint[0] = item;
 
-            string dataPointJson = "";
+            string route = "stations/data";
 
             try
             {
-                var http = (HttpWebRequest)WebRequest.Create(new Uri(postUrl));
-                http.ContentType = "application/json";
-                http.Method = "POST";
-
-                dataPointJson = JsonConvert.SerializeObject(tempDataPoint, jsonSettings);
-                UTF8Encoding encoding = new UTF8Encoding();
-                Byte[] bytes = encoding.GetBytes(dataPointJson);
-
-                http.ContentLength = bytes.Length;
-
-                Stream newStream = http.GetRequestStream();
-                newStream.Write(bytes, 0, bytes.Length);
-                newStream.Close();
-
-                using (HttpWebResponse response = (HttpWebResponse)http.GetResponse())
+                using (var client = new HttpClient())
                 {
-                    Console.WriteLine("DataPoint add response code: " + response.StatusCode.ToString());
-                }
+                    client.BaseAddress = new Uri(hostUrl);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                Console.WriteLine("Datapoint added.");
+                    Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, tempDataPoint);
+                    if (responsePost.Result.IsSuccessStatusCode)
+                    {
+                        HttpResponseMessage httpMsg = responsePost.Result;
+                        Task<string> content = httpMsg.Content.ReadAsStringAsync();
+                        string jsonAsString = content.Result;
+
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
+                        Console.WriteLine(httpMsg.StatusCode + ": DataPoints Added");
+                        foreach (var d in responseObject)
+                        {
+                            Console.WriteLine("\tStationId: " + d.station.id + "\tParameterName:" + d.parameter.name + "\tParameterUnit:" + d.parameter.unit);
+                        }   
+                    }
+                    else if (responsePost.Result.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        HttpResponseMessage httpMsg = responsePost.Result;
+                        Task<string> content = httpMsg.Content.ReadAsStringAsync();
+                        string jsonAsString = content.Result;
+
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
+
+                        string errorMessage = responseObject.message;
+
+                        if (errorMessage.Equals("Station does not exist."))
+                        {
+                            Console.Write("Attempting to Add Station at site " +dataPoint.SiteName + "...");
+                            if (!SetAirUStation(dataPoint))
+                            {
+                                Console.WriteLine("Failed.");
+                                Log("Failed to register station:");
+                                Log("\tStationId: " + item.Station.Id + "\tParameterName:" + item.Parameter.Name + "\tParameterUnit:" + item.Parameter.Unit);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Success!");
+                                SetAirUDataPoint(dataPoint);
+                            }
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("An unexpected status code occurrred:");
+                            Log("Unexpected: " + httpMsg.StatusCode + ": " + httpMsg.Content);
+                        }
+
+                        
+                    }
+                    client.Dispose();
+                }
             }
-            catch (WebException e)
+            catch (Exception e)
             {
-                Console.WriteLine("Failed to add datapoint. Exception status: " + e.Status.ToString());
-
-                // Possible missing.
-                // Attempt to add.
-                if(!SetAirUStation(dataPoint, logPath))
-                {
-                    // Failed to add station.
-                }
-                else
-                {
-                    // After successfully adding missing station, attempt to add datapoint.
-                    SetAirUDataPoint(dataPoint, logPath);
-                }
+                Log("An unknown exception occurred: " + e.Message);
             }
-
+            
             return true;
         }
 
-        public static bool SetAirUStation(AirNowDataPoint dataPoint, string logPath)
+        public static bool SetAirUStation(AirNowDataPoint dataPoint)
         {
             // Look up geo information from google.
             string lat = dataPoint.Latitude.ToString();
             string lng = dataPoint.Longitude.ToString();
-            GoogleGeo geoInfo = GetReverseGeolocationLookUp(lat, lng, logPath);
-
-            string url = "http://dev.air.eng.utah.edu/api/stations/register";
+            GoogleGeo geoInfo = GetReverseGeolocationLookUp(lat, lng);
 
             Station newStation = new Station
             {
@@ -228,45 +257,67 @@ namespace AirnowRetrieval
                 user = newUser
             };
 
-            string stationJson = "";
+
+            string route = "stations/register";
 
             try
             {
-                var http = (HttpWebRequest)WebRequest.Create(new Uri(url));
-                http.ContentType = "application/json";
-                http.Method = "POST";
-
-                stationJson = JsonConvert.SerializeObject(stationUser, jsonSettings);
-                UTF8Encoding encoding = new UTF8Encoding();
-                Byte[] bytes = encoding.GetBytes(stationJson);
-
-                http.ContentLength = bytes.Length;
-
-                Stream newStream = http.GetRequestStream();
-                newStream.Write(bytes, 0, bytes.Length);
-                newStream.Close();
-
-                using (HttpWebResponse response = (HttpWebResponse)http.GetResponse())
+                using (var client = new HttpClient())
                 {
-                    Console.WriteLine("Station Creation response code: " + response.StatusCode.ToString());
-                }
+                    client.BaseAddress = new Uri(hostUrl);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                Console.WriteLine("New Station Added.");
+                    Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, stationUser);
+                    if (responsePost.Result.IsSuccessStatusCode)
+                    {
+                        HttpResponseMessage httpMsg = responsePost.Result;
+                        Task<string> content = httpMsg.Content.ReadAsStringAsync();
+                        string jsonAsString = content.Result;
+
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
+                        Console.WriteLine(httpMsg.StatusCode + ": Station Registered");
+                        Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.name);
+
+                    }
+                    else if (responsePost.Result.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        HttpResponseMessage httpMsg = responsePost.Result;
+                        Task<string> content = httpMsg.Content.ReadAsStringAsync();
+                        string jsonAsString = content.Result;
+
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
+
+                        string errorMessage = responseObject.message;
+
+                        if (errorMessage.Equals("Station already exists."))
+                        {
+                            Console.Write("Station already exists: " + stationUser.station.Id);
+                            Log("Station already exists: " + stationUser.station.Id);
+                        }
+                        else if (errorMessage.Equals("User does not exist."))
+                        {
+                            Console.Write("User does not exist: " + stationUser.user.Username);
+                            Log("User does not exist: " + stationUser.user.Username);
+                        }
+                        else
+                        {
+                            Console.WriteLine("An unexpected status code occurrred:");
+                            Log("Unexpected: " + httpMsg.StatusCode + ": " + httpMsg.Content);
+                        }
+                    }
+                    client.Dispose();
+                }
             }
-            catch (WebException e2)
+            catch (Exception e)
             {
-                Console.WriteLine("Failed to add station: " + e2.Status.ToString());
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
-                {
-                    file.WriteLine("Failed to add station: \n" + stationJson);
-                }
-                return false;
+                Log("An unknown exception occurred: " + e.Message);
             }
 
             return true;
         }
 
-        public static GoogleGeo GetReverseGeolocationLookUp(string lat, string lng, string logPath)
+        public static GoogleGeo GetReverseGeolocationLookUp(string lat, string lng)
         {
             // WebClient performing the GET Request from AirNowApi.
             WebClient googleApiWebClient = new WebClient();
