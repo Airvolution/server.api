@@ -302,7 +302,7 @@ namespace AirnowRetrieval
 
                         dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
                         Console.WriteLine(httpMsg.StatusCode + ": Station Registered");
-                        Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.name);
+                        Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.id);
 
                     }
                     else if (responsePost.Result.StatusCode == HttpStatusCode.BadRequest)
