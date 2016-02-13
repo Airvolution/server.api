@@ -33,14 +33,14 @@ namespace AirnowRetrieval
 
         private static Object thisLock = new Object();
         static string logPath = null;
-        static string hostUrl = "http://localhost:2307/";
-        //static string hostURL = "http://dev.air.eng.utah/edu/api/";
+        //static string hostUrl = "http://localhost:2307/";
+        static string hostUrl = "http://dev.air.eng.utah/edu/api/";
 
         static void Main(string[] args)
         {
-            string currentPath = Directory.GetCurrentDirectory();
-            logPath = currentPath + "\\" + "airNowApiLog.txt";
-            //string logPath = "C:\\dev\\airnow_retrieval\\ConsoleApplication1\\bin\\Debug\\" + "airNowApiLog.txt";
+            //string currentPath = Directory.GetCurrentDirectory();
+            //logPath = currentPath + "\\" + "airNowApiLog.txt";
+            string logPath = "C:\\dev\\airnow_retrieval\\log\\" + "airNowApiLog.txt";
             //string stationDictionaryPath = currentPath + "\\" + "station_dictionary.txt";
 
             if (!File.Exists(logPath))
