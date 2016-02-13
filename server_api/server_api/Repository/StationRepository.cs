@@ -102,13 +102,15 @@ namespace server_api
 
         public IEnumerable<DataPoint> SetDataPointsFromStation(DataPoint[] dataSet)
         {
+            db.Configuration.AutoDetectChangesEnabled = false;
+
             string stationId = dataSet[0].Station.Id;
             Station dataSetStation = db.Stations.Find(stationId);
 
-            IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStation(stationId);
-            //IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStationAfterTime(stationId, DateTime.UtcNow.AddHours(-2));
+            //IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStation(stationId);
+            IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStationAfterTimeUtc(stationId, DateTime.UtcNow.AddHours(-2));
             DataPointComparer comparer = new DataPointComparer();
-            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);
+            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);            
 
             List<DataPoint> addingDataPoints = new List<DataPoint>();
 
@@ -153,7 +155,10 @@ namespace server_api
                 }
 
                 if (!exisitingDataPoints.Contains(point))
+                {
                     addingDataPoints.Add(point);
+                    exisitingDataPoints.Add(point);
+                }
             }
 
             dataSetStation.Indoor = latestPoint.Indoor;
@@ -162,6 +167,8 @@ namespace server_api
            
             db.DataPoints.AddRange(addingDataPoints);
             db.SaveChanges();
+
+            db.Configuration.AutoDetectChangesEnabled = true;
 
             return addingDataPoints;
         }
@@ -186,6 +193,11 @@ namespace server_api
         public IEnumerable<DataPoint> GetDataPointsFromStationAfterTime(string stationID, DateTime after)
         {
             return GetDataPointsFromStationBetweenTimes(stationID, after, DateTime.Now);
+        }
+
+        public IEnumerable<DataPoint> GetDataPointsFromStationAfterTimeUtc(string stationID, DateTime after)
+        {
+            return GetDataPointsFromStationBetweenTimes(stationID, after, DateTime.UtcNow);
         }
 
         public IEnumerable<DataPoint> GetDataPointsFromStationBetweenTimes(string stationID, DateTime after, DateTime before)

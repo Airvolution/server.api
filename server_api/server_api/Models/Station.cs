@@ -32,7 +32,6 @@ namespace server_api
         [StringLength(320)]
         public string Name { get; set; }
 
-        [Required]
         [StringLength(1000)]
         public string Purpose { get; set; }
 

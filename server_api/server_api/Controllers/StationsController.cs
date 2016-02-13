@@ -124,13 +124,22 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult AddStationDataPointSet([FromBody]DataPoint[] dataSet)
         {
+            DateTime start = DateTime.Now;
             IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
+            DateTime end = DateTime.Now;
+
+            int ms = end.Millisecond - start.Millisecond;
+            int sec = ms / 1000;
+            int min = ms / 1000 / 60;
+
+
             if (response==null)
             {
                 return BadRequest("Station does not exist.");
             }
             else 
-                return Ok(response);
+                //return Ok(response);
+                return Ok();
         }
 
 
