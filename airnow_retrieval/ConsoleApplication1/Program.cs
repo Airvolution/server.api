@@ -8,14 +8,21 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-
-
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace AirnowRetrieval
 {
+    class Blah
+    {
+        public void Example()
+        {
+            Console.Out.WriteLine("HI");
+        }
+    }
+
     class Program
     {
         static JsonSerializerSettings jsonSettings = new JsonSerializerSettings
@@ -24,8 +31,10 @@ namespace AirnowRetrieval
             NullValueHandling = NullValueHandling.Ignore
         };
 
+        private static Object thisLock = new Object();
         static string logPath = null;
         static string hostUrl = "http://localhost:2307/";
+        //static string hostURL = "http://dev.air.eng.utah/edu/api/";
 
         static void Main(string[] args)
         {
@@ -45,27 +54,44 @@ namespace AirnowRetrieval
             //}
 
             // Log the time.
-            Log("UTC Time: " + DateTime.UtcNow.ToString());
+            Log("Start Time");
 
             // Get data from airnowapi.org.
             Dictionary<string, List<AirNowDataPoint>> dataDictionary = GetAirNowApiDataPoints();
-
+            int tamper = 0;
             foreach(List<AirNowDataPoint> stationPoints in dataDictionary.Values)
             {
-                if (!SetAirUDataPoint(stationPoints))
-                {
-                    Console.WriteLine("Sending datapoints to AirU Failed.");
-                    Log("Sending DataPoints to AirU - FAILED");
-                }
+                
+                Thread newThread = new Thread(() => SetAirUDataPoint(stationPoints));
+                Console.WriteLine("Starting new thread...");
+                newThread.Start();
+                tamper += 1;
+                //if (tamper > 15)
+                //{
+                    //newThread.Join();
+                    //Console.WriteLine("Threads joined...");
+                    //tamper = 0;
+                //}               
+
+                //if (!SetAirUDataPoint(stationPoints))
+                //{
+                //    Console.WriteLine("Sending datapoints to AirU Failed.");
+                //    Log("Sending DataPoints to AirU - FAILED");
+                //}
             }
+
+            Log("End Time" );
         }
 
         private static void Log(String msg)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
+            lock (thisLock)
             {
-                file.WriteLine(msg);
-                file.Dispose();
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
+                {
+                    file.WriteLine(DateTime.UtcNow.ToString()+ ": "+msg);
+                    file.Dispose();
+                }
             }
         }
 
@@ -150,6 +176,7 @@ namespace AirnowRetrieval
             // WebClient performing the POST to airu.
             WebClient airuApiWebClient = new WebClient();
 
+
             string datePattern = "yyyy-MM-ddTHH:mm";
 
             List<DataPoint>tempDataPoints = new List<DataPoint>();
@@ -217,32 +244,49 @@ namespace AirnowRetrieval
 
                         string errorMessage = responseObject.message;
 
+                        switch (errorMessage)
+                        {
+                            case "Station does not exist.":
+                                Console.Write("Attempting to Add Station at site " + tempNowDataPoint.SiteName + "...");
+                                if (!SetAirUStation(tempNowDataPoint))
+                                {
+                                    Console.WriteLine("Failed.");
+                                    Log("Failed to register station:");
+                                    Log("\tStationId: " + tempDataPoint.Station.Id);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Success!");
+                                    SetAirUDataPoint(airNowDataPoints);
+                                }
+                                break;
+                            case "No DataPoints in sent array.":
+                                Console.WriteLine("Empty array of DataPoints sent:");
+                                Log("Empty array of DataPoints sent on StationId:" + tempDataPoint.Station.Id);
+                                break;
+                            default:
+                                Console.WriteLine("An unexpected status code occurrred:");
+                                Log("Unexpected: " + httpMsg.StatusCode + ": " + httpMsg.Content);
+                                break;
+                        }
                         if (errorMessage.Equals("Station does not exist."))
                         {
-                            Console.Write("Attempting to Add Station at site " + tempNowDataPoint.SiteName + "...");
-                            if (!SetAirUStation(tempNowDataPoint))
-                            {
-                                Console.WriteLine("Failed.");
-                                Log("Failed to register station:");
-                                Log("\tStationId: " + tempDataPoint.Station.Id);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Success!");
-                                SetAirUDataPoint(airNowDataPoints);
-                            }
-
+                            
                         }
                         else
                         {
                             Console.WriteLine("An unexpected status code occurrred:");
-                            Log("Unexpected: " + httpMsg.StatusCode + ": " + httpMsg.Content);
+                            Log("Unexpected: " + httpMsg.StatusCode + ": " + httpMsg.ReasonPhrase);
                         }
 
                         
                     }
                     client.Dispose();
                 }
+            }
+            catch (TaskCanceledException e)
+            {
+                Log("A task canceled exception occurred: " + e.Message);
             }
             catch (Exception e)
             {
@@ -302,7 +346,7 @@ namespace AirnowRetrieval
 
                         dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
                         Console.WriteLine(httpMsg.StatusCode + ": Station Registered");
-                        Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.id);
+                        //Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.id);
 
                     }
                     else if (responsePost.Result.StatusCode == HttpStatusCode.BadRequest)
@@ -354,6 +398,7 @@ namespace AirnowRetrieval
             string latLng = lat + "," + lng;
             //string latLng = "40.758839,-111.855112"; // my house
             string googleApiKey = "AIzaSyBTZfapJs0edgaklFGhC3c9DcDt_Kg92VI";
+            //string googleApiKey = "AIzaSyDeA2Hn7XRCY3dgq4y_upM4HW6rQkSZSUo";
 
             googleApiWebClient.BaseAddress = getUrl;
 
