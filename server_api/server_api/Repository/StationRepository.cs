@@ -149,10 +149,10 @@ namespace server_api
 
                 point.Indoor = dataSetStation.Indoor;
 
-                if (latestPoint.Time < point.Time)
-                {
-                    latestPoint = point;
-                }
+                //if (latestPoint.Time < point.Time)
+                //{
+                //    latestPoint = point;
+                //}
 
                 if (!exisitingDataPoints.Contains(point))
                 {

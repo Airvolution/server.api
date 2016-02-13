@@ -125,6 +125,12 @@ namespace server_api.Controllers
         public IHttpActionResult AddStationDataPointSet([FromBody]DataPoint[] dataSet)
         {
             DateTime start = DateTime.Now;
+
+            if (dataSet.Length == null)
+            {
+                return BadRequest("No DataPoints in sent array.");
+            }
+
             IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
             DateTime end = DateTime.Now;
 
@@ -138,8 +144,8 @@ namespace server_api.Controllers
                 return BadRequest("Station does not exist.");
             }
             else 
-                //return Ok(response);
-                return Ok();
+                return Ok(response);
+                //return Ok();
         }
 
 
