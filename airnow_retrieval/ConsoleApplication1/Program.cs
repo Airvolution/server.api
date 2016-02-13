@@ -34,13 +34,13 @@ namespace AirnowRetrieval
         private static Object thisLock = new Object();
         static string logPath = null;
         //static string hostUrl = "http://localhost:2307/";
-        static string hostUrl = "http://dev.air.eng.utah/edu/api/";
+        static string hostUrl = "http://dev.air.eng.utah.edu/api/";
 
         static void Main(string[] args)
         {
             //string currentPath = Directory.GetCurrentDirectory();
             //logPath = currentPath + "\\" + "airNowApiLog.txt";
-            string logPath = "C:\\dev\\airnow_retrieval\\log\\" + "airNowApiLog.txt";
+            logPath = "C:\\dev\\airnow_retrieval\\log\\" + "airNowApiLog.txt";
             //string stationDictionaryPath = currentPath + "\\" + "station_dictionary.txt";
 
             if (!File.Exists(logPath))
@@ -61,14 +61,14 @@ namespace AirnowRetrieval
             int tamper = 0;
             foreach(List<AirNowDataPoint> stationPoints in dataDictionary.Values)
             {
-                
+
                 Thread newThread = new Thread(() => SetAirUDataPoint(stationPoints));
                 Console.WriteLine("Starting new thread...");
                 newThread.Start();
-                tamper += 1;
+                //tamper += 1;
                 //if (tamper > 15)
                 //{
-                    //newThread.Join();
+                //newThread.Join();
                     //Console.WriteLine("Threads joined...");
                     //tamper = 0;
                 //}               
