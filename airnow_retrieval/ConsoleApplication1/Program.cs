@@ -48,11 +48,11 @@ namespace AirnowRetrieval
             Log("UTC Time: " + DateTime.UtcNow.ToString());
 
             // Get data from airnowapi.org.
-            AirNowDataPoint[] data = GetAirNowApiDataPoints();
+            Dictionary<string, List<AirNowDataPoint>> dataDictionary = GetAirNowApiDataPoints();
 
-            foreach(var dataPoint in data)
+            foreach(List<AirNowDataPoint> stationPoints in dataDictionary.Values)
             {
-                if (!SetAirUDataPoint(dataPoint))
+                if (!SetAirUDataPoint(stationPoints))
                 {
                     Console.WriteLine("Sending datapoints to AirU Failed.");
                     Log("Sending DataPoints to AirU - FAILED");
@@ -69,8 +69,10 @@ namespace AirnowRetrieval
             }
         }
 
-        public static AirNowDataPoint[] GetAirNowApiDataPoints()
+        public static Dictionary<string, List<AirNowDataPoint>> GetAirNowApiDataPoints()
         {
+            Dictionary<string, List<AirNowDataPoint>> optimizedPoints = new Dictionary<string, List<AirNowDataPoint>>();
+
             // DataPoints to be returned.
             AirNowDataPoint[] airNowApiData = null;
 
@@ -124,39 +126,62 @@ namespace AirnowRetrieval
                 //airNowResponse = e.Status.ToString();
             }
 
-            return airNowApiData;
+
+            // Slight Optimization
+            foreach (AirNowDataPoint dataPoint in airNowApiData)
+            {
+                if (optimizedPoints.ContainsKey(dataPoint.SiteName)){
+                    List<AirNowDataPoint> empty = null;
+                    optimizedPoints.TryGetValue(dataPoint.SiteName, out empty);
+                    empty.Add(dataPoint);
+                }
+                else{
+                    List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
+                    newList.Add(dataPoint);
+                    optimizedPoints.Add(dataPoint.SiteName, newList);
+                }
+            }
+
+            return optimizedPoints;
         }
 
-        public static bool SetAirUDataPoint(AirNowDataPoint dataPoint)
+        public static bool SetAirUDataPoint(List<AirNowDataPoint> airNowDataPoints)
         {
             // WebClient performing the POST to airu.
             WebClient airuApiWebClient = new WebClient();
 
             string datePattern = "yyyy-MM-ddTHH:mm";
 
-            DataPoint item = new DataPoint
-            {
-                Time = DateTime.ParseExact(dataPoint.UTC, datePattern, CultureInfo.InvariantCulture),
-                Station = new Station
+            List<DataPoint>tempDataPoints = new List<DataPoint>();
+
+            foreach (AirNowDataPoint airNowDataPoint in airNowDataPoints){
+
+                DataPoint item = new DataPoint
                 {
-                    Id = dataPoint.SiteName.GetHashCode().ToString()
-                },
-                Parameter = new Parameter
-                {
-                    Name = dataPoint.Parameter,
-                    Unit = dataPoint.Unit
-                },
-                Indoor = false,
-                Lat = dataPoint.Latitude,
-                Lng = dataPoint.Longitude,
-                Value = dataPoint.Value,
-                Category = dataPoint.Category,
-                AQI = dataPoint.AQI
+                    Time = DateTime.ParseExact(airNowDataPoint.UTC, datePattern, CultureInfo.InvariantCulture),
+                    Station = new Station
+                    {
+                        Id = airNowDataPoint.SiteName.GetHashCode().ToString()
+                    },
+                    Parameter = new Parameter
+                    {
+                        Name = airNowDataPoint.Parameter,
+                        Unit = airNowDataPoint.Unit
+                    },
+                    Indoor = false,
+                    Lat = airNowDataPoint.Latitude,
+                    Lng = airNowDataPoint.Longitude,
+                    Value = airNowDataPoint.Value,
+                    Category = airNowDataPoint.Category,
+                    AQI = airNowDataPoint.AQI
+                };
+
+                tempDataPoints.Add(item);
+
             };
 
-            DataPoint[] tempDataPoint = new DataPoint[1];
-
-            tempDataPoint[0] = item;
+            AirNowDataPoint tempNowDataPoint = airNowDataPoints.ElementAt(0);
+            DataPoint tempDataPoint = tempDataPoints.ElementAt(0);
 
             string route = "stations/data";
 
@@ -168,7 +193,7 @@ namespace AirnowRetrieval
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, tempDataPoint);
+                    Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, tempDataPoints.ToArray());
                     if (responsePost.Result.IsSuccessStatusCode)
                     {
                         HttpResponseMessage httpMsg = responsePost.Result;
@@ -194,17 +219,17 @@ namespace AirnowRetrieval
 
                         if (errorMessage.Equals("Station does not exist."))
                         {
-                            Console.Write("Attempting to Add Station at site " +dataPoint.SiteName + "...");
-                            if (!SetAirUStation(dataPoint))
+                            Console.Write("Attempting to Add Station at site " + tempNowDataPoint.SiteName + "...");
+                            if (!SetAirUStation(tempNowDataPoint))
                             {
                                 Console.WriteLine("Failed.");
                                 Log("Failed to register station:");
-                                Log("\tStationId: " + item.Station.Id + "\tParameterName:" + item.Parameter.Name + "\tParameterUnit:" + item.Parameter.Unit);
+                                Log("\tStationId: " + tempDataPoint.Station.Id);
                             }
                             else
                             {
                                 Console.WriteLine("Success!");
-                                SetAirUDataPoint(dataPoint);
+                                SetAirUDataPoint(airNowDataPoints);
                             }
 
                         }
