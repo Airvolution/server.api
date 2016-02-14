@@ -81,6 +81,7 @@ namespace server_api
         {
             IEnumerable<Station> data = from station in db.Stations
                                         where station.Lat >= latMin && station.Lat <= latMax && station.Lng >= lngMin && station.Lng <= lngMax
+                                        where !(station.Lat == 0 && station.Lng == 0)
                                         select station;
             return data;
         }
