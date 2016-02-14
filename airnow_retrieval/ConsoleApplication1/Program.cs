@@ -25,7 +25,9 @@ namespace AirnowRetrieval
         };
 
         private static Object thisLock = new Object();
-        static string logPath = null;
+        static string logPath = "C:\\dev\\airnow_retrieval\\log\\airNowApiLog.txt";
+        //static string sitesPath = "C:\\dev\\airnow_retrieval\\log\\sites.csv";
+
         //static string hostUrl = "http://localhost:2307/";
         static string hostUrl = "http://dev.air.eng.utah.edu/api/";
 
@@ -40,13 +42,18 @@ namespace AirnowRetrieval
         {
             //string currentPath = Directory.GetCurrentDirectory();
             //logPath = currentPath + "\\" + "airNowApiLog.txt";
-            logPath = "C:\\dev\\airnow_retrieval\\log\\" + "airNowApiLog.txt";
+            //logPath = "C:\\dev\\airnow_retrieval\\log\\" + "airNowApiLog.txt";
             //string stationDictionaryPath = currentPath + "\\" + "station_dictionary.txt";
 
             if (!File.Exists(logPath))
             {
                 File.Create(logPath);
             }
+
+            //if (!File.Exists(sitesPath))
+            //{
+            //    File.Create(sitesPath);
+            //}
 
             //if (!File.Exists(stationDictionaryPath))
             //{
@@ -89,6 +96,18 @@ namespace AirnowRetrieval
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true))
                 {
                     file.WriteLine(DateTime.UtcNow.ToString()+ ": "+msg);
+                    file.Dispose();
+                }
+            }
+        }
+
+        private static void LogToPath(String msg, String path)
+        {
+            lock (thisLock)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(path, true))
+                {
+                    file.WriteLine(msg);
                     file.Dispose();
                 }
             }
@@ -165,46 +184,85 @@ namespace AirnowRetrieval
 
             // Slight Optimization
 
+            //StringBuilder outputCSV = new StringBuilder();
+            //outputCSV.Append("FullAQSCode, IntlAQSCode, SiteName, AgencyName, Latitude, Longitude\n");
+            
             foreach (AirNowDataPoint dataPoint in airNowApiDataFiftyStates)
-            {
-                if (optimizedPoints.ContainsKey(dataPoint.SiteName))
+            {                               
+                //outputCSV.Append(dataPoint.FullAQSCode);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.IntlAQSCode);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.SiteName);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.AgencyName);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.Latitude);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.Longitude);
+                //outputCSV.Append("\n");
+
+                if (optimizedPoints.ContainsKey(dataPoint.IntlAQSCode))
                 {
                     List<AirNowDataPoint> empty = null;
-                    optimizedPoints.TryGetValue(dataPoint.SiteName, out empty);
+                    optimizedPoints.TryGetValue(dataPoint.IntlAQSCode, out empty);
                     empty.Add(dataPoint);
                 }
                 else
                 {
                     List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
                     newList.Add(dataPoint);
-                    optimizedPoints.Add(dataPoint.SiteName, newList);
+                    optimizedPoints.Add(dataPoint.IntlAQSCode, newList);
                 }
             }
             
             foreach (AirNowDataPoint dataPoint in airNowApiDataAKAndHI)
             {
-                if (optimizedPoints.ContainsKey(dataPoint.SiteName))
+                //outputCSV.Append(dataPoint.FullAQSCode);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.IntlAQSCode);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.SiteName);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.AgencyName);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.Latitude);
+                //outputCSV.Append(", ");
+                //outputCSV.Append(dataPoint.Longitude);
+                //outputCSV.Append("\n");
+
+                if (optimizedPoints.ContainsKey(dataPoint.IntlAQSCode))
                 {
                     List<AirNowDataPoint> empty = null;
-                    optimizedPoints.TryGetValue(dataPoint.SiteName, out empty);
+                    optimizedPoints.TryGetValue(dataPoint.IntlAQSCode, out empty);
                     empty.Add(dataPoint);
                 }
                 else
                 {
                     List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
                     newList.Add(dataPoint);
-                    optimizedPoints.Add(dataPoint.SiteName, newList);
+                    optimizedPoints.Add(dataPoint.IntlAQSCode, newList);
                 }
             }
+
+            //LogToPath(outputCSV.ToString(), sitesPath);
 
             return optimizedPoints;
         }
 
         public static bool SetAirUDataPoint(List<AirNowDataPoint> airNowDataPoints)
         {
+            int debugInt = 0;
+            if (airNowDataPoints.Count <= 0)
+            {
+                return false;
+            }
+
             string datePattern = "yyyy-MM-ddTHH:mm";
 
             List<DataPoint>tempDataPoints = new List<DataPoint>();
+
+            // Are the sitenames unique?
 
             foreach (AirNowDataPoint airNowDataPoint in airNowDataPoints){
 
@@ -213,7 +271,7 @@ namespace AirnowRetrieval
                     Time = DateTime.ParseExact(airNowDataPoint.UTC, datePattern, CultureInfo.InvariantCulture),
                     Station = new Station
                     {
-                        Id = airNowDataPoint.SiteName.GetHashCode().ToString()
+                        Id = airNowDataPoint.IntlAQSCode
                     },
                     Parameter = new Parameter
                     {
@@ -272,7 +330,7 @@ namespace AirnowRetrieval
                         switch (errorMessage)
                         {
                             case "Station does not exist.":
-                                Console.Write("Attempting to Add Station at site " + tempNowDataPoint.SiteName + "...");
+                                Console.Write("Attempting to Add Station at IntlAQSCode " + tempNowDataPoint.IntlAQSCode + "...");
                                 if (!SetAirUStation(tempNowDataPoint))
                                 {
                                     Console.WriteLine("Failed.");
@@ -315,7 +373,7 @@ namespace AirnowRetrieval
             }
             catch (Exception e)
             {
-                Log("An unknown exception occurred: " + e.Message);
+                Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
             }
             
             return true;
@@ -333,14 +391,14 @@ namespace AirnowRetrieval
             //    return false;
             if (geoInfo.state == "GA")
             {
-                Log("Found " + geoInfo.state + ":\t" + dataPoint.SiteName);
+                Log("Found " + geoInfo.state + ":\t" + dataPoint.IntlAQSCode);
             }
 
 
             Station newStation = new Station
             {
                 Name = dataPoint.SiteName,
-                Id = dataPoint.SiteName.GetHashCode().ToString(),
+                Id = dataPoint.IntlAQSCode,
                 Agency = dataPoint.AgencyName,
                 Purpose = dataPoint.AgencyName + ": " + dataPoint.SiteName + " data retrieved from AirNow.gov.",
                 Indoor = false,
@@ -414,7 +472,7 @@ namespace AirnowRetrieval
             }
             catch (Exception e)
             {
-                Log("An unknown exception occurred: " + e.Message);
+                Log("An unknown exception occurred in SetAirUStation: " + e.Message);
             }
 
             return true;
