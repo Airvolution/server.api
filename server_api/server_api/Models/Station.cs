@@ -18,6 +18,7 @@ namespace server_api
         public string Id { get; set; }
 
         [Required]
+        [JsonIgnore]
         public int User_Id { get; set; }
 
         public decimal Lat { get; set; }
