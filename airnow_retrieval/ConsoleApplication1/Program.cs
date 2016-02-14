@@ -15,13 +15,6 @@ using System.Threading;
 
 namespace AirnowRetrieval
 {
-    class Blah
-    {
-        public void Example()
-        {
-            Console.Out.WriteLine("HI");
-        }
-    }
 
     class Program
     {
@@ -35,6 +28,13 @@ namespace AirnowRetrieval
         static string logPath = null;
         //static string hostUrl = "http://localhost:2307/";
         static string hostUrl = "http://dev.air.eng.utah.edu/api/";
+
+        // Will Use Later For Filtering
+        static HashSet<string> USStates = new HashSet<string>{"AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA",
+                                                           "HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+                                                           "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ",
+                                                           "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+                                                           "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"};
 
         static void Main(string[] args)
         {
@@ -61,7 +61,6 @@ namespace AirnowRetrieval
             int tamper = 0;
             foreach(List<AirNowDataPoint> stationPoints in dataDictionary.Values)
             {
-
                 Thread newThread = new Thread(() => SetAirUDataPoint(stationPoints));
                 Console.WriteLine("Starting new thread...");
                 newThread.Start();
@@ -100,7 +99,8 @@ namespace AirnowRetrieval
             Dictionary<string, List<AirNowDataPoint>> optimizedPoints = new Dictionary<string, List<AirNowDataPoint>>();
 
             // DataPoints to be returned.
-            AirNowDataPoint[] airNowApiData = null;
+            AirNowDataPoint[] airNowApiDataFiftyStates = null;
+            AirNowDataPoint[] airNowApiDataAKAndHI = null;
 
             // Getting time.
             DateTime now = DateTime.UtcNow;
@@ -134,34 +134,63 @@ namespace AirnowRetrieval
             airNowApiWebClient.QueryString.Add("format", format);
             airNowApiWebClient.QueryString.Add("verbose", verbose);
             airNowApiWebClient.QueryString.Add("API_KEY", API_KEY);
-
             string json = "";
 
             Console.WriteLine("Requesting data from AirNowApi.org");
+            
+            try
+            {
+                json = airNowApiWebClient.DownloadString(getUrl);
+                airNowApiDataFiftyStates = JsonConvert.DeserializeObject<AirNowDataPoint[]>(json);
+            }
+            catch (WebException e)
+            {
+                Log("Could not pull data for Fifty States");
+            }
+            
+            airNowApiWebClient.QueryString.Remove("BBOX");
+            BBOX = "-179.394524,12.497917,-140.722649,71.617702";  // Alaska and Hawaii
+            airNowApiWebClient.QueryString.Add("BBOX", BBOX);
+            json = "";
 
             try
             {
                 json = airNowApiWebClient.DownloadString(getUrl);
-
-                airNowApiData = JsonConvert.DeserializeObject<AirNowDataPoint[]>(json);
-
-                //airNowResponse = "200";
+                airNowApiDataAKAndHI = JsonConvert.DeserializeObject<AirNowDataPoint[]>(json);
             }
             catch (WebException e)
             {
-                //airNowResponse = e.Status.ToString();
+                Log("Could not pull data for Alaska and Hawaii");
             }
 
-
             // Slight Optimization
-            foreach (AirNowDataPoint dataPoint in airNowApiData)
+
+            foreach (AirNowDataPoint dataPoint in airNowApiDataFiftyStates)
             {
-                if (optimizedPoints.ContainsKey(dataPoint.SiteName)){
+                if (optimizedPoints.ContainsKey(dataPoint.SiteName))
+                {
                     List<AirNowDataPoint> empty = null;
                     optimizedPoints.TryGetValue(dataPoint.SiteName, out empty);
                     empty.Add(dataPoint);
                 }
-                else{
+                else
+                {
+                    List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
+                    newList.Add(dataPoint);
+                    optimizedPoints.Add(dataPoint.SiteName, newList);
+                }
+            }
+            
+            foreach (AirNowDataPoint dataPoint in airNowApiDataAKAndHI)
+            {
+                if (optimizedPoints.ContainsKey(dataPoint.SiteName))
+                {
+                    List<AirNowDataPoint> empty = null;
+                    optimizedPoints.TryGetValue(dataPoint.SiteName, out empty);
+                    empty.Add(dataPoint);
+                }
+                else
+                {
                     List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
                     newList.Add(dataPoint);
                     optimizedPoints.Add(dataPoint.SiteName, newList);
@@ -173,10 +202,6 @@ namespace AirnowRetrieval
 
         public static bool SetAirUDataPoint(List<AirNowDataPoint> airNowDataPoints)
         {
-            // WebClient performing the POST to airu.
-            WebClient airuApiWebClient = new WebClient();
-
-
             string datePattern = "yyyy-MM-ddTHH:mm";
 
             List<DataPoint>tempDataPoints = new List<DataPoint>();
@@ -300,8 +325,17 @@ namespace AirnowRetrieval
         {
             // Look up geo information from google.
             string lat = dataPoint.Latitude.ToString();
-            string lng = dataPoint.Longitude.ToString();
+            string lng = dataPoint.Longitude.ToString();            
+
             GoogleGeo geoInfo = GetReverseGeolocationLookUp(lat, lng);
+
+            //if (!USStates.Contains(geoInfo.state))
+            //    return false;
+            if (geoInfo.state == "GA")
+            {
+                Log("Found " + geoInfo.state + ":\t" + dataPoint.SiteName);
+            }
+
 
             Station newStation = new Station
             {
