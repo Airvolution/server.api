@@ -21,6 +21,10 @@ namespace server_api
         [JsonIgnore]
         public int User_Id { get; set; }
 
+        public int AQI { get; set; }
+
+        public Parameter Parameter { get; set; }
+
         public decimal Lat { get; set; }
 
         public decimal Lng { get; set; }

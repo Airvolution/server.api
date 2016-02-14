@@ -110,13 +110,22 @@ namespace server_api
             //IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStation(stationId);
             IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStationAfterTimeUtc(stationId, DateTime.UtcNow.AddHours(-2));
             DataPointComparer comparer = new DataPointComparer();
-            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);            
-
+            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);
+            Dictionary<string, DataPoint> latestDataPointsForEachParameter = new Dictionary<string, DataPoint>();
             List<DataPoint> addingDataPoints = new List<DataPoint>();
 
+            DataPoint outPoint;
             foreach (DataPoint d in existingDataPointsList)
             {
                 exisitingDataPoints.Add(d);
+
+                if (latestDataPointsForEachParameter.TryGetValue(d.Parameter_Name, out outPoint))
+                {
+                    if (outPoint.Time <= d.Time)
+                        latestDataPointsForEachParameter[d.Parameter_Name] = d;
+                }
+                else
+                    latestDataPointsForEachParameter[d.Parameter_Name] = d;
             }
 
             
@@ -149,10 +158,18 @@ namespace server_api
 
                 point.Indoor = dataSetStation.Indoor;
 
-                //if (latestPoint.Time < point.Time)
-                //{
-                //    latestPoint = point;
-                //}
+                // GETTING LATEST OF EACH PARAMETER
+                if (latestDataPointsForEachParameter.TryGetValue(point.Parameter_Name, out outPoint))
+                {
+                    if (outPoint.Time <= point.Time)
+                        latestDataPointsForEachParameter[point.Parameter_Name] = point;
+                }
+                else
+                    latestDataPointsForEachParameter[point.Parameter_Name] = point;
+
+
+
+                latestDataPointsForEachParameter[point.Parameter_Name] = point;
 
                 if (!exisitingDataPoints.Contains(point))
                 {
@@ -161,14 +178,33 @@ namespace server_api
                 }
             }
 
+            DataPoint largestPoint = null;
+            int largestAQI = 0;
+
+            foreach (DataPoint p in latestDataPointsForEachParameter.Values)
+            {
+                if (p.AQI > largestAQI)
+                {
+                    largestAQI = p.AQI;
+                    largestPoint = p;
+                }
+            }
+            db.Configuration.AutoDetectChangesEnabled = true;
+            
             dataSetStation.Indoor = latestPoint.Indoor;
             dataSetStation.Lat = latestPoint.Lat;
             dataSetStation.Lng = latestPoint.Lng;
+            if (largestPoint != null)
+            {
+                dataSetStation.AQI = largestPoint.AQI;
+                dataSetStation.Parameter = largestPoint.Parameter;
+            }
+            
            
             db.DataPoints.AddRange(addingDataPoints);
             db.SaveChanges();
 
-            db.Configuration.AutoDetectChangesEnabled = true;
+            
 
             return addingDataPoints;
         }
