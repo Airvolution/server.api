@@ -203,9 +203,7 @@ namespace server_api
            
             db.DataPoints.AddRange(addingDataPoints);
             db.SaveChanges();
-
-            
-
+           
             return addingDataPoints;
         }
 
