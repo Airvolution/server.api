@@ -52,6 +52,9 @@ namespace server_api
         [JsonIgnore]
         public virtual ICollection<DataPoint> DataPoints { get; set; }
 
+        [JsonIgnore]
+        public virtual ICollection<Daily> Dailies { get; set; }
+
         public virtual User User { get; set; }
 
     }

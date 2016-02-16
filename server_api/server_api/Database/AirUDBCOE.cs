@@ -24,6 +24,7 @@ namespace server_api
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Daily> Dailies { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -35,8 +36,20 @@ namespace server_api
                 .HasForeignKey(e => new { e.Parameter_Name, e.Parameter_Unit })
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Parameter>()
+                .HasMany(e => e.Dailies)
+                .WithRequired(e => e.Parameter)
+                .HasForeignKey(e => new { e.Parameter_Name, e.Parameter_Unit })
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Station>()
                 .HasMany(e => e.DataPoints)
+                .WithRequired(e => e.Station)
+                .HasForeignKey(e => e.Station_Id)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Station>()
+                .HasMany(e => e.Dailies)
                 .WithRequired(e => e.Station)
                 .HasForeignKey(e => e.Station_Id)
                 .WillCascadeOnDelete(false);
