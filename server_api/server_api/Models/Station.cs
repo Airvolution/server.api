@@ -55,6 +55,7 @@ namespace server_api
         [JsonIgnore]
         public virtual ICollection<Daily> Dailies { get; set; }
 
+        [JsonIgnore]
         public virtual User User { get; set; }
 
     }

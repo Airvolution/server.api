@@ -157,6 +157,14 @@ namespace server_api.Controllers
             return Ok(_repo.StationLocations(latMin, latMax, lngMin, lngMax));
         }
 
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations/nearest")]
+        [HttpGet]
+        public IHttpActionResult NearestStation(decimal lat, decimal lng)
+        {
+            return Ok(_repo.GetNearestStation(lat, lng));
+        }
+
         /// <summary>
         ///   Returns all datapoints for a Station given a StationID.
         /// 

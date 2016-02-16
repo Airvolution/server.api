@@ -31,11 +31,9 @@ namespace server_api
         [JsonIgnore]
         public string Parameter_Unit { get; set; }
 
-        public double Value { get; set; }
-
         public int Category { get; set; }
 
-        public int AQI { get; set; }
+        public int MaksAQI { get; set; }
 
         public virtual Station Station { get; set; }
 

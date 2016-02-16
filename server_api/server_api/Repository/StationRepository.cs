@@ -77,6 +77,101 @@ namespace server_api
             return db.Stations.Find(stationID);
         }
 
+        public double degreesToRadians(double deg) {
+		    double rad = deg * Math.PI/180; // radians = degrees * pi/180
+            return rad;
+	    } 
+
+        public double distanceBetweenLats(decimal latA, decimal lngA, decimal latB, decimal lngB){
+            double latADouble = degreesToRadians(Convert.ToDouble(latA));
+            double latBDouble = degreesToRadians(Convert.ToDouble(latB));
+            double lngADouble = degreesToRadians(Convert.ToDouble(lngA));
+            double lngBDouble = degreesToRadians(Convert.ToDouble(lngB));
+
+            double dLat = latBDouble - latADouble;
+            double dLng = lngBDouble - lngADouble;
+
+
+            /*
+             http://andrew.hedges.name/experiments/haversine/             
+                dlon = lon2 - lon1 
+                dlat = lat2 - lat1 
+                a = (sin(dlat/2))^2 + cos(lat1) * cos(lat2) * (sin(dlon/2))^2 
+                c = 2 * atan2( sqrt(a), sqrt(1-a) ) 
+                d = R * c (where R is the radius of the Earth)
+             */
+            double r = 3961; //3961 miles or 6373 Km
+            double a = (Math.Pow(Math.Sin(dLat / 2), 2) + (Math.Cos(latADouble) * Math.Cos(latBDouble) * Math.Pow(Math.Sin(dLng / 2), 2)));
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            double d = r * c;
+
+            return d;
+            //return Math.Sqrt(difLat*difLat + difLng*difLng);
+        }
+
+        public double distanceBetweenLatsSimple(decimal latA, decimal lngA, decimal latB, decimal lngB)
+        {
+            double difLat = Convert.ToDouble(latA - latB);
+            double difLng = Convert.ToDouble(lngA - lngB);
+
+
+            return Math.Sqrt(difLat * difLat + difLng * difLng);
+        }
+
+        public Station GetNearestStation(decimal lat, decimal lng)
+        {
+            //decimal latMin = -180;
+            //decimal latMax = 180;
+            //decimal lngMin = -180;
+            //decimal lngMax = 180;
+
+            decimal latMin = lat - .3m;
+            decimal latMax = lat + .3m;
+            decimal lngMin = lng - .3m;
+            decimal lngMax = lng + .3m;
+
+            IEnumerable<Station> stationsInRange = from s in db.Stations
+                                                   where s.Lat > latMin && s.Lat < latMax
+                                                   where s.Lng > lngMin && s.Lng < lngMax
+                                                   select s;
+
+            Dictionary<double, Station> distanceAndStations = new Dictionary<double, Station>();
+
+            foreach (Station s in stationsInRange)
+            {
+                distanceAndStations.Add(distanceBetweenLatsSimple(lat, lng, s.Lat, s.Lng), s);
+            }
+
+            Station top = (from item in distanceAndStations
+                                           orderby item.Key ascending
+                                           select item.Value).FirstOrDefault();
+
+
+            return top;
+        }
+
+        public dynamic GetNearestStationsAndDistance(decimal lat, decimal lng)
+        {
+            IEnumerable<Station> stationsInRange = from s in db.Stations
+                                                   where s.Lat > -180 && s.Lat < 180
+                                                   where s.Lng > -180 && s.Lng < 180
+                                                   select s;
+
+            List<Tuple<double, Station>> distanceAndStations = new List<Tuple<double, Station>>();
+
+            foreach (Station s in stationsInRange)
+            {
+                distanceAndStations.Add(new Tuple<double, Station>(distanceBetweenLats(lat, lng, s.Lat, s.Lng), s));
+            }
+
+            dynamic topTen = (from item in distanceAndStations
+                                           orderby item.Item1 ascending
+                                           select item).Take(10);
+
+
+            return topTen;
+        }
+
         public IEnumerable<Station> StationLocations(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
         {
             IEnumerable<Station> data = from station in db.Stations
