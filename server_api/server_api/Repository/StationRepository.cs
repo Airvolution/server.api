@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity.SqlServer;
 
 namespace server_api
 {
@@ -105,6 +106,8 @@ namespace server_api
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
             double d = r * c;
 
+            
+
             return d;
             //return Math.Sqrt(difLat*difLat + difLng*difLng);
         }
@@ -148,6 +151,33 @@ namespace server_api
 
 
             return top;
+        }
+
+        public IEnumerable<Station> GetStationsWithinRadiusMiles(decimal lat, decimal lng, double radius)
+        {
+            /*
+            SELECT id, ( 3959 * acos( cos( radians(37) ) * cos( radians( lat ) ) 
+            * cos( radians( lng ) - radians(-122) ) + sin( radians(37) ) * sin(radians(lat)) ) ) AS distance 
+            FROM markers 
+            HAVING distance < 25 
+            ORDER BY distance 
+            LIMIT 0 , 20;
+            */
+            double latD = (double)lat;
+            double lngD = (double)lng;
+
+            var result = from outer in
+                             (from s in db.Stations
+                              select new
+                              {
+                                  Distance = (3959 * SqlFunctions.Acos(SqlFunctions.Cos(SqlFunctions.Radians(lat)) * SqlFunctions.Cos(SqlFunctions.Radians(s.Lat)) * SqlFunctions.Cos(SqlFunctions.Radians(s.Lng) - SqlFunctions.Radians(lng)) + SqlFunctions.Sin(SqlFunctions.Radians(lat)) * SqlFunctions.Sin((SqlFunctions.Radians(s.Lat))))),
+                                  s
+
+                              })
+                         where outer.Distance < radius
+                         select outer.s;                                                 
+
+            return result;
         }
 
         public dynamic GetNearestStationsAndDistance(decimal lat, decimal lng)

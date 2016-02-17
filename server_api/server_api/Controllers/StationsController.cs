@@ -162,7 +162,16 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult NearestStation(decimal lat, decimal lng)
         {
-            return Ok(_repo.GetNearestStation(lat, lng));
+            return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, 40));
+            //return Ok(_repo.GetNearestStation(lat, lng));
+        }
+
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations/within")]
+        [HttpGet]
+        public IHttpActionResult StationsInRadiusMiles(decimal lat, decimal lng, double miles)
+        {
+            return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
         }
 
         /// <summary>
