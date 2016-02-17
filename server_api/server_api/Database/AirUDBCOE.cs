@@ -36,12 +36,6 @@ namespace server_api
                 .HasForeignKey(e => new { e.Parameter_Name, e.Parameter_Unit })
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Parameter>()
-                .HasMany(e => e.Dailies)
-                .WithRequired(e => e.Parameter)
-                .HasForeignKey(e => new { e.Parameter_Name, e.Parameter_Unit })
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Station>()
                 .HasMany(e => e.DataPoints)
                 .WithRequired(e => e.Station)

@@ -19,21 +19,13 @@ namespace server_api
         [JsonIgnore]
         public string Station_Id { get; set; }
 
-        [Key]
-        [Column(Order = 2)]
-        [StringLength(30)]
-        [JsonIgnore]
-        public string Parameter_Name { get; set; }
-
-        [Key]
-        [Column(Order = 3)]
-        [StringLength(30)]
-        [JsonIgnore]
-        public string Parameter_Unit { get; set; }
-
         public int Category { get; set; }
 
         public int MaksAQI { get; set; }
+
+        public int AvgAQI { get; set; }
+
+        public int MinAQI { get; set; }
 
         public virtual Station Station { get; set; }
 
