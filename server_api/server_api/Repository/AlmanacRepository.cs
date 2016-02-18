@@ -22,6 +22,16 @@ namespace server_api
             db = existingContext;
         }
 
+        public IEnumerable<Daily> GetNDailiesByStationID(string stationId, int n){
+
+            DateTime dateNDaysInBack = DateTime.Today.AddDays(-n);
+
+            return from d in db.Dailies
+                          where d.Station.Id == stationId &&
+                                d.Time > dateNDaysInBack
+                          select d;
+        }
+
         public void Dispose()
         {
             db.Dispose();

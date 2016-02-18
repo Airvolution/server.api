@@ -17,11 +17,20 @@ namespace server_api.Controllers
     /// </summary>
     public class AlmanacController : ApiController
     {
-        private StationsRepository _repo = null;
+        private AlmanacRepository _repo = null;
 
         public AlmanacController()
         {
-            _repo = new StationsRepository();
+            _repo = new AlmanacRepository();
         }
+
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("almanac/dailies")]
+        [HttpGet]
+        public IHttpActionResult NearestStation(string stationId, int daysBack)
+        {
+            return Ok(_repo.GetNDailiesByStationID(stationId, daysBack));
+        }
+
     }
 }
