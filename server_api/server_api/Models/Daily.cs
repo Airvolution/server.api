@@ -11,7 +11,7 @@ namespace server_api
     {
         [Key]
         [Column(Order = 0)]
-        public DateTime Time { get; set; }
+        public DateTime Date { get; set; }
 
         [Key]
         [Column(Order = 1)]
@@ -19,9 +19,11 @@ namespace server_api
         [JsonIgnore]
         public string Station_Id { get; set; }
 
-        public int Category { get; set; }
+        public int MaxCategory { get; set; }
 
-        public int MaksAQI { get; set; }
+        public int MinCategory { get; set; }
+
+        public int MaxAQI { get; set; }
 
         public int AvgAQI { get; set; }
 
@@ -29,7 +31,9 @@ namespace server_api
 
         public virtual Station Station { get; set; }
 
-        public virtual Parameter Parameter { get; set; }
+        public virtual Parameter MaxParameter { get; set; }
+
+        public virtual Parameter MinParameter { get; set; }
 
     }
 }

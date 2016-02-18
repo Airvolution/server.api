@@ -156,6 +156,15 @@ namespace server_api
 
             string stationId = dataSet[0].Station.Id;
             Station dataSetStation = db.Stations.Find(stationId);
+            Daily sDaily = db.Dailies.Find(stationId, DateTime.Today);
+
+            if (sDaily == null)
+            {
+                sDaily = new Daily();
+                sDaily.Station = dataSetStation;
+                sDaily.Date = DateTime.Today;
+                sDaily.MinAQI = dataSet[0].AQI;
+            }
 
             //IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStation(stationId);
             IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStationAfterTimeUtc(stationId, DateTime.UtcNow.AddHours(-2));
@@ -228,15 +237,32 @@ namespace server_api
                 }
             }
 
-            DataPoint largestPoint = null;
-            int largestAQI = 0;
+            DataPoint maksAQIPoint = null;
+            int maksAQI = 0;
+
+            DataPoint minAQIPoint = null;
+            int minAQI = -999;
 
             foreach (DataPoint p in latestDataPointsForEachParameter.Values)
             {
-                if (p.AQI > largestAQI)
+                if (p.AQI > maksAQI)
                 {
-                    largestAQI = p.AQI;
-                    largestPoint = p;
+                    maksAQI = p.AQI;
+                    maksAQIPoint = p;
+                }
+
+                if (p.AQI != -999)
+                {
+                    if (minAQI == -999)
+                    {
+                        minAQI = p.AQI;
+                        minAQIPoint = p;
+                    }
+                    else if (p.AQI < minAQI)
+                    {
+                        minAQI = p.AQI;
+                        minAQIPoint = p;
+                    }
                 }
             }
             db.Configuration.AutoDetectChangesEnabled = true;
@@ -244,13 +270,36 @@ namespace server_api
             dataSetStation.Indoor = latestPoint.Indoor;
             dataSetStation.Lat = latestPoint.Lat;
             dataSetStation.Lng = latestPoint.Lng;
-            if (largestPoint != null)
+
+            if (maksAQIPoint != null)
             {
-                dataSetStation.AQI = largestPoint.AQI;
-                dataSetStation.Parameter = largestPoint.Parameter;
+                dataSetStation.AQI = maksAQIPoint.AQI;
+
+                if (sDaily.MaxAQI < maksAQI)
+                {
+                    sDaily.MaxAQI = maksAQI;
+                    sDaily.MaxParameter = maksAQIPoint.Parameter;
+                }
+
+                dataSetStation.Parameter = maksAQIPoint.Parameter;
+            }
+
+            if (minAQIPoint != null)
+            {
+                if (sDaily.MinAQI > minAQI)
+                {
+                    sDaily.MinAQI = minAQI;
+                    sDaily.MinParameter = minAQIPoint.Parameter;
+                }
             }
             
-           
+
+            // Average
+            DateTime nextDay = sDaily.Date.AddDays(1);
+            //sDaily.AvgAQI = (from d in db.DataPoints
+            //                where d.Time > sDaily.Date && d.Time < nextDay
+            //                select d.AQI).Average();
+
             db.DataPoints.AddRange(addingDataPoints);
             db.SaveChanges();
            

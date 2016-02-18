@@ -126,7 +126,7 @@ namespace server_api.Controllers
         {
             DateTime start = DateTime.Now;
 
-            if (dataSet.Length == null)
+            if (dataSet.Length == 0)
             {
                 return BadRequest("No DataPoints in sent array.");
             }
