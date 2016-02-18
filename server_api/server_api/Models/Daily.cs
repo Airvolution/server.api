@@ -25,7 +25,7 @@ namespace server_api
 
         public int MaxAQI { get; set; }
 
-        public int AvgAQI { get; set; }
+        public double AvgAQI { get; set; }
 
         public int MinAQI { get; set; }
 

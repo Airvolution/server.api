@@ -71,13 +71,13 @@ namespace AirnowRetrieval
                 Thread newThread = new Thread(() => SetAirUDataPoint(stationPoints));
                 Console.WriteLine("Starting new thread...");
                 newThread.Start();
-                //tamper += 1;
-                //if (tamper > 15)
-                //{
-                //newThread.Join();
-                    //Console.WriteLine("Threads joined...");
-                    //tamper = 0;
-                //}               
+                tamper += 1;
+                if (tamper > 15)
+                {
+                    newThread.Join();
+                    Console.WriteLine("Threads joined...");
+                    tamper = 0;
+                }               
 
                 //if (!SetAirUDataPoint(stationPoints))
                 //{

@@ -296,9 +296,9 @@ namespace server_api
 
             // Average
             DateTime nextDay = sDaily.Date.AddDays(1);
-            //sDaily.AvgAQI = (from d in db.DataPoints
-            //                where d.Time > sDaily.Date && d.Time < nextDay
-            //                select d.AQI).Average();
+            sDaily.AvgAQI = (from d in db.DataPoints
+                             where d.Time > sDaily.Date && d.Time < nextDay
+                             select d.AQI).Average();
 
             db.DataPoints.AddRange(addingDataPoints);
             db.SaveChanges();
