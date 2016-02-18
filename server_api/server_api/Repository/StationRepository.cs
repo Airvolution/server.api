@@ -150,199 +150,7 @@ namespace server_api
             return data;
         }
 
-        public IEnumerable<DataPoint> SetDataPointsFromStation(DataPoint[] dataSet)
-        {
-            
-
-            string stationId = dataSet[0].Station.Id;
-            Station dataSetStation = db.Stations.Find(stationId);            
-
-            db.Configuration.AutoDetectChangesEnabled = false;
-
-            //IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStation(stationId);
-            IEnumerable<DataPoint> existingDataPointsList = GetDataPointsFromStationAfterTimeUtc(stationId, DateTime.UtcNow.AddHours(-2));
-            DataPointComparer comparer = new DataPointComparer();
-            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);
-            Dictionary<string, DataPoint> latestDataPointsForEachParameter = new Dictionary<string, DataPoint>();
-            List<DataPoint> addingDataPoints = new List<DataPoint>();
-
-            DataPoint outPoint;
-
-            // Determine which datapoints are already in database
-            foreach (DataPoint d in existingDataPointsList)
-            {
-                exisitingDataPoints.Add(d);
-
-                if (latestDataPointsForEachParameter.TryGetValue(d.Parameter_Name, out outPoint))
-                {
-                    if (outPoint.Time <= d.Time)
-                        latestDataPointsForEachParameter[d.Parameter_Name] = d;
-                }
-                else
-                    latestDataPointsForEachParameter[d.Parameter_Name] = d;
-            }
-
-            if (dataSetStation == null)
-            {
-                return null;
-            }
-
-            // Find the existing parameters in station
-            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();           
-            foreach (Parameter p in db.Parameters.ToList())
-            {                
-                existingParameters.Add(p.Name + p.Unit, p);
-            }
-
-            
-            Parameter tempParameter = null;
-            DataPoint latestPoint = dataSet[0];
-
-            DataPoint maxAQIPoint = null;
-            int maxAQI = 0;
-
-            DataPoint minAQIPoint = null;
-            int minAQI = -999;
-
-            foreach (DataPoint point in dataSet)
-            {
-                // Best - Negligible slow down
-                existingParameters.TryGetValue(point.Parameter.Name + point.Parameter.Unit, out tempParameter);
-                point.Parameter = tempParameter;
-                point.Parameter_Name = tempParameter.Name;
-                point.Parameter_Unit = tempParameter.Unit;
-
-                point.Station = dataSetStation;
-                point.Station_Id = dataSetStation.Id;
-
-                point.Indoor = dataSetStation.Indoor;
-
-                // GETTING LATEST OF EACH PARAMETER
-                if (latestDataPointsForEachParameter.TryGetValue(point.Parameter_Name, out outPoint))
-                {
-                    if (outPoint.Time <= point.Time)
-                        latestDataPointsForEachParameter[point.Parameter_Name] = point;
-                }
-                else
-                    latestDataPointsForEachParameter[point.Parameter_Name] = point;
-
-
-
-                latestDataPointsForEachParameter[point.Parameter_Name] = point;
-
-                if (!exisitingDataPoints.Contains(point))
-                {
-                    if (point.AQI != -999 && point.Parameter != null)
-                    {
-                        if (maxAQI < point.AQI)
-                        {
-                            maxAQI = point.AQI;
-                            maxAQIPoint = point;
-                        }                        
-
-                        if (minAQI == -999)
-                        {
-                            minAQI = point.AQI;
-                            minAQIPoint = point;
-                        }
-                        else if (point.AQI < minAQI)
-                        {
-                            minAQI = point.AQI;
-                            minAQIPoint = point;
-                        }
-                    }
-
-                    addingDataPoints.Add(point);
-                    exisitingDataPoints.Add(point);
-                }
-            }
-
-
-            // Maks Latest Value    
-            DataPoint maksAQIPoint = null;
-            int maksAQI = 0;
-
-            foreach (DataPoint p in latestDataPointsForEachParameter.Values)
-            {
-                if (p.AQI > maksAQI)
-                {
-                    maksAQI = p.AQI;
-                    maksAQIPoint = p;
-                }
-            }
-
-            db.Configuration.AutoDetectChangesEnabled = true;
-            
-            dataSetStation.Indoor = latestPoint.Indoor;
-            dataSetStation.Lat = latestPoint.Lat;
-            dataSetStation.Lng = latestPoint.Lng;
-
-
-            Daily sDaily = db.Dailies.Find(DateTime.UtcNow.Date, stationId);
-
-            // Min Daily Value
-            if (minAQIPoint != null && minAQI != -999)
-            {
-                if (sDaily == null)
-                {
-                    sDaily = new Daily();
-                    sDaily.Station = dataSetStation;
-                    sDaily.Date = DateTime.UtcNow.Date;
-                    sDaily.MinAQI = minAQIPoint.AQI;
-                    sDaily.MinParameter = minAQIPoint.Parameter;
-                    sDaily.MinCategory = minAQIPoint.Category;
-                    db.Dailies.Add(sDaily);                    
-                }
-                else if (sDaily.MinAQI > minAQI)
-                {
-                    sDaily.MinAQI = minAQIPoint.AQI;
-                    sDaily.MinParameter = minAQIPoint.Parameter;
-                    sDaily.MinCategory = minAQIPoint.Category;
-                }
-                db.SaveChanges();
-            }
-
-            sDaily = db.Dailies.Find(DateTime.UtcNow.Date, stationId);
-
-            // Max Daily Value
-            if (maxAQIPoint != null)
-            {                              
-                if (sDaily.MaxAQI <= maxAQI)
-                {
-                    sDaily.MaxAQI = maxAQI;
-                    sDaily.MaxParameter = maxAQIPoint.Parameter;
-                    sDaily.MaxCategory = maxAQIPoint.Category;
-                }
-                db.SaveChanges();
-            }
-            
-            
-
-            // Macks Latest Value
-            if (maksAQIPoint != null)
-            {
-                dataSetStation.AQI = maksAQIPoint.AQI;
-                dataSetStation.Parameter = maksAQIPoint.Parameter;
-            }
-            
-
-            // Average
-            if (sDaily != null)
-            {
-                DateTime nextDay = sDaily.Date.AddDays(1);
-                sDaily.AvgAQI = (from d in db.DataPoints
-                                 where d.Station_Id==dataSetStation.Id && d.Time > sDaily.Date && d.Time < nextDay && d.AQI > 0
-                                 select d.AQI).Average();
-            }
-            
-
-            
-
-            db.DataPoints.AddRange(addingDataPoints);
-            db.SaveChanges();
-           
-            return addingDataPoints;
-        }
+        
 
         public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID)
         {
@@ -384,10 +192,170 @@ namespace server_api
         {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID &&
-                                                point.Time > after &&
-                                                point.Time < before
+                                                point.Time >= after &&
+                                                point.Time <= before
                                           select point;
             return data;
+        }
+
+        public IEnumerable<DataPoint> SetDataPointsFromStation(DataPoint[] dataSet)
+        {
+            string stationId = dataSet[0].Station.Id;
+            Station dataSetStation = db.Stations.Find(stationId);
+            if (dataSetStation == null)
+            {
+                return null;
+            }
+
+            DateTime startTime = dataSet[0].Time;
+            DateTime today = startTime.Date;
+            DateTime nextDay = startTime.AddDays(1);
+            DateTime endTime = dataSet[dataSet.Length - 1].Time;
+
+            if (startTime.Date != endTime.Date)
+            {
+                IEnumerable<DataPoint> newTailSet = from d in dataSet
+                                                    where d.Time >= endTime.Date
+                                                    select d;
+                IEnumerable<DataPoint> newHeadSet = from d in dataSet
+                                                    where d.Time < endTime.Date
+                                                    select d;
+
+                return SetDataPointsFromStation(newHeadSet.ToArray()).Concat(SetDataPointsFromStation(newTailSet.ToArray()));
+            }
+
+            db.Configuration.AutoDetectChangesEnabled = false;
+
+            // Get values currently in database.
+            DataPointComparer comparer = new DataPointComparer();
+            HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);
+            exisitingDataPoints.UnionWith(GetDataPointsFromStationBetweenTimes(stationId, startTime, nextDay));
+
+            // Latest DataPoints for each Parameter
+            List<DataPoint> addingDataPoints = new List<DataPoint>();
+                                             
+            // Find the existing parameters in station
+            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();
+            foreach (Parameter p in db.Parameters.ToList())
+            {
+                existingParameters.Add(p.Name + p.Unit, p);
+            }
+
+            Parameter tempParameter = null;
+            DataPoint latestPoint = dataSet[0];            
+
+            DataPoint outPoint;
+            foreach (DataPoint point in dataSet)
+            {
+                // Best - Negligible slow down
+                existingParameters.TryGetValue(point.Parameter.Name + point.Parameter.Unit, out tempParameter);
+                point.Parameter = tempParameter;
+                point.Parameter_Name = tempParameter.Name;
+                point.Parameter_Unit = tempParameter.Unit;
+
+                point.Station = dataSetStation;
+                point.Station_Id = dataSetStation.Id;
+
+                point.Indoor = dataSetStation.Indoor;
+
+                if (!exisitingDataPoints.Contains(point))
+                {
+                    addingDataPoints.Add(point);
+                    exisitingDataPoints.Add(point);
+                }
+            }
+
+            db.Configuration.AutoDetectChangesEnabled = true;
+
+            db.DataPoints.AddRange(addingDataPoints);
+            db.SaveChanges();
+
+            dataSetStation = db.Stations.Find(stationId);
+
+            dataSetStation.Indoor = latestPoint.Indoor;
+            dataSetStation.Lat = latestPoint.Lat;
+            dataSetStation.Lng = latestPoint.Lng;
+
+            Daily sDaily = db.Dailies.Find(today, stationId);
+
+            if (sDaily == null)
+            {
+                // if count of values for this station with values greater than or equal to zero > 0
+                int number = (from d in db.DataPoints
+                              where d.Station_Id == dataSetStation.Id && d.Time >= today && d.Time < nextDay
+                              select d).Count();
+
+                if (number > 0)
+                {
+                    sDaily = new Daily();
+                    sDaily.Station = dataSetStation;
+                    sDaily.Date = today;
+                    db.Dailies.Add(sDaily);
+                    db.SaveChanges();
+                }                
+            }
+
+            sDaily = db.Dailies.Find(today, stationId);
+            
+            if (sDaily != null)
+            {
+                // Average
+                sDaily.AvgAQI = (from d in db.DataPoints
+                                 where d.Station_Id == dataSetStation.Id && d.Time >= today && d.Time < nextDay && d.AQI > 0
+                                 select d.AQI).Average();
+
+                // Min
+                DataPoint min = (from d in db.DataPoints
+                                 where d.Station_Id == dataSetStation.Id && d.Time >= today && d.Time < nextDay && d.AQI > 0
+                                 orderby d.AQI ascending
+                                 select d).FirstOrDefault();
+
+                sDaily.MinAQI = min.AQI;
+                sDaily.MinCategory = min.Category;
+                sDaily.MinParameter = min.Parameter;
+
+                // Max
+                DataPoint max = (from d in db.DataPoints
+                                 where d.Station_Id == dataSetStation.Id && d.Time >= today && d.Time < nextDay && d.AQI > 0
+                                 orderby d.AQI descending
+                                 select d).FirstOrDefault();
+
+                sDaily.MaxAQI = max.AQI;
+                sDaily.MaxCategory = max.Category;
+                sDaily.MaxParameter = max.Parameter;
+            }
+
+            var latestPoints = (from points in db.DataPoints
+                                where points.Station.Id == stationId
+                                group points by points.Parameter.Name into paramPoints
+                                select new
+                                {
+                                    dataPoints = paramPoints.OrderByDescending(a => a.Time).FirstOrDefault()
+                                }).Select(c => c.dataPoints);
+
+            int latestMaxAQI = -1;
+            DataPoint maxLatest = null;
+
+            foreach (DataPoint d in latestPoints)
+            {
+                if (d.AQI > latestMaxAQI)
+                {
+                    latestMaxAQI = d.AQI;
+                    maxLatest = d;
+                }
+            }
+
+            if (maxLatest != null)
+            {
+                dataSetStation.AQI = maxLatest.AQI;
+                dataSetStation.Lat = maxLatest.Lat;
+                dataSetStation.Lng = maxLatest.Lng;
+                dataSetStation.Parameter = maxLatest.Parameter;
+            }           
+
+            
+            db.SaveChanges();
+            return addingDataPoints;
         }
 
         public bool DeleteStation(string stationID)
