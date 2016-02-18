@@ -24,11 +24,11 @@ namespace server_api
 
         public IEnumerable<Daily> GetNDailiesByStationID(string stationId, int n){
 
-            DateTime dateNDaysInBack = DateTime.Today.AddDays(-n);
+            DateTime dateNDaysInBack = DateTime.UtcNow.Date.AddDays(-n);
 
             return from d in db.Dailies
                           where d.Station.Id == stationId &&
-                                d.Time > dateNDaysInBack
+                                d.Date > dateNDaysInBack
                           select d;
         }
 
