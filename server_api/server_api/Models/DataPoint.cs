@@ -20,12 +20,14 @@ namespace server_api
         public string Station_Id { get; set; }
 
         [Key]
+        [ForeignKey("Parameter")]
         [Column(Order = 2)]
         [StringLength(30)]
         [JsonIgnore]
         public string Parameter_Name { get; set; }
 
         [Key]
+        [ForeignKey("Parameter")]
         [Column(Order = 3)]
         [StringLength(30)]
         [JsonIgnore]
