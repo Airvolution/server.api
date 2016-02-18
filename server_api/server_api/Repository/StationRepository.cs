@@ -361,6 +361,15 @@ namespace server_api
             return data;
         }
 
+        public IEnumerable<DataPoint> GetDataPointsFromStation2(string[] stationID, string[] parameter)
+        {
+            IEnumerable<DataPoint> data = db.DataPoints
+                                            .Where(s => stationID.Contains(s.Station.Id))
+                                            .Where(p => parameter.Contains(p.Parameter.Name));
+
+            return data;
+        }
+
         public IEnumerable<DataPoint> GetDataPointsFromStationAfterTime(string stationID, DateTime after)
         {
             return GetDataPointsFromStationBetweenTimes(stationID, after, DateTime.Now);

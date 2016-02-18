@@ -55,7 +55,47 @@ namespace server_api.Controllers
             return Ok(pl);
         }
 
+        /// <summary>
+        /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 
+        ///   station name and parameter type. Each value is an array of timestamps and measurements of the
+        ///   given parameter. This endpoint is temporary, proof of concept... I'd like to add time range
+        ///   to this functionality.
+        /// </summary>
+        /// <param name="stationID">A list of station ids</param>
+        /// <param name="parameter">A list of parameter types</param>
+        /// <returns></returns>
+        [Route("stations/parameterValues2")]
+        [HttpGet]
+        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter)
+        {
+            // get all datapoints matching the station ids and parameter types
+            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation2(stationID, parameter);
 
+            Dictionary<string, SwaggerPollutantList> data = new Dictionary<string, SwaggerPollutantList>();
+
+            // builds an object specific for the NVD3 plots where the key is eg:
+            //   Hawthorne - PM2.5
+            foreach (DataPoint d in points)
+            {
+                string key = (d.Station.Name + " - " + d.Parameter.Name);
+
+                SwaggerPollutantList list;
+                if (!data.TryGetValue(key, out list))
+                {
+                    data.Add(key, new SwaggerPollutantList(key));
+                    if (!data.TryGetValue(key, out list))
+                    {
+                        return BadRequest();
+                    }
+                }
+
+                list.values.Add(new object[2]);
+                list.values.Last()[0] = ConvertDateTimeToMilliseconds(d.Time);
+                list.values.Last()[1] = (decimal)d.Value;
+            }
+
+            return Ok(data.Values);
+        }
 
         [ResponseType(typeof(Station))]
         [Route("stations/register")]
