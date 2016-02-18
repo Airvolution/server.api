@@ -333,6 +333,7 @@
     <Compile Include="Models\SwaggerModels.cs" />
     <Compile Include="Models\WeatherResponse.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
+    <Compile Include="Repository\AlmanacRepository.cs" />
     <Compile Include="Repository\StationRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
