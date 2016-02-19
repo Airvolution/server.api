@@ -94,7 +94,30 @@ namespace server_api.Controllers
                 list.values.Last()[1] = (decimal)d.Value;
             }
 
+            normalizeDataSwaggerPollutantList(ref data);
+
             return Ok(data.Values);
+        }
+
+        private void normalizeDataSwaggerPollutantList(ref Dictionary<string, SwaggerPollutantList> dict) {
+            // find longest length array in each object
+            int max = 0;
+            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict) {
+                if (pair.Value.values.Count > max)
+                {
+                    max = pair.Value.values.Count;
+                }
+            }
+
+            // normalize all other arrays to be the same length
+            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict)
+            {
+                List<object[]> current = pair.Value.values;
+                while (current.Count < max)
+                {
+                    current.Add(new object[0]);
+                }
+            }
         }
 
         [ResponseType(typeof(Station))]
