@@ -160,16 +160,7 @@ namespace server_api
             return data;
         }
 
-        public IEnumerable<DataPoint> GetDataPointsFromStation(string stationID, string parameter)
-        {
-            IEnumerable<DataPoint> data = from point in db.DataPoints
-                                          where point.Station.Id == stationID
-                                          where point.Parameter.Name == parameter
-                                          select point;
-            return data;
-        }
-
-        public IEnumerable<DataPoint> GetDataPointsFromStation2(string[] stationID, string[] parameter)
+        public IEnumerable<DataPoint> GetDataPointsFromStation(string[] stationID, string[] parameter)
         {
             IEnumerable<DataPoint> data = db.DataPoints
                                             .Where(s => stationID.Contains(s.Station.Id))
