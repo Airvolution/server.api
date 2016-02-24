@@ -211,6 +211,7 @@ namespace server_api
             DateTime today = startTime.Date;
             DateTime nextDay = startTime.AddDays(1);
             DateTime endTime = dataSet[dataSet.Length - 1].Time;
+            DateTime twoHoursAgo = DateTime.UtcNow.AddHours(-2);
 
             if (startTime.Date != endTime.Date)
             {
@@ -327,6 +328,7 @@ namespace server_api
 
             var latestPoints = (from points in db.DataPoints
                                 where points.Station.Id == stationId
+                                where points.Time > twoHoursAgo
                                 group points by points.Parameter.Name into paramPoints
                                 select new
                                 {
