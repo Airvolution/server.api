@@ -24,37 +24,6 @@ namespace server_api.Controllers
             _repo = new StationsRepository();
         }
 
-
-
-         /// <summary>
-        ///   Returns all datapoints for a Station given a DeviceID.
-        /// 
-        ///   Primary Use: Compare View and single AMS station Map View "data graph"
-        /// </summary>
-        /// <param name="deviceID"></param>
-        /// <returns></returns>
-        //[ResponseType(typeof(IEnumerable<SwaggerPollutantList>))]
-        [Route("stations/parameterValues")]
-        [HttpGet]
-        public IHttpActionResult GetAllDataPointsForParameters(string stationID, string parameter)
-        {
-            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
-
-            Station existingStation = _repo.GetStation(stationID);
-
-            List<SwaggerPollutantList> data = new List<SwaggerPollutantList>();
-
-            SwaggerPollutantList pl = new SwaggerPollutantList(parameter);
-            foreach (DataPoint datapoint in points)
-            {
-                pl.values.Add(new object[2]);
-                pl.values.Last()[0] = ConvertDateTimeToMilliseconds(datapoint.Time);
-                pl.values.Last()[1] = (decimal)datapoint.Value;
-            }
-
-            return Ok(pl);
-        }
-
         /// <summary>
         /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 
         ///   station name and parameter type. Each value is an array of timestamps and measurements of the
@@ -64,12 +33,12 @@ namespace server_api.Controllers
         /// <param name="stationID">A list of station ids</param>
         /// <param name="parameter">A list of parameter types</param>
         /// <returns></returns>
-        [Route("stations/parameterValues2")]
+        [Route("stations/parameterValues")]
         [HttpGet]
         public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter)
         {
             // get all datapoints matching the station ids and parameter types
-            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation2(stationID, parameter);
+            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
 
             Dictionary<string, SwaggerPollutantList> data = new Dictionary<string, SwaggerPollutantList>();
 
@@ -94,7 +63,30 @@ namespace server_api.Controllers
                 list.values.Last()[1] = (decimal)d.Value;
             }
 
+            normalizeDataSwaggerPollutantList(ref data);
+
             return Ok(data.Values);
+        }
+
+        private void normalizeDataSwaggerPollutantList(ref Dictionary<string, SwaggerPollutantList> dict) {
+            // find longest length array in each object
+            int max = 0;
+            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict) {
+                if (pair.Value.values.Count > max)
+                {
+                    max = pair.Value.values.Count;
+                }
+            }
+
+            // normalize all other arrays to be the same length
+            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict)
+            {
+                List<object[]> current = pair.Value.values;
+                while (current.Count < max)
+                {
+                    current.Add(new object[0]);
+                }
+            }
         }
 
         [ResponseType(typeof(Station))]
