@@ -12,13 +12,6 @@ namespace server_api.Models
     /// <summary>
     /// 
     /// </summary>
-    public class SwaggerModels
-    {
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [System.Xml.Serialization.XmlRoot("air_quality_data")]
     public class SwaggerDAQData
     {
@@ -92,96 +85,6 @@ namespace server_api.Models
         public string Name { get; set; }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SwaggerUsers
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string email {get; set;}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Email"></param>
-        public SwaggerUsers(string Email)
-        {
-            email = Email;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SwaggerUser
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string email {get; set;}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string pass { get; set; }
-    }
-
-    /// <summary>
-    /// {
-	/// "Name": "string",
-	/// "Id": "string",
-	/// "private": false,
-	/// "Purpose": "string",
-	/// "Outdoor": true
-    /// }
-    /// </summary>
-    public class SwaggerDeviceState
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [StringLength(17)]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Privacy { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Purpose { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Indoor { get; set; }
-
-        public Location Location {get; set;}
-
-        public string Owner { get; set; }
-
-        public SwaggerDeviceState(string name, string id, bool privacy, string purpose, bool indoor, decimal lat, decimal lng, string owner)
-        {
-            this.Name = name;
-            this.Id = id;
-            this.Privacy = privacy;
-            this.Purpose = purpose;
-            this.Indoor = indoor;
-            this.Owner = owner;
-            this.Location = new Location(lat, lng);
-        }
-
-    }
-
     public class Location
     {
         public decimal Lat { get; set; }
@@ -193,7 +96,6 @@ namespace server_api.Models
             this.Lng = lng;
         }
     }
-    
 
     /// <summary>
     /// 
@@ -221,82 +123,6 @@ namespace server_api.Models
         }
     }
 
-    /// <summary>
-    ///   Used to return Station locations on the map view.
-    /// 
-    ///   {
-    ///   "ams": [{
-    ///               "deviceID": "mac_addr",
-    ///               "lat": 40,
-    ///               "lng": -111
-    ///            }, {
-    ///               "deviceID": "mac_addr",
-    ///               "lat": 40,
-    ///               "lng": -111
-    ///           }]
-    ///    }
-    /// </summary>
-    public class SwaggerAMSList
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<SwaggerDevice> ams;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public SwaggerAMSList()
-        {
-            this.ams = new List<SwaggerDevice>();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="deviceID"></param>
-        /// <param name="lat"></param>
-        /// <param name="lng"></param>
-        public void AddSwaggerDevice(String deviceID, decimal lat, decimal lng)
-        {
-            ams.Add(new SwaggerDevice(deviceID, lat, lng));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public class SwaggerDevice
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public String deviceID { get; set; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public decimal lat { get; set; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public decimal lng { get; set; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="deviceID"></param>
-            /// <param name="lat"></param>
-            /// <param name="lng"></param>
-            public SwaggerDevice(String deviceID, decimal lat, decimal lng)
-            {
-                this.deviceID = deviceID;
-                this.lat = lat;
-                this.lng = lng;
-            }
-
-        }
-    }
     /// <summary>
     /// This class stores both the NE and SW bounds sent from a
     /// map view.
@@ -411,132 +237,6 @@ namespace server_api.Models
             {
                 this.lat = lat;
                 this.lng = lng;
-                this.value = value;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SwaggerLatestDataPoints
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string co { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string pm { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string co2 { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string no2 { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string o3 { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string temp { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string humidity { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string pressure { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string altitude { get; set; }
-    }
-
-    /// <summary>
-    ///  Used to return values to the details pane.
-    /// 
-    ///  {
-    ///  "latest": [{
-    ///               "pollutantName": "pName",
-    ///               "value": 40
-    ///              }, {
-    ///               "pollutantNAme": "pName",
-    ///               "value": 40,
-    ///             }]
-    ///   }
-    /// </summary>
-    public class SwaggerLatestPollutantsList
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<PollutantAndValue> latest;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public SwaggerLatestPollutantsList()
-        {
-            this.latest = new List<PollutantAndValue>();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pollutantName"></param>
-        /// <param name="value"></param>
-        public void AddPollutantAndValue(String pollutantName, double value)
-        {
-            latest.Add(new PollutantAndValue(pollutantName, value));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public class PollutantAndValue
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public String pollutantName { get; set; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public double value { get; set; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="pollutantName"></param>
-            /// <param name="value"></param>
-            public PollutantAndValue(String pollutantName, double value)
-            {
-                this.pollutantName = pollutantName;
                 this.value = value;
             }
         }

@@ -96,7 +96,7 @@ namespace server_api.Controllers
         {
             var db = new AirUDBCOE();
 
-            /*Register Station
+            /*Register Station exmaple json.
             {
                 "station": {
                     "Name": "Draper",
@@ -118,8 +118,6 @@ namespace server_api.Controllers
 
             User user = userJObj.ToObject<User>();
             Station station = stationJObj.ToObject<Station>();
-
-            // IdentityUser existingUser = await _auth_repo.FindUser("lobato", "burritos");
 
             Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
             User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
@@ -148,7 +146,8 @@ namespace server_api.Controllers
         }
 
         /// <summary>
-        ///   Adds one or many DevicePoints (from a station)
+        ///   Adds one or many DevicePoints (from a station).
+        ///   Used by stations to post data to the database.
         /// </summary>
         /// <param name="dataSet">AMSDataSet Model</param>
         /// <returns></returns>
@@ -172,9 +171,7 @@ namespace server_api.Controllers
             }
             else 
                 return Ok(response);
-                //return Ok();
         }
-
 
         [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/locations")]
@@ -190,7 +187,6 @@ namespace server_api.Controllers
         public IHttpActionResult NearestStation(decimal lat, decimal lng)
         {
             return Ok(_repo.GetNearestStation(lat, lng));
-            //return Ok(_repo.GetNearestStation(lat, lng));
         }
 
         [ResponseType(typeof(IEnumerable<Station>))]
@@ -239,7 +235,6 @@ namespace server_api.Controllers
             return Ok(_repo.GetDataPointsFromStationAfterTime(stationID, after));
         }
 
-
         /// <summary>
         ///   Returns all datapoints for a Station given a StationID between two times.
         ///   On Javascript Side, use encodeURIComponent when sending DateTime
@@ -258,8 +253,6 @@ namespace server_api.Controllers
             }
             return Ok(_repo.GetDataPointsFromStationBetweenTimes(stationID, after, before));
         }
-
-
 
         /// <summary>
         ///   Returns the latest datapoints for a single AMS station based on specified DeviceId. 

@@ -366,7 +366,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="AttributeRoutingConfig.cs" />
-    <Compile Include="Controllers\AMSController.cs" />
     <Compile Include="Database\DatabaseContext.cs" />
     <Compile Include="Controllers\FrontEndController.cs" />
     <Compile Include="Global.asax.cs">
