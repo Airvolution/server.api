@@ -25,9 +25,9 @@ namespace server_api
 
         public Parameter Parameter { get; set; }
 
-        public decimal Lat { get; set; }
-
-        public decimal Lng { get; set; }
+        [JsonConverter(typeof(DbGeographyConverter))]
+        public DbGeography Location { get; set; }
+        
 
         public bool Indoor { get; set; }
 
