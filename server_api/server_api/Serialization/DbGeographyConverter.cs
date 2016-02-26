@@ -12,7 +12,7 @@ namespace server_api
     public class DbGeographyConverter : JsonConverter
     {
         private const string LATITUDE_KEY = "lat";
-        private const string LONGITUDE_KEY = "lnt";
+        private const string LONGITUDE_KEY = "lng";
 
         public override bool CanConvert(Type objectType)
         {
@@ -30,6 +30,7 @@ namespace server_api
                 return default(DbGeography);
 
             string wkt = string.Format(CultureInfo.InvariantCulture, "POINT({1} {0})", jObject[LATITUDE_KEY], jObject[LONGITUDE_KEY]);
+
 
             DbGeography returnValue = DbGeography.FromText(wkt, DbGeography.DefaultCoordinateSystemId);
 
