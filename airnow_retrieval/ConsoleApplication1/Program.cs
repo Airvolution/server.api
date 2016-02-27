@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Data.Entity.Spatial;
+using System.Net.Http.Formatting;
 
 namespace AirnowRetrieval
 {
@@ -74,7 +75,7 @@ namespace AirnowRetrieval
                 Console.WriteLine("Starting new thread...");
                 newThread.Start();
                 tamper += 1;
-                if (tamper > 0)
+                if (tamper > 15)
                 {
                     newThread.Join();
                     Console.WriteLine("Threads joined...");
@@ -308,15 +309,21 @@ namespace AirnowRetrieval
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));  
       
                     //client.PostAsync(route,,,)
-
-                    Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, tempDataPoints.ToArray());
+                    
+                    var formatter = new JsonMediaTypeFormatter();
+                    formatter.SerializerSettings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    };
+                    Task<HttpResponseMessage> responsePost = client.PostAsync(route, tempDataPoints.ToArray(),formatter);
                     if (responsePost.Result.IsSuccessStatusCode)
                     {
                         HttpResponseMessage httpMsg = responsePost.Result;
                         Task<string> content = httpMsg.Content.ReadAsStringAsync();
                         string jsonAsString = content.Result;
 
-                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString,jsonSettings);
                         Console.WriteLine(httpMsg.StatusCode + ": DataPoints Added");
                         foreach (var d in responseObject)
                         {
@@ -445,17 +452,11 @@ namespace AirnowRetrieval
                     Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, stationUser);
                     if (responsePost.Result.IsSuccessStatusCode)
                     {
-                        Log("Entering FIRST IF");
                         HttpResponseMessage httpMsg = responsePost.Result;
-                        Log("Entering FIRST IF-2");
                         Task<string> content = httpMsg.Content.ReadAsStringAsync();
-                        Log("Entering FIRST IF-3");
                         string jsonAsString = content.Result;
-                        Log("Entering FIRST IF-4");
                         dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
-                        Log("Entering FIRST IF-5");
                         Console.WriteLine(httpMsg.StatusCode + ": Station Registered");
-                        Log("Entering FIRST IF-6");
                         //Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.id);
 
                     }
