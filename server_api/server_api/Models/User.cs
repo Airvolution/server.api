@@ -34,13 +34,11 @@ namespace server_api
         public string Email { get; set; }
 
         [Required]
-        [JsonIgnore]
         [StringLength(100, MinimumLength = 1)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [StringLength(100)]
-        [JsonIgnore]
         [Display(Name = "Confirm Password")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
