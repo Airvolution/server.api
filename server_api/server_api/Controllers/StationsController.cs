@@ -9,9 +9,14 @@ using server_api.Models;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data.Entity.Spatial;
+using System.Globalization;
 
 namespace server_api.Controllers
 {
+
+    
+
     /// <summary>
     /// 
     /// </summary>
@@ -23,6 +28,7 @@ namespace server_api.Controllers
         {
             _repo = new StationsRepository();
         }
+
 
         /// <summary>
         /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 
@@ -64,7 +70,7 @@ namespace server_api.Controllers
             }
 
             normalizeDataSwaggerPollutantList(ref data);
-
+            
             return Ok(data.Values);
         }
 
@@ -179,7 +185,7 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/locations")]
         [HttpGet]
-        public IHttpActionResult StationLocators(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
+        public IHttpActionResult StationLocators(double latMin, double latMax, double lngMin, double lngMax)
         {
             return Ok(_repo.StationLocations(latMin, latMax, lngMin, lngMax));
         }
@@ -187,7 +193,7 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/nearest")]
         [HttpGet]
-        public IHttpActionResult NearestStation(decimal lat, decimal lng)
+        public IHttpActionResult NearestStation(double lat, double lng)
         {
             return Ok(_repo.GetNearestStation(lat, lng));
             //return Ok(_repo.GetNearestStation(lat, lng));
@@ -196,9 +202,10 @@ namespace server_api.Controllers
         [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/within")]
         [HttpGet]
-        public IHttpActionResult StationsInRadiusMiles(decimal lat, decimal lng, double miles)
+        public IHttpActionResult StationsInRadiusMiles(double lat, double lng, double miles)
         {
             return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
+            //return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
         }
 
         /// <summary>

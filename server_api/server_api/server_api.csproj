@@ -340,6 +340,7 @@
     <Compile Include="Repository\AlmanacRepository.cs" />
     <Compile Include="Repository\FrequentlyAskedQuestionRepository.cs" />
     <Compile Include="Repository\StationRepository.cs" />
+    <Compile Include="Serialization\DbGeographyConverter.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />

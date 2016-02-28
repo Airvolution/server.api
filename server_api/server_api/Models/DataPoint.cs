@@ -33,9 +33,11 @@ namespace server_api
         [JsonIgnore]
         public string Parameter_Unit { get; set; }
 
-        public decimal Lat { get; set; }
+        //public decimal Lat { get; set; }
 
-        public decimal Lng { get; set; }
+        //public decimal Lng { get; set; }
+        [JsonConverter(typeof(DbGeographyConverter))]
+        public DbGeography Location { get; set; }
 
         public double Value { get; set; }
 
