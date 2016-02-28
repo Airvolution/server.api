@@ -1,8 +1,7 @@
 ﻿using server_api.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.ComponentModel.Design;
 
 namespace server_api.Repository
 {
@@ -22,8 +21,7 @@ namespace server_api.Repository
 
         public IEnumerable<FrequentlyAskedQuestion> GetAllQuestionsAnswers()
         {
-            //return db.     // Stations.Find();
-            return null;
+            return db.FrequentlyAskedQuestions;
         }
 
         public void Dispose()

@@ -1,3 +1,5 @@
+using System.Diagnostics.Tracing;
+
 namespace server_api
 {
     using System;
@@ -26,6 +28,9 @@ namespace server_api
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
+        public virtual DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        public virtual DbSet<Section> Sections { get; set; }
+        public virtual DbSet<Keyword> EventKeywords { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -54,10 +59,6 @@ namespace server_api
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.User_Id)
                 .WillCascadeOnDelete(false);
-
-            //modelBuilder.Entity<FrequentlyAskedQuestion>()
-            //    .HasMany(e => e.Keywords)
-            //    .WillCascadeOnDelete(false);
         }
     }
 }

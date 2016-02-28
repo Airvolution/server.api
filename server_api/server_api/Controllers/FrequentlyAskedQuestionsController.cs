@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Web.Http;
-using System.Web.Http.Description;
 using server_api.Models;
-using System.Web.Script.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using server_api.Repository;
 
 namespace server_api.Controllers

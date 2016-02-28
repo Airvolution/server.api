@@ -311,10 +311,11 @@
   <ItemGroup>
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\FrequentlyAskedQuestionsController.cs" />
-    <Compile Include="Controllers\HttpGet.cs" />
     <Compile Include="Models\Daily.cs" />
     <Compile Include="Models\FrequentlyAskedQuestion.cs" />
+    <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Controllers\WeatherController.cs" />

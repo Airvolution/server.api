@@ -1,9 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Spatial;
 
 namespace server_api.Models
 {
@@ -16,25 +13,27 @@ namespace server_api.Models
         /// 
         /// </summary>
         [Key]
-        [Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string Question { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [Column(Order = 1)]
         public string Answer { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [Column(Order = 3)]
-        public string Section { get; set; }
+        public virtual Section Section { get; set; }
 
         /// <summary>
         /// 
-        /// </summary>
-        [Column(Order = 4)]
-        public string[] Keywords { get; set; }
+        /// </summary
+        public virtual ICollection<Keyword> Keywords { get; set; }
     }
 }
