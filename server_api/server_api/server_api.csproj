@@ -312,6 +312,7 @@
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
     <Compile Include="Models\Daily.cs" />
+    <Compile Include="Models\EmailContent.cs" />
     <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
