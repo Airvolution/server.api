@@ -83,8 +83,8 @@ namespace server_api.unit_testing
                     {
                         DataPoint datapoint = new DataPoint();
 
-                        datapoint.Lat = lat;
-                        datapoint.Lng = lng;
+                        //datapoint.Lat = lat;
+                        //datapoint.Lng = lng;
 
 
                         datapoint.AQI = rand.Next(400);
@@ -157,8 +157,8 @@ namespace server_api.unit_testing
                 existingStation.Name = "Name" + i.ToString("D6");
                 existingStation.Purpose = "Testing";
                 existingStation.Indoor = false;
-                existingStation.Lat = 77m;
-                existingStation.Lng = 77m;
+                //existingStation.Lat = 77m;
+                //existingStation.Lng = 77m;
                 existingStation.User = newUser;
 
                 _context.Stations.Add(existingStation);
@@ -227,8 +227,8 @@ namespace server_api.unit_testing
             
             DataPoint validDataPoint = new DataPoint();
             validDataPoint.Indoor = true;
-            validDataPoint.Lat = 123;
-            validDataPoint.Lng = 123;
+            //validDataPoint.Lat = 123;
+            //validDataPoint.Lng = 123;
 
             Parameter newParameter = new Parameter();
             newParameter.Name = "CO";
@@ -266,8 +266,8 @@ namespace server_api.unit_testing
 
             Station mac000000 = _context.Stations.Find("MAC000000");
 
-            Assert.IsTrue(mac000000.Lat == validDataPoint.Lat);
-            Assert.IsTrue(mac000000.Lng == validDataPoint.Lng);
+            //Assert.IsTrue(mac000000.Lat == validDataPoint.Lat);
+            //Assert.IsTrue(mac000000.Lng == validDataPoint.Lng);
             Assert.IsTrue(mac000000.Indoor == validDataPoint.Indoor);
         }
     }
