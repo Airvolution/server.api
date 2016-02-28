@@ -156,6 +156,7 @@ namespace server_api
         {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID
+                                          orderby point.Time ascending
                                           select point;
             return data;
         }
@@ -164,7 +165,8 @@ namespace server_api
         {
             IEnumerable<DataPoint> data = db.DataPoints
                                             .Where(s => stationID.Contains(s.Station.Id))
-                                            .Where(p => parameter.Contains(p.Parameter.Name));
+                                            .Where(p => parameter.Contains(p.Parameter.Name))
+                                            .OrderBy(p => p.Time);
 
             return data;
         }
@@ -185,6 +187,7 @@ namespace server_api
                                           where point.Station.Id == stationID &&
                                                 point.Time >= after &&
                                                 point.Time <= before
+                                          orderby point.Time ascending
                                           select point;
             return data;
         }
