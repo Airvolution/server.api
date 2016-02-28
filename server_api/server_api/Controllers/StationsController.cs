@@ -30,24 +30,6 @@ namespace server_api.Controllers
         }
 
 
-
-        [Route("stations/testArray")]
-        [HttpPost]
-        public IHttpActionResult TestArray([FromBody]DataPoint[] dataSet)
-        {
-            DataPoint p = dataSet[0];
-
-            return Ok(p);
-        }
-
-        [Route("stations/testSingle")]
-        [HttpPost]
-        public IHttpActionResult TestSingle([FromBody]DataPoint dataPoint)
-        {
-            return Ok(dataPoint);
-        }
-
-
         /// <summary>
         /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 
         ///   station name and parameter type. Each value is an array of timestamps and measurements of the
