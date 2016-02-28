@@ -55,9 +55,9 @@ namespace server_api
                 .HasForeignKey(e => e.User_Id)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<FrequentlyAskedQuestion>()
-                .HasMany(e => e.Keywords)
-                .WillCascadeOnDelete(false);
+            //modelBuilder.Entity<FrequentlyAskedQuestion>()
+            //    .HasMany(e => e.Keywords)
+            //    .WillCascadeOnDelete(false);
         }
     }
 }

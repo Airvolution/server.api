@@ -22,7 +22,13 @@ namespace server_api.Repository
 
         public IEnumerable<FrequentlyAskedQuestion> GetAllQuestionsAnswers()
         {
-            return db.     // Stations.Find();
+            //return db.     // Stations.Find();
+            return null;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }
