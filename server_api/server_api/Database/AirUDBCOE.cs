@@ -4,6 +4,7 @@ namespace server_api
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using server_api.Models;
 
     public partial class AirUDBCOE : DbContext
     {
@@ -53,7 +54,10 @@ namespace server_api
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.User_Id)
                 .WillCascadeOnDelete(false);
-        }
 
+            modelBuilder.Entity<FrequentlyAskedQuestion>()
+                .HasMany(e => e.Keywords)
+                .WillCascadeOnDelete(false);
+        }
     }
 }
