@@ -7,9 +7,9 @@ namespace server_api.Models
 {
     public class GpsBounds
     {
-        public decimal latMin { get; set; }
-        public decimal longMin { get; set; }
-        public decimal latMax { get; set; }
-        public decimal longMax { get; set; }
+        public double latMin { get; set; }
+        public double longMin { get; set; }
+        public double latMax { get; set; }
+        public double longMax { get; set; }
     }
 }

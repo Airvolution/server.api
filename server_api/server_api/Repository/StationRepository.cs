@@ -79,7 +79,7 @@ namespace server_api
         }
 
 
-        public Station GetNearestStation(decimal lat, decimal lng)
+        public Station GetNearestStation(double lat, double lng)
         {
             double latD = (double)lat;
             double lngD = (double)lng;
@@ -89,11 +89,11 @@ namespace server_api
                               select new
                               {
                                   Distance = (3959 * SqlFunctions.Acos(SqlFunctions.Cos(SqlFunctions.Radians(lat)) * 
-                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Lat)) * 
-                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Lng) - 
+                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Location.Latitude)) * 
+                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Location.Longitude) - 
                                                      SqlFunctions.Radians(lng)) + 
                                                      SqlFunctions.Sin(SqlFunctions.Radians(lat)) * 
-                                                     SqlFunctions.Sin((SqlFunctions.Radians(s.Lat))))),
+                                                     SqlFunctions.Sin((SqlFunctions.Radians(s.Location.Latitude))))),
                                   s
                               })
                          orderby outer.Distance
@@ -102,7 +102,7 @@ namespace server_api
             return result;
         }
 
-        public IEnumerable<Station> GetStationsWithinRadiusMiles(decimal lat, decimal lng, double radius)
+        public IEnumerable<Station> GetStationsWithinRadiusMiles(double lat, double lng, double radius)
         {
             double latD = (double)lat;
             double lngD = (double)lng;
@@ -112,11 +112,11 @@ namespace server_api
                               select new
                               {
                                   Distance = (3959 * SqlFunctions.Acos(SqlFunctions.Cos(SqlFunctions.Radians(lat)) *
-                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Lat)) *
-                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Lng) -
+                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Location.Latitude)) *
+                                                     SqlFunctions.Cos(SqlFunctions.Radians(s.Location.Longitude) -
                                                      SqlFunctions.Radians(lng)) +
                                                      SqlFunctions.Sin(SqlFunctions.Radians(lat)) *
-                                                     SqlFunctions.Sin((SqlFunctions.Radians(s.Lat))))),
+                                                     SqlFunctions.Sin((SqlFunctions.Radians(s.Location.Latitude))))),
                                   s
                               })
                          where outer.Distance < radius
@@ -126,11 +126,11 @@ namespace server_api
             return result;
         }
 
-        public IEnumerable<Station> StationLocations(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
+        public IEnumerable<Station> StationLocations(double latMin, double latMax, double lngMin, double lngMax)
         {
             IEnumerable<Station> data = from station in db.Stations
-                                        where station.Lat >= latMin && station.Lat <= latMax && station.Lng >= lngMin && station.Lng <= lngMax
-                                        where !(station.Lat == 0 && station.Lng == 0)
+                                        where station.Location.Latitude >= latMin && station.Location.Latitude <= latMax && station.Location.Longitude >= lngMin && station.Location.Longitude <= lngMax
+                                        where !(station.Location.Latitude == 0 && station.Location.Longitude == 0)
                                         select station;
             return data;
         }
@@ -156,6 +156,7 @@ namespace server_api
         {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID
+                                          orderby point.Time ascending
                                           select point;
             return data;
         }
@@ -164,7 +165,8 @@ namespace server_api
         {
             IEnumerable<DataPoint> data = db.DataPoints
                                             .Where(s => stationID.Contains(s.Station.Id))
-                                            .Where(p => parameter.Contains(p.Parameter.Name));
+                                            .Where(p => parameter.Contains(p.Parameter.Name))
+                                            .OrderBy(p => p.Time);
 
             return data;
         }
@@ -185,6 +187,7 @@ namespace server_api
                                           where point.Station.Id == stationID &&
                                                 point.Time >= after &&
                                                 point.Time <= before
+                                          orderby point.Time ascending
                                           select point;
             return data;
         }
@@ -265,8 +268,7 @@ namespace server_api
             dataSetStation = db.Stations.Find(stationId);
 
             dataSetStation.Indoor = latestPoint.Indoor;
-            dataSetStation.Lat = latestPoint.Lat;
-            dataSetStation.Lng = latestPoint.Lng;
+            dataSetStation.Location = latestPoint.Location;
 
             Daily sDaily = db.Dailies.Find(today, stationId);
 
@@ -341,8 +343,7 @@ namespace server_api
             if (maxLatest != null)
             {
                 dataSetStation.AQI = maxLatest.AQI;
-                dataSetStation.Lat = maxLatest.Lat;
-                dataSetStation.Lng = maxLatest.Lng;
+                dataSetStation.Location = maxLatest.Location;
                 dataSetStation.Parameter = maxLatest.Parameter;
             }           
 

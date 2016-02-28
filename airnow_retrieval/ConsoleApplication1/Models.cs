@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity.Spatial;
 
 namespace AirnowRetrieval
 {
@@ -26,8 +27,8 @@ namespace AirnowRetrieval
 
     class AirNowDataPoint
     {
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public string UTC { get; set; }
         public string Parameter { get; set; }
         public string Unit { get; set; }
@@ -53,8 +54,12 @@ namespace AirnowRetrieval
 
         public bool Indoor { get; set; }
 
-        public decimal Lat { get; set; }
-        public decimal Lng { get; set; }
+        //public decimal Lat { get; set; }
+        //public decimal Lng { get; set; }
+
+        //[JsonIgnore]
+        [JsonConverter(typeof(DbGeographyConverter))]
+        public DbGeography Location { get; set; }
 
         public double Value { get; set; }
         public int Category { get; set; }
@@ -65,10 +70,9 @@ namespace AirnowRetrieval
     {
         public string Id { get; set; } // site name
 
+        
         [JsonIgnore]
-        public decimal Lat { get; set; }
-        [JsonIgnore]
-        public decimal Lng { get; set; }
+        public DbGeography Location { get; set; }
 
         public bool Indoor { get; set; }
 

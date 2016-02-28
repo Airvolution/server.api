@@ -12,6 +12,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using System.Data.Entity.Spatial;
+using System.Net.Http.Formatting;
 
 namespace AirnowRetrieval
 {
@@ -28,8 +30,9 @@ namespace AirnowRetrieval
         static string logPath = "C:\\dev\\airnow_retrieval\\log\\airNowApiLog.txt";
         //static string sitesPath = "C:\\dev\\airnow_retrieval\\log\\sites.csv";
 
-        //static string hostUrl = "http://localhost:2307/";
-        static string hostUrl = "http://dev.air.eng.utah.edu/api/";
+        static string hostUrl = "http://localhost:2307/";
+        //static string hostUrl = "http://dev.air.eng.utah.edu/api/";
+       
 
         // Will Use Later For Filtering
         static HashSet<string> USStates = new HashSet<string>{"AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA",
@@ -134,7 +137,8 @@ namespace AirnowRetrieval
             string dataType = "B";
             string format = "application/json";
             string verbose = "1";
-            string API_KEY = "1CD19983-D26A-46F2-8022-6A6E16A991F7";
+            //string API_KEY = "1CD19983-D26A-46F2-8022-6A6E16A991F7";
+            string API_KEY = "3A7B6343-7943-4C2E-B1D6-2C3D77858D7A";
 
             // WebClient performing the GET Request from AirNowApi.
             WebClient airNowApiWebClient = new WebClient();
@@ -253,7 +257,7 @@ namespace AirnowRetrieval
         public static bool SetAirUDataPoint(List<AirNowDataPoint> airNowDataPoints)
         {
             int debugInt = 0;
-            if (airNowDataPoints.Count <= 0)
+            if (airNowDataPoints.Count() <= 0)
             {
                 return false;
             }
@@ -279,12 +283,12 @@ namespace AirnowRetrieval
                         Unit = airNowDataPoint.Unit
                     },
                     Indoor = false,
-                    Lat = airNowDataPoint.Latitude,
-                    Lng = airNowDataPoint.Longitude,
                     Value = airNowDataPoint.Value,
                     Category = airNowDataPoint.Category,
                     AQI = airNowDataPoint.AQI
                 };
+
+                item.Location = CreatePoint(airNowDataPoint.Latitude, airNowDataPoint.Longitude, 4326);
 
                 tempDataPoints.Add(item);
 
@@ -299,18 +303,27 @@ namespace AirnowRetrieval
             {
                 using (var client = new HttpClient())
                 {
+                    
                     client.BaseAddress = new Uri(hostUrl);
                     client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    Task<HttpResponseMessage> responsePost = client.PostAsJsonAsync(route, tempDataPoints.ToArray());
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));  
+      
+                    //client.PostAsync(route,,,)
+                    
+                    var formatter = new JsonMediaTypeFormatter();
+                    formatter.SerializerSettings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    };
+                    Task<HttpResponseMessage> responsePost = client.PostAsync(route, tempDataPoints.ToArray(),formatter);
                     if (responsePost.Result.IsSuccessStatusCode)
                     {
                         HttpResponseMessage httpMsg = responsePost.Result;
                         Task<string> content = httpMsg.Content.ReadAsStringAsync();
                         string jsonAsString = content.Result;
 
-                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString,jsonSettings);
                         Console.WriteLine(httpMsg.StatusCode + ": DataPoints Added");
                         foreach (var d in responseObject)
                         {
@@ -364,7 +377,7 @@ namespace AirnowRetrieval
 
                         
                     }
-                    client.Dispose();
+                   //client.Dispose();
                 }
             }
             catch (TaskCanceledException e)
@@ -377,6 +390,13 @@ namespace AirnowRetrieval
             }
             
             return true;
+        }
+
+        public static DbGeography CreatePoint(double lat, double lon, int srid)
+        {
+            string wkt = String.Format("POINT({0} {1})", lon, lat);
+
+            return DbGeography.PointFromText(wkt, srid);
         }
 
         public static bool SetAirUStation(AirNowDataPoint dataPoint)
@@ -435,7 +455,6 @@ namespace AirnowRetrieval
                         HttpResponseMessage httpMsg = responsePost.Result;
                         Task<string> content = httpMsg.Content.ReadAsStringAsync();
                         string jsonAsString = content.Result;
-
                         dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString);
                         Console.WriteLine(httpMsg.StatusCode + ": Station Registered");
                         //Console.WriteLine("\tStationId: " + responseObject.id + "\tUserName:" + responseObject.user.id);
@@ -467,7 +486,7 @@ namespace AirnowRetrieval
                             Log("Unexpected: " + httpMsg.StatusCode + ": " + httpMsg.Content);
                         }
                     }
-                    client.Dispose();
+                    //client.Dispose();
                 }
             }
             catch (Exception e)
