@@ -309,7 +309,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AlmanacController.cs" />
+    <Compile Include="Controllers\ContactUsController.cs" />
+    <Compile Include="Models\EmailContent.cs" />
+    <Compile Include="Controllers\FrequentlyAskedQuestionsController.cs" />
+    <Compile Include="Models\Daily.cs" />
+    <Compile Include="Models\FrequentlyAskedQuestion.cs" />
+    <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
@@ -331,7 +339,10 @@
     <Compile Include="Models\SwaggerModels.cs" />
     <Compile Include="Models\WeatherResponse.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
+    <Compile Include="Repository\AlmanacRepository.cs" />
+    <Compile Include="Repository\FrequentlyAskedQuestionRepository.cs" />
     <Compile Include="Repository\StationRepository.cs" />
+    <Compile Include="Serialization\DbGeographyConverter.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
@@ -363,7 +374,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="AttributeRoutingConfig.cs" />
-    <Compile Include="Controllers\AMSController.cs" />
     <Compile Include="Database\DatabaseContext.cs" />
     <Compile Include="Controllers\FrontEndController.cs" />
     <Compile Include="Global.asax.cs">
@@ -481,6 +491,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\FrequentlyAskedQuestions\" />
     <Folder Include="Views\Weather\" />
   </ItemGroup>
   <ItemGroup>

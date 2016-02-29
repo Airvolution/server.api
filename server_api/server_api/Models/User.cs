@@ -1,5 +1,6 @@
 namespace server_api
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,11 +9,9 @@ namespace server_api
 
     public partial class User
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            DeviceGroups = new HashSet<StationGroup>();
-            Devices = new HashSet<Station>();
+            Stations = new HashSet<Station>();
         }
 
         [Key]
@@ -45,10 +44,7 @@ namespace server_api
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StationGroup> DeviceGroups { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Station> Devices { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Station> Stations { get; set; }
     }
 }

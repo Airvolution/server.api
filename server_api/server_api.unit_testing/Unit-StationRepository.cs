@@ -33,7 +33,9 @@ namespace server_api.unit_testing
                 context.Database.Create();
             }
             /* SQL Express Database */
-            //connectionString = @"";
+            
+            /* Live Database */
+            //connectionString = "data source=mssql.eng.utah.edu;initial catalog=lobato;persist security info=True;user id=lobato;password=eVHDpynh;multipleactiveresultsets=True;application name=EntityFramework\" providerName=\"System.Data.SqlClient";
 
             _context = new AirUDBCOE(connectionString);
             _repo = new StationsRepository(_context);
@@ -42,22 +44,36 @@ namespace server_api.unit_testing
 
         private static void SetupDatabase()
         {
-            AddStations(3); // Number of Stations
-            AddParameters(); // Parameters (currently 8)
-            var task = AddDataPoints(3); // Number of Datapoints for each station
+            User newUser = new User();
+            newUser.ConfirmPassword = "admin";
+            newUser.Password = "admin";
+            newUser.FirstName = "Admin";
+            newUser.Email = "admin-email";
+            newUser.LastName = "master";
+            newUser.Username = "Fake-Admin";
+
+
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            AddStations(10, newUser); // Number of Stations
+            //AddParameters(); // Parameters (currently 8)
+            var task = AddDataPoints(100); // Number of Datapoints for each station
             task.Wait();
         }
 
         private static async System.Threading.Tasks.Task AddDataPoints(int count)
         {
-            Random rand = new Random();         
+            Random rand = new Random();
 
             List<Station> stations = await _context.Stations.ToListAsync();
             List<Parameter> parameters = await _context.Parameters.ToListAsync();
 
-            List<DataPoint> points = new List<DataPoint>();
+
             foreach (Station station in stations)
             {
+                List<DataPoint> points = new List<DataPoint>();
+
                 decimal lat = (decimal)(rand.NextDouble() * 13 + 35.8);
                 decimal lng = (decimal)(rand.NextDouble() * 44.1 - 121);
 
@@ -67,8 +83,8 @@ namespace server_api.unit_testing
                     {
                         DataPoint datapoint = new DataPoint();
 
-                        datapoint.Lat = lat;
-                        datapoint.Lng = lng;
+                        //datapoint.Lat = lat;
+                        //datapoint.Lng = lng;
 
 
                         datapoint.AQI = rand.Next(400);
@@ -78,30 +94,36 @@ namespace server_api.unit_testing
                         datapoint.Parameter = parameter;
                         datapoint.Station = station;
                         datapoint.Value = DateTime.Now.Millisecond;
-                        datapoint.Time = DateTime.Now.AddMinutes(i*15);
+                        datapoint.Time = DateTime.Now.AddMinutes(i * 15);
 
                         points.Add(datapoint);
                     }
                 }
+
+                _repo.SetDataPointsFromStation(points.ToArray());
             }
-            _context.DataPoints.AddRange(points);
-            _context.SaveChanges();
         }
 
         private static void AddParameters()
         {
             List<Tuple<string, string>> parameters = new List<Tuple<string, string>>() 
             {
-                new Tuple<string,string>("PM2.5", "ppm"),
-                new Tuple<string,string>("PM10.0", "ppm"),
-                new Tuple<string,string>("CO", "ppm"),
-                new Tuple<string,string>("CO2", "ppm"),
-                new Tuple<string,string>("NO2", "ppm"),
-                new Tuple<string,string>("TEMPERATURE", "F"),
-                //new Tuple<string,string>("TEMPERATURE", "C"),
-                new Tuple<string,string>("HUMIDITY", "%"),
-                new Tuple<string,string>("PRESSURE", "in"),
-                //new Tuple<string,string>("PRESSURE", "mb")
+                /*
+                Name	Unit
+                CO	PPM
+                NO2	PPB
+                OZONE	PPB
+                PM10	UG/M3
+                PM2.5	UG/M3
+                SO2	PPB
+                 */
+
+                new Tuple<string,string>("PM2.5", "UG/M3"),
+                new Tuple<string,string>("PM10", "UG/M3"),
+                new Tuple<string,string>("CO", "PPM"),
+                new Tuple<string,string>("NO2", "PPB"),
+                new Tuple<string,string>("OZONE", "PPB"),
+                new Tuple<string,string>("SO2", "PPB"),
             };
 
             foreach (Tuple<string, string> t in parameters)
@@ -116,7 +138,7 @@ namespace server_api.unit_testing
             _context.SaveChanges();
         }
 
-        private static void AddStations(int count)
+        private static void AddStations(int count, User newUser)
         {
             /*
             Station oneStation = new Station();
@@ -130,13 +152,15 @@ namespace server_api.unit_testing
             for (int i = 0; i < count; i++)
             {
                 Station existingStation = new Station();
-                existingStation.Agency = "Exist";
-                existingStation.Id = "MAC" + i.ToString("D6");
+                existingStation.Id = i.ToString("D6") + "AAA";
+                existingStation.Purpose = null;
                 existingStation.Name = "Name" + i.ToString("D6");
                 existingStation.Purpose = "Testing";
                 existingStation.Indoor = false;
-                existingStation.Lat = 77m;
-                existingStation.Lng = 77m;
+                //existingStation.Lat = 77m;
+                //existingStation.Lng = 77m;
+                existingStation.User = newUser;
+
                 _context.Stations.Add(existingStation);
             }
             _context.SaveChanges();
@@ -203,12 +227,12 @@ namespace server_api.unit_testing
             
             DataPoint validDataPoint = new DataPoint();
             validDataPoint.Indoor = true;
-            validDataPoint.Lat = 123;
-            validDataPoint.Lng = 123;
+            //validDataPoint.Lat = 123;
+            //validDataPoint.Lng = 123;
 
             Parameter newParameter = new Parameter();
             newParameter.Name = "CO";
-            newParameter.Unit = "ppm";
+            newParameter.Unit = "   ";
             validDataPoint.Parameter = newParameter;
 
             Station newStation = new Station();
@@ -223,7 +247,7 @@ namespace server_api.unit_testing
             List<DataPoint> points = new List<DataPoint>();
             points.Add(validDataPoint);
 
-            Assert.IsTrue(_repo.SetDataPointsFromStation(points.ToArray()));
+            _repo.SetDataPointsFromStation(points.ToArray());
 
             IEnumerable<DataPoint> latestPoints = _repo.GetLatestDataPointsFromStation("MAC000000");
 
@@ -242,8 +266,8 @@ namespace server_api.unit_testing
 
             Station mac000000 = _context.Stations.Find("MAC000000");
 
-            Assert.IsTrue(mac000000.Lat == validDataPoint.Lat);
-            Assert.IsTrue(mac000000.Lng == validDataPoint.Lng);
+            //Assert.IsTrue(mac000000.Lat == validDataPoint.Lat);
+            //Assert.IsTrue(mac000000.Lng == validDataPoint.Lng);
             Assert.IsTrue(mac000000.Indoor == validDataPoint.Indoor);
         }
     }

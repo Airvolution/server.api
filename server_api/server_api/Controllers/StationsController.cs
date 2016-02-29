@@ -9,9 +9,14 @@ using server_api.Models;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data.Entity.Spatial;
+using System.Globalization;
 
 namespace server_api.Controllers
 {
+
+    
+
     /// <summary>
     /// 
     /// </summary>
@@ -24,234 +29,179 @@ namespace server_api.Controllers
             _repo = new StationsRepository();
         }
 
-        /*
+
         /// <summary>
-        ///   Returns the set of DeviceStates associated with the given user email.
+        /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 
+        ///   station name and parameter type. Each value is an array of timestamps and measurements of the
+        ///   given parameter. This endpoint is temporary, proof of concept... I'd like to add time range
+        ///   to this functionality.
         /// </summary>
+        /// <param name="stationID">A list of station ids</param>
+        /// <param name="parameter">A list of parameter types</param>
         /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
-        [Route("stations/state/{email}")]
+        [Route("stations/parameterValues")]
         [HttpGet]
-        public IHttpActionResult StationStates([FromUri]string email)
+        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter)
         {
-            var db = new AirUDBCOE();
+            // get all datapoints matching the station ids and parameter types
+            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
 
-            email = "jaredpotter1@gmail.com";
+            Dictionary<string, SwaggerPollutantList> data = new Dictionary<string, SwaggerPollutantList>();
 
-            // Validate given email has associated User.
-            User registeredUser = db.Users.SingleOrDefault(x => x.Email == email);
-
-            if (registeredUser != null)
+            // builds an object specific for the NVD3 plots where the key is eg:
+            //   Hawthorne - PM2.5
+            foreach (DataPoint d in points)
             {
-                SqlConnection conn = new SqlConnection(@"Data Source=mssql.eng.utah.edu;Initial Catalog=lobato;Persist Security Info=True;User ID=lobato;Password=eVHDpynh;MultipleActiveResultSets=True;Application Name=EntityFramework");
-                List<SwaggerDeviceState> swaggerDeviceStates = new List<SwaggerDeviceState>();
-                using (SqlConnection myConnection = conn)
+                string key = (d.Station.Name + " - " + d.Parameter.Name);
+
+                SwaggerPollutantList list;
+                if (!data.TryGetValue(key, out list))
                 {
-                    string oString = @"select MaxCompleteStates.DeviceID, Devices.Name, Devices.Purpose, MaxCompleteStates.StateTime, MaxCompleteStates.Lat, MaxCompleteStates.Lng, MaxCompleteStates.InOrOut, MaxCompleteStates.Privacy from
-                                        (select MaxStates.DeviceID, MaxStates.StateTime, DeviceStates.Lat, DeviceStates.Lng, DeviceStates.InOrOut, DeviceStates.Privacy from
-	                                        (select DeviceID, Max(StateTime) as StateTime
-				                                        from DeviceStates
-				                                        group by DeviceID) as MaxStates
-		                                        left join DeviceStates
-		                                        on MaxStates.DeviceID=DeviceStates.DeviceID
-		                                        and MaxStates.StateTime = DeviceStates.StateTime) as MaxCompleteStates
-		                                        left join Devices
-		                                        on Devices.DeviceID=MaxCompleteStates.DeviceID
-		                                        where Devices.Email = @owner;";
-                    SqlCommand oCmd = new SqlCommand(oString, myConnection);
-
-                    oCmd.Parameters.AddWithValue("@owner", email);
-
-                    myConnection.Open();
-                    using (SqlDataReader oReader = oCmd.ExecuteReader())
+                    data.Add(key, new SwaggerPollutantList(key));
+                    if (!data.TryGetValue(key, out list))
                     {
-                        while (oReader.Read())
-                        {
-                            swaggerDeviceStates.Add(new SwaggerDeviceState(
-                                                                    (string)oReader["Name"],
-                                                                    (string)oReader["DeviceID"],
-                                                                    (bool)oReader["Privacy"],
-                                                                    (string)oReader["Purpose"],
-                                                                    (bool)oReader["InOrOut"],
-                                                                    (decimal)oReader["Lat"],
-                                                                    (decimal)oReader["Lng"],
-                                                                    email));
-                        }
-
-                        myConnection.Close();
+                        return BadRequest();
                     }
                 }
-                return Ok(swaggerDeviceStates);
+
+                list.values.Add(new object[2]);
+                list.values.Last()[0] = ConvertDateTimeToMilliseconds(d.Time);
+                list.values.Last()[1] = (decimal)d.Value;
             }
-            else
+
+            normalizeDataSwaggerPollutantList(ref data);
+            
+            return Ok(data.Values);
+        }
+
+        private void normalizeDataSwaggerPollutantList(ref Dictionary<string, SwaggerPollutantList> dict) {
+            // find longest length array in each object
+            int max = 0;
+            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict) {
+                if (pair.Value.values.Count > max)
+                {
+                    max = pair.Value.values.Count;
+                }
+            }
+
+            // normalize all other arrays to be the same length
+            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict)
             {
-                // User with email address: <email> does not exist.
-                return NotFound();
+                List<object[]> current = pair.Value.values;
+                while (current.Count < max)
+                {
+                    current.Add(new object[0]);
+                }
             }
         }
-       */
-        /*
-        /// <summary>
-        /// Registers an AMS station:
-        /// - Validates request
-        /// - Updates Database to represent new association between existing user and 
-        ///    new station.
-        /// </summary>
-        /// <param name="newDeviceState">The current Station and its StationState</param>
-        /// <returns></returns>
-        [ResponseType(typeof(SwaggerDeviceState))]
+
+        [ResponseType(typeof(Station))]
         [Route("stations/register")]
         [HttpPost]
-        public IHttpActionResult RegisterStation([FromBody]SwaggerDeviceState newDeviceState) // TODO: why can't methods share the same name if they are different endpoints?
+        public IHttpActionResult RegisterUserStation([FromBody]JObject jsonData)
         {
             var db = new AirUDBCOE();
 
-            Station existingDevice = db.Stations.SingleOrDefault(x => x.ID == newDeviceState.Id);
-            if (existingDevice == null)
+            /*Register Station exmaple json.
             {
-                // Add station success.
-                Station station = new Station();
-                station.Name = newDeviceState.Name;
-                station.ID = newDeviceState.Id;
-                station.Email = "jaredpotter1@gmail.com"; // newDeviceAndState.Email;
-                station.Privacy = newDeviceState.Privacy;
-                station.Purpose = newDeviceState.Purpose;
-                db.Stations.Add(station);
-                db.SaveChanges();
+                "station": {
+                    "Name": "Draper",
+                    "ID": "MAC000001",
+                    "Agency": "AirU",
+                    "Purpose": "Testing",
+                    "Indoor" : false
+                },
+                "user": {
+                    "Email": "zacharyisaiahlobato@gmail.com"
+                }
+            }
+            */
 
-                StationState state = new StationState();
-                state.Station = station;
-                state.InOrOut = newDeviceState.Indoor;
-                state.Privacy = newDeviceState.Privacy;
-                state.StateTime = new DateTime(1900, 1, 1);
-                state.Lng = 0.0m;
-                state.Lat = 90.0m;
-                db.DeviceStates.Add(state);
-                db.SaveChanges();
+            dynamic userPostData = jsonData;
 
-                return Ok(newDeviceState);
+            JObject userJObj = userPostData.user;
+            JObject stationJObj = userPostData.station;
+
+            User user = userJObj.ToObject<User>();
+            Station station = stationJObj.ToObject<Station>();
+
+            Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
+            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
+
+            if (existingUser != null)
+            {
+                if (existingDevice == null)
+                {
+                    // Add station success.
+                    station.User = existingUser;
+                    db.Stations.Add(station);
+                    db.SaveChanges();
+
+                    return Ok(station);
+                }
+                else
+                {
+                    // Add station fail.
+                    return BadRequest("Station already exists.");
+                }
             }
             else
             {
-                // Add station fail.
-                return BadRequest("Existing Station");
+                return BadRequest("User does not exist.");
             }
         }
-        */
-
-        /*
-        /// <summary>
-        ///   Adds one or many DeviceStates (from a station)
-        /// </summary>
-        /// <param name="state">*xml comment*</param>
-        /// <returns></returns>
-        [Route("stations/states")]
-        [HttpPost]
-        public IHttpActionResult AddAMSDeviceStates([FromBody]StationState[] states)
-        {
-            var db = new AirUDBCOE();
-            Station station = states[0].Station;
-
-            if (station == null)
-            {
-                // Failed to add StationState.
-                return Ok("Failed to add station state with Station with ID = " + states[0].Station.ID + " not found.");
-            }
-
-            db.DeviceStates.AddRange(states);
-
-            db.SaveChanges();
-
-            // Success.
-            return Ok(states);
-        }
-        */
-        /*
-        /// <summary>
-        ///   Updates a single AMS StationState from the "my devices" settings web page.
-        /// </summary>
-        /// <param name="state">The state of the station</param>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<SwaggerDeviceState>))]
-        [Route("stations/state/{deviceId}")]
-        [HttpPut]
-        public IHttpActionResult Station([FromBody]SwaggerDeviceState state)
-        {
-            var db = new AirUDBCOE();
-
-            // Validate Station from given DeviceId exists.
-            Station registeredDevice = db.Stations.SingleOrDefault(x => x.ID == state.Id);
-
-            if (registeredDevice != null)
-            {
-                // Request previous state from database based on state.DeviceID
-                StationState previousState = (
-                                    from station in db.DeviceStates
-                                    where station.Station.ID == state.Id
-                                    && station.StateTime <= DateTime.Now // **May be a future source of contention - REVIEW**
-                                    group station by station.Station.ID into deviceIDGroup
-                                    select new
-                                    {
-                                        DeviceID = deviceIDGroup.Key,
-                                        MaxMeasurementTime = deviceIDGroup.Max(station => station.StateTime)
-                                    } into MaxStates
-                                    join coordinates in db.DeviceStates
-                                                            on MaxStates.MaxMeasurementTime equals coordinates.StateTime into latestStateGroup
-                                    select latestStateGroup.FirstOrDefault()).Single();
-
-                // Inherit lat and long from previous state
-
-                StationState newDeviceState = new StationState();
-                newDeviceState.Station = previousState.Station;
-                newDeviceState.InOrOut = state.Indoor;
-                newDeviceState.Privacy = state.Privacy;
-                newDeviceState.Lat = previousState.Lat;
-                newDeviceState.Lng = previousState.Lng;
-                newDeviceState.StateTime = DateTime.Now;
-                db.DeviceStates.Add(newDeviceState);
-                db.SaveChanges();
-
-                registeredDevice.Name = state.Name;
-                registeredDevice.Purpose = state.Purpose;
-
-                //db.Devices.Add(registeredDevice);
-                db.SaveChanges();
-
-                // Send user newly updated state back to user
-                return Ok(state);
-            }
-            else
-            {
-                // Station with DeviceID: <deviceID> does not exist.
-                return NotFound();
-            }
-        }
-        */
 
         /// <summary>
-        ///   Adds one or many DevicePoints (from a station)
+        ///   Adds one or many DevicePoints (from a station).
+        ///   Used by stations to post data to the database.
         /// </summary>
         /// <param name="dataSet">AMSDataSet Model</param>
         /// <returns></returns>
         [Route("stations/data")]
         [HttpPost]
-        public IHttpActionResult AddAMSDataSet([FromBody]DataPoint[] dataSet)
+        public IHttpActionResult AddStationDataPointSet([FromBody]DataPoint[] dataSet)
         {
-            if (!_repo.SetDataPointsFromStation(dataSet))
+            DateTime start = DateTime.Now;
+
+            if (dataSet.Length == 0)
             {
-                return NotFound();
+                return BadRequest("No DataPoints in sent array.");
+            }
+
+            IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
+            DateTime end = DateTime.Now;
+
+            if (response==null)
+            {
+                return BadRequest("Station does not exist.");
             }
             else 
-                return Ok();
+                return Ok(response);
         }
 
-
         [ResponseType(typeof(IEnumerable<Station>))]
-        [Route("stations/locations/{latMin}/{latMax}/{lngMin}/{lngMax}")]
+        [Route("stations/locations")]
         [HttpGet]
-        public IHttpActionResult StationLocators(decimal latMin, decimal latMax, decimal lngMin, decimal lngMax)
+        public IHttpActionResult StationLocators(double latMin, double latMax, double lngMin, double lngMax)
         {
             return Ok(_repo.StationLocations(latMin, latMax, lngMin, lngMax));
+        }
+
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations/nearest")]
+        [HttpGet]
+        public IHttpActionResult NearestStation(double lat, double lng)
+        {
+            return Ok(_repo.GetNearestStation(lat, lng));
+        }
+
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations/within")]
+        [HttpGet]
+        public IHttpActionResult StationsInRadiusMiles(double lat, double lng, double miles)
+        {
+            return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
+            //return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
         }
 
         /// <summary>
@@ -292,7 +242,6 @@ namespace server_api.Controllers
             return Ok(_repo.GetDataPointsFromStationAfterTime(stationID, after));
         }
 
-
         /// <summary>
         ///   Returns all datapoints for a Station given a StationID between two times.
         ///   On Javascript Side, use encodeURIComponent when sending DateTime
@@ -311,8 +260,6 @@ namespace server_api.Controllers
             }
             return Ok(_repo.GetDataPointsFromStationBetweenTimes(stationID, after, before));
         }
-
-
 
         /// <summary>
         ///   Returns the latest datapoints for a single AMS station based on specified DeviceId. 

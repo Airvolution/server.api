@@ -1,5 +1,6 @@
 namespace server_api
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,23 +9,53 @@ namespace server_api
 
     public partial class Station
     {
+        public Station()
+        {            
+            DataPoints = new HashSet<DataPoint>();
+        }
+
         [StringLength(32)]
         public string Id { get; set; }
-        public decimal Lat { get; set; }
-        public decimal Lng { get; set; }
+
+        [Required]
+        [JsonIgnore]
+        public int User_Id { get; set; }
+
+        public int AQI { get; set; }
+
+        public Parameter Parameter { get; set; }
+
+        [JsonConverter(typeof(DbGeographyConverter))]
+        public DbGeography Location { get; set; }
+        
+
         public bool Indoor { get; set; }
 
         [StringLength(100)]
         public string Agency { get; set; }
 
-        [Required]
         [StringLength(320)]
         public string Name { get; set; }
 
-        [Required]
         [StringLength(1000)]
         public string Purpose { get; set; }
 
+        [StringLength(50)]
+        public string City { get; set; }
+
+        [StringLength(10)]
+        public string State { get; set; }
+
+        [StringLength(10)]
+        public string Postal { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<DataPoint> DataPoints { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<Daily> Dailies { get; set; }
+
+        [JsonIgnore]
         public virtual User User { get; set; }
 
     }
