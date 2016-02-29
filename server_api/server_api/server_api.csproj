@@ -310,6 +310,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AlmanacController.cs" />
+    <Compile Include="Controllers\ContactUsController.cs" />
+    <Compile Include="Models\EmailContent.cs" />
     <Compile Include="Controllers\FrequentlyAskedQuestionsController.cs" />
     <Compile Include="Models\Daily.cs" />
     <Compile Include="Models\FrequentlyAskedQuestion.cs" />
