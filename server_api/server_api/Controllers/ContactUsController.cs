@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -23,9 +24,26 @@ namespace server_api.Controllers
                           "Email: " + content.Email + '\n' +
                           "Message: " + content.Message;
 
+            string username = "";
+            string password = "";
+
+            try
+            {   // Open the text file using a stream reader.
+                using (StreamReader sr = new StreamReader(@"c:\contactUsEmailCredentials.txt"))
+                {
+                    // Read the stream to a string, and write the string to the console.
+                    username = sr.ReadLine();
+                    password = sr.ReadLine();
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+
             var client = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("air.utah.cs@gmail.com", "Burri0s123*"),
+                Credentials = new NetworkCredential(username, password),
                 EnableSsl = true,
 
             };
