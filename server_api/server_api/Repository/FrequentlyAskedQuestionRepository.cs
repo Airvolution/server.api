@@ -5,20 +5,34 @@ using System.ComponentModel.Design;
 
 namespace server_api.Repository
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FrequentlyAskedQuestionRepository : IDisposable
     {
         private AirUDBCOE db;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public FrequentlyAskedQuestionRepository()
         {
             db = new AirUDBCOE();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="existingContext"></param>
         public FrequentlyAskedQuestionRepository(AirUDBCOE existingContext)
         {
             db = existingContext;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<FrequentlyAskedQuestion> GetAllQuestionsAnswers()
         {
             return db.FrequentlyAskedQuestions;
@@ -26,7 +40,7 @@ namespace server_api.Repository
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            db.Dispose();
         }
     }
 }

@@ -5,10 +5,16 @@ using server_api.Repository;
 
 namespace server_api.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FrequentlyAskedQuestionsController : ApiController
     {
         private FrequentlyAskedQuestionRepository _repo = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public FrequentlyAskedQuestionsController()
         {
             _repo = new FrequentlyAskedQuestionRepository();
