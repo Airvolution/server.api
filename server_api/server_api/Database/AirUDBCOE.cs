@@ -1,9 +1,12 @@
+using System.Diagnostics.Tracing;
+
 namespace server_api
 {
     using System;
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using server_api.Models;
 
     public partial class AirUDBCOE : DbContext
     {
@@ -25,6 +28,9 @@ namespace server_api
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
+        public virtual DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        public virtual DbSet<Section> Sections { get; set; }
+        public virtual DbSet<Keyword> EventKeywords { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -54,6 +60,5 @@ namespace server_api
                 .HasForeignKey(e => e.User_Id)
                 .WillCascadeOnDelete(false);
         }
-
     }
 }
