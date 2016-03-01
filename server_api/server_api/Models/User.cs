@@ -1,4 +1,4 @@
-namespace server_api
+namespace server_api.Models
 {
     using Newtonsoft.Json;
     using System;
@@ -7,7 +7,7 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class User
+    public partial class User : BaseEntity
     {
         public User()
         {

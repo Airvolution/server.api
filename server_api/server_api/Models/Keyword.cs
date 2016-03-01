@@ -5,7 +5,7 @@ namespace server_api.Models
     /// <summary>
     /// 
     /// </summary>
-    public class Keyword
+    public class Keyword : BaseEntity
     {
         /// <summary>
         /// 
