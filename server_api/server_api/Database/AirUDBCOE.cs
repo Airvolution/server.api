@@ -7,6 +7,8 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
     using server_api.Models;
+    using System.Data.Entity.Validation;
+    using System.Diagnostics;
 
     public partial class AirUDBCOE : DbContext
     {
@@ -59,6 +61,40 @@ namespace server_api
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.User_Id)
                 .WillCascadeOnDelete(false);
+        }
+        public override int SaveChanges()
+        {
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+            foreach (var entity in entities)
+            {
+                if (entity.Entity is BaseEntity)
+                {
+                    if (entity.State == EntityState.Added)
+                    {
+                        ((BaseEntity)entity.Entity).DateCreated = DateTime.Now;
+                    }
+                    ((BaseEntity)entity.Entity).DateModified = DateTime.Now;
+                }
+                
+            }
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                                                validationError.PropertyName,
+                                               validationError.ErrorMessage);
+                    }
+                }
+                throw dbEx;
+            }
+            
         }
     }
 }

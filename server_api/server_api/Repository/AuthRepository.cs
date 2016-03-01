@@ -6,6 +6,7 @@ using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using server_api;
+using server_api.Models;
 
 namespace server_api
 {

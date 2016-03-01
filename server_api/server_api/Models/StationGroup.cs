@@ -1,4 +1,4 @@
-namespace server_api
+namespace server_api.Models
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace server_api
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class StationGroup
+    public partial class StationGroup : BaseEntity
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public StationGroup()

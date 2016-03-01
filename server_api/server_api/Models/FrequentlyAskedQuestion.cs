@@ -7,7 +7,7 @@ namespace server_api.Models
     /// <summary>
     /// 
     /// </summary>
-    public partial class FrequentlyAskedQuestion
+    public partial class FrequentlyAskedQuestion : BaseEntity
     {
         /// <summary>
         /// 

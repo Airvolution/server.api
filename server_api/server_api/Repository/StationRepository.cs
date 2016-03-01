@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity.SqlServer;
+using server_api.Models;
 
 namespace server_api
 {
@@ -239,7 +240,7 @@ namespace server_api
             Parameter tempParameter = null;
             DataPoint latestPoint = dataSet[0];            
 
-            DataPoint outPoint;
+            //DataPoint outPoint;
             foreach (DataPoint point in dataSet)
             {
                 // Best - Negligible slow down
