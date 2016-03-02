@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Threading;
+using System.Threading.Tasks;
 using server_api.Models;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
@@ -14,9 +21,6 @@ using System.Globalization;
 
 namespace server_api.Controllers
 {
-
-    
-
     /// <summary>
     /// 
     /// </summary>
@@ -183,7 +187,16 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult DownloadStationData([FromUri] string[] stationID, [FromUri] string[] parameter)
         {
-            return Ok();
+            var sb = new StringBuilder();
+
+            sb.Append("column1,column2,colum3\r\n");
+
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(sb.ToString());
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            response.Content.Headers.ContentDisposition.FileName = "attachment.csv";
+            return ResponseMessage(response);
         }
         
         [ResponseType(typeof(IEnumerable<Station>))]
