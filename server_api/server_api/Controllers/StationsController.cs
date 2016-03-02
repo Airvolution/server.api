@@ -187,9 +187,24 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult DownloadStationData([FromUri] string[] stationID, [FromUri] string[] parameter)
         {
-            var sb = new StringBuilder();
+            // get all datapoints matching the station ids and parameter types
+            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
 
-            sb.Append("column1,column2,colum3\r\n");
+            string delimiter = "\"";
+            string separator = ",";
+            StringBuilder sb = new StringBuilder();
+            
+            foreach (DataPoint d in points) {
+                sb.Append(d.Station.Agency); sb.Append(separator);
+                sb.Append(d.Station.Name); sb.Append(separator);
+                sb.Append(d.Station.Id); sb.Append(separator);
+                sb.Append(d.Station.State); sb.Append(separator);
+                sb.Append(d.Station.Postal); sb.Append(separator);
+
+                sb.Append(d.Parameter.Name); sb.Append(separator);
+                sb.Append(d.Value); sb.Append(separator);
+                sb.Append(d.Parameter.Unit); sb.Append(separator);
+            }
 
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(sb.ToString());
