@@ -179,6 +179,13 @@ namespace server_api.Controllers
                 return Ok(response);
         }
 
+        [Route("stations/download")]
+        [HttpGet]
+        public IHttpActionResult DownloadStationData([FromUri] string[] stationID, [FromUri] string[] parameter)
+        {
+            return Ok();
+        }
+        
         [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/locations")]
         [HttpGet]
