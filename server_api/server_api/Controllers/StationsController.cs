@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Threading;
+using System.Threading.Tasks;
 using server_api.Models;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
@@ -14,9 +21,6 @@ using System.Globalization;
 
 namespace server_api.Controllers
 {
-
-    
-
     /// <summary>
     /// 
     /// </summary>
@@ -179,6 +183,54 @@ namespace server_api.Controllers
                 return Ok(response);
         }
 
+        [Route("stations/download")]
+        [HttpGet]
+        public IHttpActionResult DownloadStationData([FromUri] string[] stationID, [FromUri] string[] parameter)
+        {
+            // get all datapoints matching the station ids and parameter types
+            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
+
+            string delimiter = "\"";
+            string tick = "\'";
+            string separator = ",";
+            string linefeed = "\r\n";
+            
+            StringBuilder sb = new StringBuilder();
+
+            // write header
+            sb.Append("Station,Id,Agency,City,State,Postal,Parameter,Value,Unit,AQI,Category,Date,Time\r\n");
+            foreach (DataPoint d in points) {
+                // write station information for datapoint
+                sb.Append(delimiter + d.Station.Name + delimiter + separator);
+                sb.Append(tick + d.Station.Id + separator);
+                sb.Append(delimiter + d.Station.Agency + delimiter + separator);
+                sb.Append(d.Station.City + separator);
+                sb.Append(d.Station.State + separator);
+                sb.Append(d.Station.Postal + separator);
+
+                // write datapoint information
+                sb.Append(d.Parameter.Name + separator);
+                sb.Append(d.Value + separator);
+                sb.Append(d.Parameter.Unit + separator);
+                sb.Append(d.AQI + separator);
+                sb.Append(d.Category + separator);
+
+                // write the date and time
+                sb.Append(d.Time.Year + "/" + d.Time.Month + "/" + d.Time.Day + separator);
+                sb.Append(d.Time.Hour + ":" + d.Time.Minute + separator);
+
+                sb.Append(linefeed);
+            }
+
+            // this tells the client browser to download the content as an attachment
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(sb.ToString());
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            response.Content.Headers.ContentDisposition.FileName = "attachment.csv";
+            return ResponseMessage(response);
+        }
+        
         [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/locations")]
         [HttpGet]
