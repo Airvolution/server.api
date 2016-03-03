@@ -191,21 +191,38 @@ namespace server_api.Controllers
             IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
 
             string delimiter = "\"";
+            string tick = "\'";
             string separator = ",";
-            StringBuilder sb = new StringBuilder();
+            string linefeed = "\r\n";
             
-            foreach (DataPoint d in points) {
-                sb.Append(d.Station.Agency); sb.Append(separator);
-                sb.Append(d.Station.Name); sb.Append(separator);
-                sb.Append(d.Station.Id); sb.Append(separator);
-                sb.Append(d.Station.State); sb.Append(separator);
-                sb.Append(d.Station.Postal); sb.Append(separator);
+            StringBuilder sb = new StringBuilder();
 
-                sb.Append(d.Parameter.Name); sb.Append(separator);
-                sb.Append(d.Value); sb.Append(separator);
-                sb.Append(d.Parameter.Unit); sb.Append(separator);
+            // write header
+            sb.Append("Station,Id,Agency,City,State,Postal,Parameter,Value,Unit,AQI,Category,Date,Time\r\n");
+            foreach (DataPoint d in points) {
+                // write station information for datapoint
+                sb.Append(delimiter + d.Station.Name + delimiter + separator);
+                sb.Append(tick + d.Station.Id + separator);
+                sb.Append(delimiter + d.Station.Agency + delimiter + separator);
+                sb.Append(d.Station.City + separator);
+                sb.Append(d.Station.State + separator);
+                sb.Append(d.Station.Postal + separator);
+
+                // write datapoint information
+                sb.Append(d.Parameter.Name + separator);
+                sb.Append(d.Value + separator);
+                sb.Append(d.Parameter.Unit + separator);
+                sb.Append(d.AQI + separator);
+                sb.Append(d.Category + separator);
+
+                // write the date and time
+                sb.Append(d.Time.Year + "/" + d.Time.Month + "/" + d.Time.Day + separator);
+                sb.Append(d.Time.Hour + ":" + d.Time.Minute + separator);
+
+                sb.Append(linefeed);
             }
 
+            // this tells the client browser to download the content as an attachment
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(sb.ToString());
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
