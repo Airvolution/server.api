@@ -82,9 +82,6 @@ namespace server_api
 
         public Station GetNearestStation(double lat, double lng)
         {
-            double latD = (double)lat;
-            double lngD = (double)lng;
-
             var result = (from outer in
                              (from s in db.Stations
                               select new
@@ -98,16 +95,16 @@ namespace server_api
                                   s
                               })
                          orderby outer.Distance
-                         select outer.s).FirstOrDefault();
+                         where outer.Distance != null
+                         select outer.s);
 
-            return result;
+            var value = result.First();
+
+            return value;
         }
 
         public IEnumerable<Station> GetStationsWithinRadiusMiles(double lat, double lng, double radius)
         {
-            double latD = (double)lat;
-            double lngD = (double)lng;
-
             var result = from outer in
                              (from s in db.Stations
                               select new
@@ -121,6 +118,7 @@ namespace server_api
                                   s
                               })
                          where outer.Distance < radius
+                         where outer.Distance != null
                          orderby outer.Distance
                          select outer.s;                                                 
 
