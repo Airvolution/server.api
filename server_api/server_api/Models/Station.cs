@@ -23,7 +23,19 @@ namespace server_api.Models
 
         public int AQI { get; set; }
 
-        public Parameter Parameter { get; set; }
+        [ForeignKey("Parameter")]
+        [Column(Order = 0)]
+        [StringLength(30)]
+        [JsonIgnore]
+        public string Parameter_Name { get; set; }
+
+        [ForeignKey("Parameter")]
+        [Column(Order = 1)]
+        [StringLength(30)]
+        [JsonIgnore]
+        public string Parameter_Unit { get; set; }
+
+        public virtual Parameter Parameter { get; set; }
 
         [JsonConverter(typeof(DbGeographyConverter))]
         public DbGeography Location { get; set; }
