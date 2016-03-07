@@ -11,7 +11,7 @@ namespace server_api.unit_testing
     [TestClass]
     public class UnitTestingStationRepository
     {
-        private static AirUDBCOE _context;
+        private static AirDB _context;
         private static StationsRepository _repo;
         private static string connectionString;
 
@@ -28,7 +28,7 @@ namespace server_api.unit_testing
 
             /* Local Database */
             connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
-            using (var context = new AirUDBCOE(connectionString))
+            using (var context = new AirDB(connectionString))
             {
                 context.Database.Create();
             }
@@ -37,7 +37,7 @@ namespace server_api.unit_testing
             /* Live Database */
             //connectionString = "data source=mssql.eng.utah.edu;initial catalog=lobato;persist security info=True;user id=lobato;password=eVHDpynh;multipleactiveresultsets=True;application name=EntityFramework\" providerName=\"System.Data.SqlClient";
 
-            _context = new AirUDBCOE(connectionString);
+            _context = new AirDB(connectionString);
             _repo = new StationsRepository(_context);
             SetupDatabase();
         }

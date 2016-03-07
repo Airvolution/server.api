@@ -24,12 +24,12 @@ namespace server_api.Controllers
     public class FrontEndController : ApiController
     {
         private AuthRepository _auth_repo = null;
-        private AirUDBCOE _db_repo = null;
+        private AirDB _db_repo = null;
 
         public FrontEndController()
         {
             _auth_repo = new AuthRepository();
-            _db_repo = new AirUDBCOE();
+            _db_repo = new AirDB();
         }
 
         static SwaggerAQIData cacheAQI = null;

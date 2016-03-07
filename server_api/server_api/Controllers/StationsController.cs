@@ -104,7 +104,7 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult RegisterUserStation([FromBody]JObject jsonData)
         {
-            var db = new AirUDBCOE();
+            var db = new AirDB();
 
             /*Register Station exmaple json.
             {
@@ -325,7 +325,7 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult LatestDataPoint([FromUri]string stationID)
         {
-            var db = new AirUDBCOE();
+            var db = new AirDB();
 
             if (!_repo.StationExists(stationID))
             {

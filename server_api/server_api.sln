@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server_api", "server_api\server_api.csproj", "{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}"
 EndProject
@@ -17,14 +17,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server_api.unit_testing", "
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		arvixe-dev|Any CPU = arvixe-dev|Any CPU
+		arvixe-prod|Any CPU = arvixe-prod|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.arvixe-dev|Any CPU.ActiveCfg = arvixe-dev|Any CPU
+		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.arvixe-dev|Any CPU.Build.0 = arvixe-dev|Any CPU
+		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.arvixe-dev|Any CPU.Deploy.0 = arvixe-dev|Any CPU
+		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.arvixe-prod|Any CPU.ActiveCfg = arvixe-prod|Any CPU
+		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.arvixe-prod|Any CPU.Build.0 = arvixe-prod|Any CPU
 		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDD8E1FD-5C13-43A1-9E18-812E9D88236D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.arvixe-dev|Any CPU.ActiveCfg = arvixe-dev|Any CPU
+		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.arvixe-dev|Any CPU.Build.0 = arvixe-dev|Any CPU
+		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.arvixe-prod|Any CPU.ActiveCfg = arvixe-prod|Any CPU
+		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.arvixe-prod|Any CPU.Build.0 = arvixe-prod|Any CPU
 		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
