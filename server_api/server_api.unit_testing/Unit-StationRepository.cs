@@ -6,6 +6,8 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using System.Threading;
 using server_api.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace server_api.unit_testing
 {
@@ -13,6 +15,7 @@ namespace server_api.unit_testing
     public class UnitTestingStationRepository
     {
         private static AirUDBCOE _context;
+        private static UserManager<User> _userManager;
         private static StationsRepository _repo;
         private static string connectionString;
 
@@ -40,22 +43,21 @@ namespace server_api.unit_testing
 
             _context = new AirUDBCOE(connectionString);
             _repo = new StationsRepository(_context);
+            _userManager = new UserManager<User>(new UserStore<User>(_context));
             SetupDatabase();
         }
 
         private static void SetupDatabase()
         {
+            var password = "admin";
             User newUser = new User();
-            newUser.ConfirmPassword = "admin";
-            newUser.Password = "admin";
             newUser.FirstName = "Admin";
             newUser.Email = "admin-email";
             newUser.LastName = "master";
             newUser.UserName = "Fake-Admin";
 
-
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
+            var result = _userManager.Create(newUser, password);
+            newUser = _userManager.Find(newUser.Email, password);
 
             AddStations(10, newUser); // Number of Stations
             //AddParameters(); // Parameters (currently 8)

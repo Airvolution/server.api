@@ -320,6 +320,7 @@
     <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
+    <Compile Include="Models\UserRegistration.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
     <Compile Include="Database\AirUDBCOE.cs" />

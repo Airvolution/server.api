@@ -62,7 +62,7 @@ namespace server_api
                 .WillCascadeOnDelete(false);
 
             // Configure Asp Net Identity Tables
-            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<User>().Property(u => u.PasswordHash).HasMaxLength(500);
             modelBuilder.Entity<User>().Property(u => u.PhoneNumber).HasMaxLength(50);
         }

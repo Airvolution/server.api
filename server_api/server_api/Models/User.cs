@@ -8,33 +8,53 @@ namespace server_api.Models
     using System.Data.Entity.Spatial;
     using Microsoft.AspNet.Identity.EntityFramework;
 
+    [JsonObject(MemberSerialization.OptIn)]
     public partial class User : IdentityUser
     {
         public User()
         {
         }
 
+        [JsonProperty]
+        public override string Id
+        {
+            get
+            {
+                return base.Id;
+            }
+            set
+            {
+                base.Id = value;
+            }
+        }
+        [JsonProperty]
+        public override string UserName
+        {
+            get
+            {
+                return base.UserName;
+            }
+            set
+            {
+                base.UserName = value;
+            }
+        }
 
+        [JsonProperty]
         [StringLength(20)]
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
+        [JsonProperty]
         [StringLength(20)]
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
+        [JsonProperty]
         [StringLength(100)]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
 
-        [StringLength(100)]
-        [Display(Name = "Confirm Password")]
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
     }
 }
+
