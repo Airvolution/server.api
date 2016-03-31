@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security.OAuth;
+using server_api.Models;
 
 namespace server_api.Providers
 {
@@ -21,7 +22,7 @@ namespace server_api.Providers
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new []{"*"});
             using (AuthRepository _repo = new AuthRepository())
             {
-                IdentityUser user = await _repo.FindUser(context.UserName, context.Password);
+                User user = await _repo.FindUser(context.UserName, context.Password);
                 if (user == null)
                 {
                     context.SetError("invalid_agent","The user name or passward is incorrect.");

@@ -9,8 +9,9 @@ namespace server_api
     using server_api.Models;
     using System.Data.Entity.Validation;
     using System.Diagnostics;
+    using Microsoft.AspNet.Identity.EntityFramework;
 
-    public partial class AirUDBCOE : DbContext
+    public partial class AirUDBCOE : IdentityDbContext<User>
     {
         
         public AirUDBCOE()
@@ -24,15 +25,19 @@ namespace server_api
             this.Configuration.LazyLoadingEnabled = false;
         }
 
+        //Identity and Authorization
+     
+
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<StationGroup> DeviceGroups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<Parameter> Parameters { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
         public virtual DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
         public virtual DbSet<Section> Sections { get; set; }
         public virtual DbSet<Keyword> EventKeywords { get; set; }
+
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -56,11 +61,10 @@ namespace server_api
                 .HasForeignKey(e => e.Station_Id)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.Stations)
-                .WithRequired(e => e.User)
-                .HasForeignKey(e => e.User_Id)
-                .WillCascadeOnDelete(false);
+            // Configure Asp Net Identity Tables
+            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<User>().Property(u => u.PasswordHash).HasMaxLength(500);
+            modelBuilder.Entity<User>().Property(u => u.PhoneNumber).HasMaxLength(50);
         }
         public override int SaveChanges()
         {

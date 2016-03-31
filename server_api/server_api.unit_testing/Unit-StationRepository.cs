@@ -5,6 +5,7 @@ using System.IO;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Threading;
+using server_api.Models;
 
 namespace server_api.unit_testing
 {
@@ -50,7 +51,7 @@ namespace server_api.unit_testing
             newUser.FirstName = "Admin";
             newUser.Email = "admin-email";
             newUser.LastName = "master";
-            newUser.Username = "Fake-Admin";
+            newUser.UserName = "Fake-Admin";
 
 
             _context.Users.Add(newUser);
