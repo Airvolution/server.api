@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data.Entity.Spatial;
 using System.Globalization;
+using System.Web.UI;
 
 namespace server_api.Controllers
 {
@@ -172,6 +173,53 @@ namespace server_api.Controllers
                 return BadRequest("No DataPoints in sent array.");
             }
 
+            foreach(DataPoint dataPoint in dataSet)
+            {
+                if(dataPoint.Category == 0 && dataPoint.AQI == 0)
+                {
+                    Tuple<int, int> result = null;
+
+                    switch(dataPoint.Parameter_Name)
+                    {
+                        case "PM2.5":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "PM10":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "CO":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "NO2":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "OZONE":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "SO2":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+                    }
+                }
+            }
+
             IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
             DateTime end = DateTime.Now;
 
@@ -182,6 +230,7 @@ namespace server_api.Controllers
             else 
                 return Ok(response);
         }
+
 
         [Route("stations/download")]
         [HttpGet]
