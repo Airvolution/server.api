@@ -151,7 +151,7 @@ namespace server_api.Controllers
             }
             else
             {
-                return BadRequest("User does not exist.");
+                return NotFound();
             }
         }
 
@@ -169,7 +169,7 @@ namespace server_api.Controllers
 
             if (dataSet.Length == 0)
             {
-                return BadRequest("No DataPoints in sent array.");
+                return NotFound();
             }
 
             IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
@@ -177,7 +177,7 @@ namespace server_api.Controllers
 
             if (response==null)
             {
-                return BadRequest("Station does not exist.");
+                return NotFound();
             }
             else 
                 return Ok(response);
@@ -329,7 +329,7 @@ namespace server_api.Controllers
 
             if (!_repo.StationExists(stationID))
             {
-                return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
+                return NotFound();
             }
 
             return Ok(_repo.GetLatestDataPointsFromStation(stationID));
