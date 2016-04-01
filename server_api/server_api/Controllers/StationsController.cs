@@ -185,7 +185,7 @@ namespace server_api.Controllers
                 {
                     Tuple<int, int> result = null;
 
-                    switch(dataPoint.Parameter_Name)
+                    switch(dataPoint.Parameter.Name)
                     {
                         case "PM2.5":
                             result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
