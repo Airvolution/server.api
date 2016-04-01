@@ -319,6 +319,10 @@
     <Compile Include="Models\FrequentlyAskedQuestion.cs" />
     <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Utilities\CoAqi.cs" />
+    <Compile Include="Utilities\No2Aqi.cs" />
+    <Compile Include="Utilities\OzoneAqi.cs" />
+    <Compile Include="Utilities\Pm10Aqi.cs" />
     <Compile Include="Utilities\Pm25Aqi.cs" />
     <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
@@ -385,6 +389,7 @@
     <Compile Include="SwaggerExtensions\ExamplesOperationFilter.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Repository\UserRepository.cs" />
+    <Compile Include="Utilities\So2Aqi.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
