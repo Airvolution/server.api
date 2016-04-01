@@ -311,6 +311,10 @@
   <ItemGroup>
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
+    <Compile Include="Migrations\201604010059357_UserIntegration.cs" />
+    <Compile Include="Migrations\201604010059357_UserIntegration.Designer.cs">
+      <DependentUpon>201604010059357_UserIntegration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
     <Compile Include="Controllers\FrequentlyAskedQuestionsController.cs" />
@@ -321,9 +325,8 @@
     <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\UserRegistration.cs" />
-    <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
-    <Compile Include="Database\AirUDBCOE.cs" />
+    <Compile Include="Database\ApplicationContext.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -343,6 +346,7 @@
     <Compile Include="Repository\AlmanacRepository.cs" />
     <Compile Include="Repository\FrequentlyAskedQuestionRepository.cs" />
     <Compile Include="Repository\StationRepository.cs" />
+    <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Serialization\DbGeographyConverter.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -375,7 +379,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="AttributeRoutingConfig.cs" />
-    <Compile Include="Controllers\FrontEndController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -501,6 +504,11 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201604010059357_UserIntegration.resx">
+      <DependentUpon>201604010059357_UserIntegration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

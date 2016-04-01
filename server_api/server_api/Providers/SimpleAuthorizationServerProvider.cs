@@ -21,7 +21,7 @@ namespace server_api.Providers
         {
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new []{"*"});
             User user;
-            using (AuthRepository _repo = new AuthRepository())
+            using (UserRepository _repo = new UserRepository())
             {
                 user = await _repo.FindUser(context.UserName, context.Password);
                 if (user == null)

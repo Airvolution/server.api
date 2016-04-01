@@ -11,15 +11,15 @@ namespace server_api
     using System.Diagnostics;
     using Microsoft.AspNet.Identity.EntityFramework;
 
-    public partial class AirUDBCOE : IdentityDbContext<User>
+    public partial class ApplicationContext : IdentityDbContext<User>
     {
         
-        public AirUDBCOE()
+        public ApplicationContext()
             : base("name=AirUDBCOE")
         {
         }
         
-        public AirUDBCOE(string connectionString)
+        public ApplicationContext(string connectionString)
             : base(connectionString.Equals("")?"name=AirUDBCOE":connectionString)
         {
             this.Configuration.LazyLoadingEnabled = false;
@@ -60,6 +60,12 @@ namespace server_api
                 .WithRequired(e => e.Station)
                 .HasForeignKey(e => e.Station_Id)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Stations)
+                .WithRequired(e => e.User)
+                .WillCascadeOnDelete(false);
+
 
             // Configure Asp Net Identity Tables
             modelBuilder.Entity<User>().ToTable("Users");

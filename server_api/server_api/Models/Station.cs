@@ -19,7 +19,7 @@ namespace server_api.Models
 
         [Required]
         [JsonIgnore]
-        public int User_Id { get; set; }
+        public string User_Id { get; set; }
 
         public int AQI { get; set; }
 

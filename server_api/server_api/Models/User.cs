@@ -13,6 +13,7 @@ namespace server_api.Models
     {
         public User()
         {
+            Stations = new HashSet<Station>();
         }
 
         [JsonProperty]
@@ -55,6 +56,7 @@ namespace server_api.Models
         public string Email { get; set; }
 
 
-    }
+        public virtual ICollection<Station> Stations { get; set; }
+      }
 }
 

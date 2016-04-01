@@ -8,13 +8,14 @@ using System.Threading;
 using server_api.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using server_api;
 
 namespace server_api.unit_testing
 {
     [TestClass]
     public class UnitTestingStationRepository
     {
-        private static AirUDBCOE _context;
+        private static ApplicationContext _context;
         private static UserManager<User> _userManager;
         private static StationsRepository _repo;
         private static string connectionString;
@@ -32,7 +33,7 @@ namespace server_api.unit_testing
 
             /* Local Database */
             connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
-            using (var context = new AirUDBCOE(connectionString))
+            using (var context = new ApplicationContext(connectionString))
             {
                 context.Database.Create();
             }
@@ -41,7 +42,7 @@ namespace server_api.unit_testing
             /* Live Database */
             //connectionString = "data source=mssql.eng.utah.edu;initial catalog=lobato;persist security info=True;user id=lobato;password=eVHDpynh;multipleactiveresultsets=True;application name=EntityFramework\" providerName=\"System.Data.SqlClient";
 
-            _context = new AirUDBCOE(connectionString);
+            _context = new ApplicationContext(connectionString);
             _repo = new StationsRepository(_context);
             _userManager = new UserManager<User>(new UserStore<User>(_context));
             SetupDatabase();

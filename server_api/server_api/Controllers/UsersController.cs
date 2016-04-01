@@ -15,11 +15,11 @@ namespace server_api.Controllers
     [RoutePrefix("users")]
     public class UsersController : ApiController
     {
-        private AuthRepository _repo = null;
+        private UserRepository _repo = null;
 
         public UsersController()
         {
-            _repo = new AuthRepository();
+            _repo = new UserRepository();
         }
 
         /// <summary>
