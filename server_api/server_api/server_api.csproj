@@ -311,7 +311,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
-    <Compile Include="Models\AQIFormula.cs" />
+    <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
     <Compile Include="Controllers\FrequentlyAskedQuestionsController.cs" />
@@ -319,7 +319,7 @@
     <Compile Include="Models\FrequentlyAskedQuestion.cs" />
     <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\Parameter.cs" />
-    <Compile Include="Models\Pm25Aqi.cs" />
+    <Compile Include="Utilities\Pm25Aqi.cs" />
     <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Repository\AuthRepository.cs" />

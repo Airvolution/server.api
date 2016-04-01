@@ -1,24 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.IO;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Threading;
-using System.Threading.Tasks;
 using server_api.Models;
-using System.Web.Script.Serialization;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Data.Entity.Spatial;
-using System.Globalization;
-using System.Web.UI;
 
 namespace server_api.Controllers
 {
@@ -46,7 +36,7 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/parameterValues")]
         [HttpGet]
-        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter)
+        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter, [FromUri] bool useRawValue = true)
         {
             // get all datapoints matching the station ids and parameter types
             IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
@@ -71,7 +61,15 @@ namespace server_api.Controllers
 
                 list.values.Add(new object[2]);
                 list.values.Last()[0] = ConvertDateTimeToMilliseconds(d.Time);
-                list.values.Last()[1] = (decimal)d.Value;
+                if (useRawValue)
+                {
+                    list.values.Last()[1] = (decimal) d.Value;
+                }
+                else
+                {
+                    list.values.Last()[1] = (int) d.AQI;
+                }
+                
             }
 
             normalizeDataSwaggerPollutantList(ref data);
@@ -159,6 +157,13 @@ namespace server_api.Controllers
         /// <summary>
         ///   Adds one or many DevicePoints (from a station).
         ///   Used by stations to post data to the database.
+        /// 
+        ///   AQI formula and breakpoints.
+        ///   https://www3.epa.gov/ttn/caaa/t1/memoranda/rg701.pdf
+        /// 
+        ///   UPDATED breakpoints for PM 2.5
+        ///   https://www3.epa.gov/airquality/particlepollution/2012/decfsstandards.pdf
+        /// 
         /// </summary>
         /// <param name="dataSet">AMSDataSet Model</param>
         /// <returns></returns>
