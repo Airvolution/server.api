@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using server_api.Models;
 using Newtonsoft.Json.Linq;
+using server_api.Utilities;
 
 namespace server_api.Controllers
 {
@@ -193,31 +194,31 @@ namespace server_api.Controllers
                             break;
 
                         case "PM10":
-                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            result = Pm10Aqi.CalculateAQIAndCategory(dataPoint.Value);
                             dataPoint.AQI = result.Item1;
                             dataPoint.Category = result.Item2;
                             break;
 
                         case "CO":
-                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            result = CoAqi.CalculateAQIAndCategory(dataPoint.Value);
                             dataPoint.AQI = result.Item1;
                             dataPoint.Category = result.Item2;
                             break;
 
                         case "NO2":
-                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            result = No2Aqi.CalculateAQIAndCategory(dataPoint.Value);
                             dataPoint.AQI = result.Item1;
                             dataPoint.Category = result.Item2;
                             break;
 
                         case "OZONE":
-                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            result = OzoneAqi.CalculateAQIAndCategory(dataPoint.Value);
                             dataPoint.AQI = result.Item1;
                             dataPoint.Category = result.Item2;
                             break;
 
                         case "SO2":
-                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            result = So2Aqi.CalculateAQIAndCategory(dataPoint.Value);
                             dataPoint.AQI = result.Item1;
                             dataPoint.Category = result.Item2;
                             break;
