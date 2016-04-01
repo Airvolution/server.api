@@ -25,14 +25,14 @@ namespace server_api.Utilities
             if (value <= 1.24)
             {
                 Tuple<double, double> BP = new Tuple<double, double>(0.65, 1.24);
-                Tuple<int, int> I = new Tuple<int, int>(151, 200);
+                Tuple<int, int> I = new Tuple<int, int>(201, 300);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
             if (value <= 1.64)
             {
                 Tuple<double, double> BP = new Tuple<double, double>(1.25, 1.64);
-                Tuple<int, int> I = new Tuple<int, int>(201, 300);
+                Tuple<int, int> I = new Tuple<int, int>(301, 400);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
