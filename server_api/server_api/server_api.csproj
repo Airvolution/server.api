@@ -342,7 +342,6 @@
     <Compile Include="Models\FrequentlyAskedQuestion.cs" />
     <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\Parameter.cs" />
-    <Compile Include="Models\RegisterStation.cs" />
     <Compile Include="Utilities\CoAqi.cs" />
     <Compile Include="Utilities\No2Aqi.cs" />
     <Compile Include="Utilities\OzoneAqi.cs" />
