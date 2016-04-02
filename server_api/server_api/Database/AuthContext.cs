@@ -9,7 +9,7 @@ namespace server_api
     public class AuthContext : IdentityDbContext<IdentityUser>
     {
         public AuthContext()
-            : base("AirUDBCOE")
+            : base("AirDB")
         {
             
         }

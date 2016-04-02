@@ -49,14 +49,14 @@ namespace server_api
 
     public class StationsRepository : IDisposable
     {
-        private AirUDBCOE db;
+        private AirDB db;
 
         public StationsRepository()
         {
-            db = new AirUDBCOE();
+            db = new AirDB();
         }
 
-        public StationsRepository(AirUDBCOE existingContext)
+        public StationsRepository(AirDB existingContext)
         {
             db = existingContext;
         }

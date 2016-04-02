@@ -8,9 +8,9 @@ namespace server_api
 {
     public class UserRepository
     {
-        private AirUDBCOE _context;
+        private AirDB _context;
 
-        public UserRepository(AirUDBCOE context)
+        public UserRepository(AirDB context)
         {
             _context = context;
         }

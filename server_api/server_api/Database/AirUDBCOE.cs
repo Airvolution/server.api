@@ -10,16 +10,16 @@ namespace server_api
     using System.Data.Entity.Validation;
     using System.Diagnostics;
 
-    public partial class AirUDBCOE : DbContext
+    public partial class AirDB : DbContext
     {
         
-        public AirUDBCOE()
-            : base("name=AirUDBCOE")
+        public AirDB()
+            : base("name=AirDB")
         {
         }
-        
-        public AirUDBCOE(string connectionString)
-            : base(connectionString.Equals("")?"name=AirUDBCOE":connectionString)
+
+        public AirDB(string connectionString)
+            : base(connectionString.Equals("")?"name=AirDB":connectionString)
         {
             this.Configuration.LazyLoadingEnabled = false;
         }
