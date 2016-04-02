@@ -329,6 +329,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
+    <Compile Include="Database\ApplicationContext.cs" />
     <Compile Include="Migrations\201604010059357_UserIntegration.cs" />
     <Compile Include="Migrations\201604010059357_UserIntegration.Designer.cs">
       <DependentUpon>201604010059357_UserIntegration.cs</DependentUpon>
@@ -350,7 +351,6 @@
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\UserRegistration.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
-    <Compile Include="Database\ApplicationContext.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -409,7 +409,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SwaggerExtensions\ExamplesOperationFilter.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Utilities\So2Aqi.cs" />
   </ItemGroup>
   <ItemGroup>

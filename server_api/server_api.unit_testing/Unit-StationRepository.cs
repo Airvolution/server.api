@@ -6,12 +6,9 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using System.Threading;
 using server_api.Models;
-<<<<<<< HEAD
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using server_api;
-=======
->>>>>>> d95bee27d83e6da5766a4c5ce4d71011681de713
 
 namespace server_api.unit_testing
 {
