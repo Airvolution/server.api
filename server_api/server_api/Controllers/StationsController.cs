@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.IO;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Threading;
-using System.Threading.Tasks;
 using server_api.Models;
-using System.Web.Script.Serialization;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Data.Entity.Spatial;
-using System.Globalization;
+using server_api.Utilities;
 
 namespace server_api.Controllers
 {
@@ -45,7 +37,7 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/parameterValues")]
         [HttpGet]
-        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter)
+        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter, [FromUri] bool useRawValue = true)
         {
             // get all datapoints matching the station ids and parameter types
             IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
@@ -70,7 +62,15 @@ namespace server_api.Controllers
 
                 list.values.Add(new object[2]);
                 list.values.Last()[0] = ConvertDateTimeToMilliseconds(d.Time);
-                list.values.Last()[1] = (decimal)d.Value;
+                if (useRawValue)
+                {
+                    list.values.Last()[1] = (decimal) d.Value;
+                }
+                else
+                {
+                    list.values.Last()[1] = (int) d.AQI;
+                }
+                
             }
 
             normalizeDataSwaggerPollutantList(ref data);
@@ -104,7 +104,7 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult RegisterUserStation([FromBody]JObject jsonData)
         {
-            var db = new AirUDBCOE();
+            var db = new ApplicationContext();
 
             /*Register Station exmaple json.
             {
@@ -151,13 +151,20 @@ namespace server_api.Controllers
             }
             else
             {
-                return BadRequest("User does not exist.");
+                return NotFound();
             }
         }
 
         /// <summary>
         ///   Adds one or many DevicePoints (from a station).
         ///   Used by stations to post data to the database.
+        /// 
+        ///   AQI formula and breakpoints.
+        ///   https://www3.epa.gov/ttn/caaa/t1/memoranda/rg701.pdf
+        /// 
+        ///   UPDATED breakpoints for PM 2.5
+        ///   https://www3.epa.gov/airquality/particlepollution/2012/decfsstandards.pdf
+        /// 
         /// </summary>
         /// <param name="dataSet">AMSDataSet Model</param>
         /// <returns></returns>
@@ -169,7 +176,54 @@ namespace server_api.Controllers
 
             if (dataSet.Length == 0)
             {
-                return BadRequest("No DataPoints in sent array.");
+                return NotFound();
+            }
+
+            foreach(DataPoint dataPoint in dataSet)
+            {
+                if(dataPoint.Category == 0 && dataPoint.AQI == 0)
+                {
+                    Tuple<int, int> result = null;
+
+                    switch(dataPoint.Parameter.Name)
+                    {
+                        case "PM2.5":
+                            result = Pm25Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "PM10":
+                            result = Pm10Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "CO":
+                            result = CoAqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "NO2":
+                            result = No2Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "OZONE":
+                            result = OzoneAqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+
+                        case "SO2":
+                            result = So2Aqi.CalculateAQIAndCategory(dataPoint.Value);
+                            dataPoint.AQI = result.Item1;
+                            dataPoint.Category = result.Item2;
+                            break;
+                    }
+                }
             }
 
             IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
@@ -177,11 +231,12 @@ namespace server_api.Controllers
 
             if (response==null)
             {
-                return BadRequest("Station does not exist.");
+                return NotFound();
             }
             else 
                 return Ok(response);
         }
+
 
         [Route("stations/download")]
         [HttpGet]
@@ -325,11 +380,11 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult LatestDataPoint([FromUri]string stationID)
         {
-            var db = new AirUDBCOE();
+            var db = new ApplicationContext();
 
             if (!_repo.StationExists(stationID))
             {
-                return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
+                return NotFound();
             }
 
             return Ok(_repo.GetLatestDataPointsFromStation(stationID));

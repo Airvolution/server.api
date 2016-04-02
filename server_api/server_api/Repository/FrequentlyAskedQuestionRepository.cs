@@ -10,21 +10,21 @@ namespace server_api.Repository
     /// </summary>
     public class FrequentlyAskedQuestionRepository : IDisposable
     {
-        private AirUDBCOE db;
+        private ApplicationContext db;
 
         /// <summary>
         /// 
         /// </summary>
         public FrequentlyAskedQuestionRepository()
         {
-            db = new AirUDBCOE();
+            db = new ApplicationContext();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="existingContext"></param>
-        public FrequentlyAskedQuestionRepository(AirUDBCOE existingContext)
+        public FrequentlyAskedQuestionRepository(ApplicationContext existingContext)
         {
             db = existingContext;
         }

@@ -16,8 +16,9 @@ namespace server_api.Models
         [Key]
         [Column(Order = 1)]
         [StringLength(32)]
-        [JsonIgnore]
+        [ForeignKey("Station")]
         public string Station_Id { get; set; }
+        public virtual Station Station { get; set; }
 
         public int MaxCategory { get; set; }
 
@@ -29,7 +30,7 @@ namespace server_api.Models
 
         public int MinAQI { get; set; }
 
-        public virtual Station Station { get; set; }
+        
 
         public virtual Parameter MaxParameter { get; set; }
 

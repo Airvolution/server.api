@@ -1,49 +1,58 @@
-﻿using server_api.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using server_api;
+using server_api.Models;
 
 namespace server_api
 {
-    public class UserRepository
+    public class UserRepository : IDisposable
     {
-        private AirUDBCOE _context;
+        private ApplicationContext _ctx;
 
-        public UserRepository(AirUDBCOE context)
+        private UserManager<User> _userManager;
+
+        public UserRepository()
         {
-            _context = context;
+            _ctx = new ApplicationContext();
+            _userManager = new UserManager<User>(new UserStore<User>(_ctx));
         }
 
-        public bool RegisterUser(string email, string password)
+        public async Task<IdentityResult> RegisterUser(UserRegistration registration)
         {
-            User existingUser = _context.Users.SingleOrDefault(x => x.Email == email);
-
-            if (existingUser == null)
+            User user = new User
             {
-                // Perform queries to insert new user into database.
-                User newUser = new User();
-                newUser.Email = email;
-                newUser.Password = password;
-                newUser.Password = password;
-                newUser.ConfirmPassword = password;
+                UserName = registration.Email,
+                Email = registration.Email,
+                
+            };
+            var result = await _userManager.CreateAsync(user, registration.Password);
 
-                _context.Users.Add(newUser);
-                _context.SaveChanges();
-
-                // Account register success.
-                return true;
-            }
-            else
-            {
-                // Account register failed. Account with email address: '<user.Email>' already exists. Please try a different email address.
-                return false;
-            }
+            return result;
         }
 
-        public Station GetUserDevices(string username)
+        public async Task<User> FindUserById(string id)
         {
-            return null;
+            User user = await _userManager.FindByIdAsync(id);
+            return user;
+        }
+
+        public async Task<User> FindUser(string userName, string password)
+        {
+            User user = await _userManager.FindAsync(userName, password);
+
+            return user;
+        }
+
+        public void Dispose()
+        {
+            _ctx.Dispose();
+            _userManager.Dispose();
+
         }
     }
 }

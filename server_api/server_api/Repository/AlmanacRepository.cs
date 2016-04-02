@@ -11,14 +11,14 @@ namespace server_api
 
     public class AlmanacRepository : IDisposable
     {
-        private AirUDBCOE db;
+        private ApplicationContext db;
 
         public AlmanacRepository()
         {
-            db = new AirUDBCOE();
+            db = new ApplicationContext();
         }
 
-        public AlmanacRepository(AirUDBCOE existingContext)
+        public AlmanacRepository(ApplicationContext existingContext)
         {
             db = existingContext;
         }

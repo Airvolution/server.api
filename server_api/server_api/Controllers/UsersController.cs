@@ -15,11 +15,11 @@ namespace server_api.Controllers
     [RoutePrefix("users")]
     public class UsersController : ApiController
     {
-        private AuthRepository _repo = null;
+        private UserRepository _repo = null;
 
         public UsersController()
         {
-            _repo = new AuthRepository();
+            _repo = new UserRepository();
         }
 
         /// <summary>
@@ -29,16 +29,37 @@ namespace server_api.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        [Route("servertest")]
+        [Route("authtest")]
         [HttpGet]
         public IHttpActionResult ServerTest()
         {
             return Ok("Success");
         }
 
+        /// <summary>
+        /// This method returns the current user, if authorized
+        /// </summary>
+        /// <returns>User</returns>
+        [Authorize]
+        [Route("current")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetCurrentUser()
+        {
+            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user != null)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return BadRequest("Unable to find current user");
+            }
+        }
+
+
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IHttpActionResult> Register(User userModel)
+        public async Task<IHttpActionResult> Register(UserRegistration userModel)
         {
             if (!ModelState.IsValid)
             {
