@@ -6,13 +6,17 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using System.Threading;
 using server_api.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using server_api;
 
 namespace server_api.unit_testing
 {
     [TestClass]
     public class UnitTestingStationRepository
     {
-        private static AirDB _context;
+        private static ApplicationContext _context;
+        private static UserManager<User> _userManager;
         private static StationsRepository _repo;
         private static string connectionString;
 
@@ -29,7 +33,8 @@ namespace server_api.unit_testing
 
             /* Local Database */
             connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
-            using (var context = new AirDB(connectionString))
+
+            using (var context = new ApplicationContext(connectionString))
             {
                 context.Database.Create();
             }
@@ -38,24 +43,23 @@ namespace server_api.unit_testing
             /* Live Database */
             //connectionString = "data source=mssql.eng.utah.edu;initial catalog=lobato;persist security info=True;user id=lobato;password=eVHDpynh;multipleactiveresultsets=True;application name=EntityFramework\" providerName=\"System.Data.SqlClient";
 
-            _context = new AirDB(connectionString);
+            _context = new ApplicationContext(connectionString);
             _repo = new StationsRepository(_context);
+            _userManager = new UserManager<User>(new UserStore<User>(_context));
             SetupDatabase();
         }
 
         private static void SetupDatabase()
         {
+            var password = "admin";
             User newUser = new User();
-            newUser.ConfirmPassword = "admin";
-            newUser.Password = "admin";
             newUser.FirstName = "Admin";
             newUser.Email = "admin-email";
             newUser.LastName = "master";
-            newUser.Username = "Fake-Admin";
+            newUser.UserName = "Fake-Admin";
 
-
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
+            var result = _userManager.Create(newUser, password);
+            newUser = _userManager.Find(newUser.Email, password);
 
             AddStations(10, newUser); // Number of Stations
             //AddParameters(); // Parameters (currently 8)

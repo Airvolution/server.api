@@ -1,4 +1,4 @@
-using System.Diagnostics.Tracing;
+﻿using System.Diagnostics.Tracing;
 
 namespace server_api
 {
@@ -9,30 +9,35 @@ namespace server_api
     using server_api.Models;
     using System.Data.Entity.Validation;
     using System.Diagnostics;
+    using Microsoft.AspNet.Identity.EntityFramework;
 
-    public partial class AirDB : DbContext
+    public partial class ApplicationContext : IdentityDbContext<User>
     {
-        
-        public AirDB()
+
+        public ApplicationContext()
             : base("name=AirDB")
         {
         }
 
-        public AirDB(string connectionString)
-            : base(connectionString.Equals("")?"name=AirDB":connectionString)
+        public ApplicationContext(string connectionString)
+            : base(connectionString.Equals("") ? "name=AirDB" : connectionString)
         {
             this.Configuration.LazyLoadingEnabled = false;
         }
+
+        //Identity and Authorization
+
 
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<StationGroup> DeviceGroups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<Parameter> Parameters { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
         public virtual DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
         public virtual DbSet<Section> Sections { get; set; }
         public virtual DbSet<Keyword> EventKeywords { get; set; }
+
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -59,8 +64,13 @@ namespace server_api
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Stations)
                 .WithRequired(e => e.User)
-                .HasForeignKey(e => e.User_Id)
                 .WillCascadeOnDelete(false);
+
+
+            // Configure Asp Net Identity Tables
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<User>().Property(u => u.PasswordHash).HasMaxLength(500);
+            modelBuilder.Entity<User>().Property(u => u.PhoneNumber).HasMaxLength(50);
         }
         public override int SaveChanges()
         {
@@ -75,7 +85,7 @@ namespace server_api
                     }
                     ((BaseEntity)entity.Entity).DateModified = DateTime.Now;
                 }
-                
+
             }
             try
             {
@@ -94,7 +104,7 @@ namespace server_api
                 }
                 throw dbEx;
             }
-            
+
         }
     }
 }

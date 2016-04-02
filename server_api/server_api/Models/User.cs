@@ -6,45 +6,57 @@ namespace server_api.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using Microsoft.AspNet.Identity.EntityFramework;
 
-    public partial class User : BaseEntity
+    [JsonObject(MemberSerialization.OptIn)]
+    public partial class User : IdentityUser
     {
         public User()
         {
             Stations = new HashSet<Station>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [JsonProperty]
+        public override string Id
+        {
+            get
+            {
+                return base.Id;
+            }
+            set
+            {
+                base.Id = value;
+            }
+        }
+        [JsonProperty]
+        public override string UserName
+        {
+            get
+            {
+                return base.UserName;
+            }
+            set
+            {
+                base.UserName = value;
+            }
+        }
 
+        [JsonProperty]
         [StringLength(20)]
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
+        [JsonProperty]
         [StringLength(20)]
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
-        [Required]
-        [StringLength(20)]
-        public string Username { get; set; }
-
+        [JsonProperty]
         [StringLength(100)]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
 
-        [StringLength(100)]
-        [Display(Name = "Confirm Password")]
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-
-        [JsonIgnore]
         public virtual ICollection<Station> Stations { get; set; }
-    }
+      }
 }
+

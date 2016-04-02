@@ -5,14 +5,14 @@ namespace server_api.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<server_api.AirDB>
+    internal sealed class Configuration : DbMigrationsConfiguration<server_api.ApplicationContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(server_api.AirDB context)
+        protected override void Seed(server_api.ApplicationContext context)
         {
             //  This method will be called after migrating to the latest version.
 

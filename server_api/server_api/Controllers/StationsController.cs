@@ -104,7 +104,7 @@ namespace server_api.Controllers
         [HttpPost]
         public IHttpActionResult RegisterUserStation([FromBody]JObject jsonData)
         {
-            var db = new AirDB();
+            var db = new ApplicationContext();
 
             /*Register Station exmaple json.
             {
@@ -380,7 +380,7 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult LatestDataPoint([FromUri]string stationID)
         {
-            var db = new AirDB();
+            var db = new ApplicationContext();
 
             if (!_repo.StationExists(stationID))
             {
