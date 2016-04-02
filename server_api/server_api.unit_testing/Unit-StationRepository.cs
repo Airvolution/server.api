@@ -33,6 +33,7 @@ namespace server_api.unit_testing
 
             /* Local Database */
             connectionString = @"Server=(LocalDB)\MSSQLLocalDB; Integrated Security=true ;AttachDbFileName=C:\database\temp.mdf";
+
             using (var context = new ApplicationContext(connectionString))
             {
                 context.Database.Create();

@@ -1,4 +1,4 @@
-using System.Diagnostics.Tracing;
+﻿using System.Diagnostics.Tracing;
 
 namespace server_api
 {
@@ -13,20 +13,20 @@ namespace server_api
 
     public partial class ApplicationContext : IdentityDbContext<User>
     {
-        
+
         public ApplicationContext()
-            : base("name=AirUDBCOE")
+            : base("name=AirDB")
         {
         }
-        
+
         public ApplicationContext(string connectionString)
-            : base(connectionString.Equals("")?"name=AirUDBCOE":connectionString)
+            : base(connectionString.Equals("") ? "name=AirDB" : connectionString)
         {
             this.Configuration.LazyLoadingEnabled = false;
         }
 
         //Identity and Authorization
-     
+
 
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<StationGroup> DeviceGroups { get; set; }
@@ -85,7 +85,7 @@ namespace server_api
                     }
                     ((BaseEntity)entity.Entity).DateModified = DateTime.Now;
                 }
-                
+
             }
             try
             {
@@ -104,7 +104,7 @@ namespace server_api
                 }
                 throw dbEx;
             }
-            
+
         }
     }
 }
