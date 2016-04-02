@@ -18,6 +18,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data.Entity.Spatial;
 using System.Globalization;
+using Swashbuckle.Swagger.Annotations;
+using Microsoft.AspNet.Identity;
 
 namespace server_api.Controllers
 {
@@ -26,11 +28,13 @@ namespace server_api.Controllers
     /// </summary>
     public class StationsController : ApiController
     {
-        private StationsRepository _repo = null;
+        private StationsRepository _stationRepo = null;
+        private UserRepository _userRepo = null;
 
         public StationsController()
         {
-            _repo = new StationsRepository();
+            _stationRepo = new StationsRepository();
+            _userRepo = new UserRepository();
         }
 
 
@@ -40,15 +44,17 @@ namespace server_api.Controllers
         ///   given parameter. This endpoint is temporary, proof of concept... I'd like to add time range
         ///   to this functionality.
         /// </summary>
-        /// <param name="stationID">A list of station ids</param>
+        /// <param name="id">A list of station ids</param>
         /// <param name="parameter">A list of parameter types</param>
         /// <returns></returns>
         [Route("stations/parameterValues")]
         [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SwaggerPollutantList))]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter)
         {
             // get all datapoints matching the station ids and parameter types
-            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
+            IEnumerable<DataPoint> points = _stationRepo.GetDataPointsFromStation(stationID, parameter);
 
             Dictionary<string, SwaggerPollutantList> data = new Dictionary<string, SwaggerPollutantList>();
 
@@ -99,59 +105,22 @@ namespace server_api.Controllers
             }
         }
 
-        [ResponseType(typeof(Station))]
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Station))]
+        [SwaggerResponse(HttpStatusCode.BadRequest, Type = typeof(string))]
         [Route("stations/register")]
         [HttpPost]
-        public IHttpActionResult RegisterUserStation([FromBody]JObject jsonData)
+        public IHttpActionResult RegisterUserStation([FromBody]Station newStation)
         {
             var db = new ApplicationContext();
 
-            /*Register Station exmaple json.
+            newStation.User_Id = RequestContext.Principal.Identity.GetUserId() as string;
+            Station result = _stationRepo.CreateStation(newStation);
+            if (result != null)
             {
-                "station": {
-                    "Name": "Draper",
-                    "ID": "MAC000001",
-                    "Agency": "AirU",
-                    "Purpose": "Testing",
-                    "Indoor" : false
-                },
-                "user": {
-                    "Email": "zacharyisaiahlobato@gmail.com"
-                }
-            }
-            */
-
-            dynamic userPostData = jsonData;
-
-            JObject userJObj = userPostData.user;
-            JObject stationJObj = userPostData.station;
-
-            User user = userJObj.ToObject<User>();
-            Station station = stationJObj.ToObject<Station>();
-
-            Station existingDevice = db.Stations.SingleOrDefault(x => x.Id == station.Id);
-            User existingUser = db.Users.SingleOrDefault(x => x.Email == user.Email);
-
-            if (existingUser != null)
-            {
-                if (existingDevice == null)
-                {
-                    // Add station success.
-                    station.User = existingUser;
-                    db.Stations.Add(station);
-                    db.SaveChanges();
-
-                    return Ok(station);
-                }
-                else
-                {
-                    // Add station fail.
-                    return BadRequest("Station already exists.");
-                }
-            }
-            else
-            {
-                return BadRequest("User does not exist.");
+                return Ok(result);
+            }else{
+                return BadRequest("Station already exists.");
             }
         }
 
@@ -163,6 +132,8 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/data")]
         [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<DataPoint>))]
+        [SwaggerResponse(HttpStatusCode.BadRequest, Type = typeof(string))]
         public IHttpActionResult AddStationDataPointSet([FromBody]DataPoint[] dataSet)
         {
             DateTime start = DateTime.Now;
@@ -172,7 +143,7 @@ namespace server_api.Controllers
                 return BadRequest("No DataPoints in sent array.");
             }
 
-            IEnumerable<DataPoint>response = _repo.SetDataPointsFromStation(dataSet);
+            IEnumerable<DataPoint>response = _stationRepo.SetDataPointsFromStation(dataSet);
             DateTime end = DateTime.Now;
 
             if (response==null)
@@ -183,12 +154,19 @@ namespace server_api.Controllers
                 return Ok(response);
         }
 
+        /// <summary>
+        /// Downloads the datapoints for specific parameters given a list of station ids and parameter names
+        /// </summary>
+        /// <param name="id">Station IDs</param>
+        /// <param name="parameter">Parameter names</param>
+        /// <returns></returns>
         [Route("stations/download")]
         [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK)]
         public IHttpActionResult DownloadStationData([FromUri] string[] stationID, [FromUri] string[] parameter)
         {
             // get all datapoints matching the station ids and parameter types
-            IEnumerable<DataPoint> points = _repo.GetDataPointsFromStation(stationID, parameter);
+            IEnumerable<DataPoint> points = _stationRepo.GetDataPointsFromStation(stationID, parameter);
 
             string delimiter = "\"";
             string tick = "\'";
@@ -236,7 +214,7 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult StationLocators(double latMin, double latMax, double lngMin, double lngMax)
         {
-            return Ok(_repo.StationLocations(latMin, latMax, lngMin, lngMax));
+            return Ok(_stationRepo.StationLocations(latMin, latMax, lngMin, lngMax));
         }
 
         [ResponseType(typeof(IEnumerable<Station>))]
@@ -244,7 +222,7 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult NearestStation(double lat, double lng)
         {
-            return Ok(_repo.GetNearestStation(lat, lng));
+            return Ok(_stationRepo.GetNearestStation(lat, lng));
         }
 
         [ResponseType(typeof(IEnumerable<Station>))]
@@ -252,8 +230,8 @@ namespace server_api.Controllers
         [HttpGet]
         public IHttpActionResult StationsInRadiusMiles(double lat, double lng, double miles)
         {
-            return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
-            //return Ok(_repo.GetStationsWithinRadiusMiles(lat, lng, miles));
+            return Ok(_stationRepo.GetStationsWithinRadiusMiles(lat, lng, miles));
+            //return Ok(_stationRepo.GetStationsWithinRadiusMiles(lat, lng, miles));
         }
 
         /// <summary>
@@ -261,18 +239,18 @@ namespace server_api.Controllers
         /// 
         ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
-        /// <param name="stationID"></param>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<DataPoint>))]
-        [Route("stations/datapoints/{stationID}")]
+        /// <param name="id">Station ID</param>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<DataPoint>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("stations/datapoints/{id}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]string stationID)
+        public IHttpActionResult DataPoints([FromUri]string id)
         {
-            if (!_repo.StationExists(stationID))
+            if (!_stationRepo.StationExists(id))
             {
                 return NotFound();
             }
-            return Ok(_repo.GetDataPointsFromStation(stationID));
+            return Ok(_stationRepo.GetDataPointsFromStation(id));
         }
 
         /// <summary>
@@ -280,18 +258,18 @@ namespace server_api.Controllers
         ///   On Javascript Side, use encodeURIComponent when sending DateTime
         ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
-        /// <param name="stationID"></param>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<DataPoint>))]
-        [Route("stations/datapoints/{stationID}/{after}")]
+        /// <param name="id">Station Id</param>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<DataPoint>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("stations/datapoints/{id}/{after}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]string stationID, [FromUri]DateTime after)
+        public IHttpActionResult DataPoints([FromUri]string id, [FromUri]DateTime after)
         {
-            if (!_repo.StationExists(stationID))
+            if (!_stationRepo.StationExists(id))
             {
                 return NotFound();
             }
-            return Ok(_repo.GetDataPointsFromStationAfterTime(stationID, after));
+            return Ok(_stationRepo.GetDataPointsFromStationAfterTime(id, after));
         }
 
         /// <summary>
@@ -299,18 +277,18 @@ namespace server_api.Controllers
         ///   On Javascript Side, use encodeURIComponent when sending DateTime
         ///   Primary Use: Compare View and single AMS station Map View "data graph"
         /// </summary>
-        /// <param name="stationID"></param>
-        /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<DataPoint>))]
-        [Route("stations/datapoints/{stationID}/{after}/{before}")]
+        /// <param name="id">Station ID</param>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<DataPoint>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("stations/datapoints/{id}/{after}/{before}")]
         [HttpGet]
-        public IHttpActionResult DataPoints([FromUri]string stationID, [FromUri]DateTime after, [FromUri]DateTime before)
+        public IHttpActionResult DataPoints([FromUri]string id,[FromUri]DateTime after, [FromUri]DateTime before)
         {
-            if (!_repo.StationExists(stationID))
+            if (!_stationRepo.StationExists(id))
             {
                 return NotFound();
             }
-            return Ok(_repo.GetDataPointsFromStationBetweenTimes(stationID, after, before));
+            return Ok(_stationRepo.GetDataPointsFromStationBetweenTimes(id, after, before));
         }
 
         /// <summary>
@@ -318,37 +296,53 @@ namespace server_api.Controllers
         ///   
         ///   Primary Use: "details" panel on Map View after selecting AMS station on map. 
         /// </summary>
-        /// <param name="deviceId"></param>
+        /// <param name="id">Station ID</param>
         /// <returns></returns>
-        [ResponseType(typeof(IEnumerable<DataPoint>))]
-        [Route("stations/latestDataPoint/{stationID}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DataPoint))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("stations/latestDataPoint/{id}")]
         [HttpGet]
-        public IHttpActionResult LatestDataPoint([FromUri]string stationID)
+        public IHttpActionResult LatestDataPoint([FromUri]string id)
         {
             var db = new ApplicationContext();
 
-            if (!_repo.StationExists(stationID))
+            if (!_stationRepo.StationExists(id))
             {
-                return BadRequest("Station ID: " + stationID + " does not exist. Please verify the station has been registered.");
+                return NotFound();
             }
 
-            return Ok(_repo.GetLatestDataPointsFromStation(stationID));
+            return Ok(_stationRepo.GetLatestDataPointsFromStation(id));
         }
 
         /// <summary>
         ///   Deletes the selected station
         /// </summary>
-        /// <param name="id"></param>
-        [Route("stations/{stationID}")]
+        /// <param name="id">Station ID</param>
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [Route("stations/{id}")]
         [HttpDelete]
-        public IHttpActionResult Station(string stationID)
+        public IHttpActionResult Station(string id)
         {
-            if (_repo.DeleteStation(stationID))
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
             {
-                return Ok();
+                return NotFound();
             }
-
-            return NotFound();
+            if (station.User_Id == RequestContext.Principal.Identity.GetUserId())
+            {
+                if (_stationRepo.DeleteStation(id))
+                {
+                    return Ok();
+                }
+                return InternalServerError();
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         /// <summary>

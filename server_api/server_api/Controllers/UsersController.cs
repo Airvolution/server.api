@@ -6,6 +6,9 @@ using System.Web;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using server_api.Models;
+using Swashbuckle.Swagger.Annotations;
+using System.Net;
+using System.Web.Http.ModelBinding;
 
 namespace server_api.Controllers
 {
@@ -31,6 +34,8 @@ namespace server_api.Controllers
         [Authorize]
         [Route("authtest")]
         [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
         public IHttpActionResult ServerTest()
         {
             return Ok("Success");
@@ -43,6 +48,8 @@ namespace server_api.Controllers
         [Authorize]
         [Route("current")]
         [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.BadRequest, Type = typeof(string))]
         public async Task<IHttpActionResult> GetCurrentUser()
         {
             User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
@@ -59,6 +66,9 @@ namespace server_api.Controllers
 
         [AllowAnonymous]
         [Route("register")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
         public async Task<IHttpActionResult> Register(UserRegistration userModel)
         {
             if (!ModelState.IsValid)

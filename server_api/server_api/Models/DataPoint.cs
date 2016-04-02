@@ -18,6 +18,7 @@ namespace server_api.Models
         [StringLength(32)]
         [JsonIgnore]
         public string Station_Id { get; set; }
+        public virtual Station Station { get; set; }
 
         [Key]
         [ForeignKey("Parameter")]
@@ -32,9 +33,7 @@ namespace server_api.Models
         [StringLength(30)]
         [JsonIgnore]
         public string Parameter_Unit { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int SerialNumber { get; set; }
+        public virtual Parameter Parameter { get; set; }
 
         [JsonConverter(typeof(DbGeographyConverter))]
         public DbGeography Location { get; set; }
@@ -43,11 +42,7 @@ namespace server_api.Models
 
         public int Category { get; set; }
 
-        public int AQI { get; set; }
-
-        public virtual Station Station { get; set; }
-
-        public virtual Parameter Parameter { get; set; }
+        public int AQI { get; set; }        
 
         public bool Indoor { get; set; }
     }

@@ -322,6 +322,7 @@
     <Compile Include="Models\FrequentlyAskedQuestion.cs" />
     <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\RegisterStation.cs" />
     <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\UserRegistration.cs" />
@@ -333,8 +334,6 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="Controllers\StationsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Controllers\Vendors\LocationsController.cs" />
-    <Compile Include="Controllers\Vendors\US\US-UTController.cs" />
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="Models\StationGroup.cs" />
     <Compile Include="Migrations\Configuration.cs" />

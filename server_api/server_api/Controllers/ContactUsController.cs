@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Mail;
 using System.Web.Http;
 using server_api.Models;
+using Swashbuckle.Swagger.Annotations;
 
 namespace server_api.Controllers
 {
@@ -17,6 +18,7 @@ namespace server_api.Controllers
         /// </summary>
         [Route("contactUs")]
         [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK)]
         public IHttpActionResult SendEmail([FromBody]EmailContent content)
         {
             string body = "Name: " + content.Name + '\n' +
