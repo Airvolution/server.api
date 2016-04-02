@@ -330,10 +330,11 @@
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
     <Compile Include="Database\ApplicationContext.cs" />
-    <Compile Include="Migrations\201604010059357_UserIntegration.cs" />
-    <Compile Include="Migrations\201604010059357_UserIntegration.Designer.cs">
-      <DependentUpon>201604010059357_UserIntegration.cs</DependentUpon>
+    <Compile Include="Migrations\201604022259027_reset.cs" />
+    <Compile Include="Migrations\201604022259027_reset.Designer.cs">
+      <DependentUpon>201604022259027_reset.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
@@ -361,7 +362,6 @@
     <Compile Include="Controllers\Vendors\US\US-UTController.cs" />
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="Models\StationGroup.cs" />
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\GpsBounds.cs" />
     <Compile Include="Models\GpsCoordinates.cs" />
     <Compile Include="Models\SwaggerModels.cs" />
@@ -468,6 +468,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Properties\PublishProfiles\airvolution.org - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\dev.airvolution.org - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
@@ -542,8 +543,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604010059357_UserIntegration.resx">
-      <DependentUpon>201604010059357_UserIntegration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604022259027_reset.resx">
+      <DependentUpon>201604022259027_reset.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

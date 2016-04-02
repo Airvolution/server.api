@@ -19,7 +19,10 @@ namespace server_api.Models
 
         [Required]
         [JsonIgnore]
+        [ForeignKey("User")]
         public string User_Id { get; set; }
+        [JsonIgnore]
+        public virtual User User { get; set; }
 
         public int AQI { get; set; }
 
@@ -67,8 +70,7 @@ namespace server_api.Models
         [JsonIgnore]
         public virtual ICollection<Daily> Dailies { get; set; }
 
-        [JsonIgnore]
-        public virtual User User { get; set; }
+        
 
     }
 }
