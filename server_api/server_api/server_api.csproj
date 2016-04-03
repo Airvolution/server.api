@@ -338,6 +338,10 @@
     <Compile Include="Migrations\201604030649380_AddUnregisteredStation.Designer.cs">
       <DependentUpon>201604030649380_AddUnregisteredStation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604030705040_AddStationTypes.cs" />
+    <Compile Include="Migrations\201604030705040_AddStationTypes.Designer.cs">
+      <DependentUpon>201604030705040_AddStationTypes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
@@ -554,6 +558,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604030649380_AddUnregisteredStation.resx">
       <DependentUpon>201604030649380_AddUnregisteredStation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604030705040_AddStationTypes.resx">
+      <DependentUpon>201604030705040_AddStationTypes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
