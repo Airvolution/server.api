@@ -24,7 +24,7 @@ namespace server_api.Controllers
             _repo = new AlmanacRepository();
         }
 
-        [ResponseType(typeof(IEnumerable<Station>))]
+        [ResponseType(typeof(IEnumerable<Daily>))]
         [Route("almanac/dailies")]
         [HttpGet]
         public IHttpActionResult NearestStation(string stationId, int daysBack)

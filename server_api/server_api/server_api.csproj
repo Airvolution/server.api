@@ -358,8 +358,6 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="Controllers\StationsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Controllers\Vendors\LocationsController.cs" />
-    <Compile Include="Controllers\Vendors\US\US-UTController.cs" />
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="Models\StationGroup.cs" />
     <Compile Include="Models\GpsBounds.cs" />

@@ -70,6 +70,20 @@ namespace server_api
             return true;
         }
 
+        public Station CreateStation(Station station)
+        {
+            if (!StationExists(station.Id))
+            {
+                db.Stations.Add(station);
+                db.SaveChanges();
+                return db.Stations.Find(station.Id);
+            }
+            else
+            {
+                return null;
+            }            
+        }
+
         public Station GetStation(string stationID)
         {
             if (!StationExists(stationID))

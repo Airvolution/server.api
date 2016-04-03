@@ -2,6 +2,7 @@
 using System.Web.Http;
 using server_api.Models;
 using server_api.Repository;
+using System.Web.Http.Description;
 
 namespace server_api.Controllers
 {
@@ -23,6 +24,7 @@ namespace server_api.Controllers
         /// <summary>
         ///   Returns an array of frequently asked questions.
         /// </summary>
+        [ResponseType(typeof(FrequentlyAskedQuestion))]
         [Route("faq")]
         [HttpGet]
         public IHttpActionResult FrequentlyAskedQuestions()
