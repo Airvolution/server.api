@@ -52,6 +52,9 @@ namespace server_api.Models
         [StringLength(320)]
         public string Name { get; set; }
 
+        [StringLength(100)]
+        public string Type { get; set; }
+
         [StringLength(1000)]
         public string Purpose { get; set; }
 
