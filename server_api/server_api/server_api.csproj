@@ -334,7 +334,12 @@
     <Compile Include="Migrations\201604022259027_reset.Designer.cs">
       <DependentUpon>201604022259027_reset.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604030649380_AddUnregisteredStation.cs" />
+    <Compile Include="Migrations\201604030649380_AddUnregisteredStation.Designer.cs">
+      <DependentUpon>201604030649380_AddUnregisteredStation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\UnregisteredStation.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
@@ -548,6 +553,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201604022259027_reset.resx">
       <DependentUpon>201604022259027_reset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604030649380_AddUnregisteredStation.resx">
+      <DependentUpon>201604030649380_AddUnregisteredStation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
