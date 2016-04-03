@@ -55,6 +55,7 @@ namespace server_api.Models
         [StringLength(100)]
         public string Email { get; set; }
 
+        public virtual ICollection<ParameterAdjustment> ParameterAdjustments { get; set; }
 
         public virtual ICollection<Station> Stations { get; set; }
       }

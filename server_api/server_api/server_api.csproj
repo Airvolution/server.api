@@ -346,6 +346,10 @@
     <Compile Include="Migrations\201604030718168_AddParameterAdjustments.Designer.cs">
       <DependentUpon>201604030718168_AddParameterAdjustments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604030725163_AddPAsToUsers.cs" />
+    <Compile Include="Migrations\201604030725163_AddPAsToUsers.Designer.cs">
+      <DependentUpon>201604030725163_AddPAsToUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
@@ -571,6 +575,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604030718168_AddParameterAdjustments.resx">
       <DependentUpon>201604030718168_AddParameterAdjustments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604030725163_AddPAsToUsers.resx">
+      <DependentUpon>201604030725163_AddPAsToUsers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
