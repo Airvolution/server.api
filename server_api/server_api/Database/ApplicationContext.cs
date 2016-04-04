@@ -68,6 +68,12 @@ namespace server_api
                 .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<UserPreferences>()
+                .HasMany(e => e.DefaultParameters);
+
+            modelBuilder.Entity<Parameter>()
+                .HasMany(e => e.UserPreferences);
+
             // Configure Asp Net Identity Tables
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<User>().Property(u => u.PasswordHash).HasMaxLength(500);
