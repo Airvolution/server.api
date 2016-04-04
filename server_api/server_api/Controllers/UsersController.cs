@@ -63,6 +63,49 @@ namespace server_api.Controllers
             }
         }
 
+        
+        [Route("preferences")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        public async Task<IHttpActionResult> GetUserPreferences()
+        {
+            /*
+            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            */
+
+            return Ok(_repo.GetUserPreferences("865cb343-b10f-4f3a-a771-c61cc9863d0b"));
+        }
+
+        [Route("preferences")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        public async Task<IHttpActionResult> UpdateUserPreferences(UserPreferences preferences)
+        {
+            /*
+            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            */
+            if (!_repo.IsValidPreferences(preferences))
+            {
+                return BadRequest();
+            }
+
+            preferences.User_Id = "865cb343-b10f-4f3a-a771-c61cc9863d0b";
+
+            var ret = _repo.UpdateUserPreferences(preferences);
+
+            return Ok(_repo.GetUserPreferences("865cb343-b10f-4f3a-a771-c61cc9863d0b"));
+        }
 
         [AllowAnonymous]
         [Route("register")]

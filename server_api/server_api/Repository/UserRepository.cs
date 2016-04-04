@@ -48,6 +48,80 @@ namespace server_api
             return user;
         }
 
+        public Boolean IsValidPreferences(UserPreferences preferences)
+        {
+            Station station = _ctx.Stations
+                                    .Where(s => preferences.DefaultStationId.Equals(s.Id)).FirstOrDefault();
+
+            if (station != null)
+            {
+                switch (preferences.DefaultMapMode.ToUpper())
+                {
+                    case "LIGHT":
+                        break;
+                    case "DARK":
+                        break;
+                    case "SATELLITE":
+                        break;
+                    default:
+                        return false;
+                }
+
+                switch (preferences.DefaultDownloadFormat.ToUpper())
+                {
+                    case "CSV":
+                        break;
+                    case "JSON":
+                        break;
+                    default:
+                        return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public UserPreferences GetUserPreferences(string id) 
+        {
+            UserPreferences data = _ctx.UserPreferences
+                                        .Where(u => id.Equals(u.User_Id))
+                                        .FirstOrDefault();
+
+            return data;
+        }
+
+        public void RemoveOldParameterDefaults(string id)
+        {
+            
+        }
+
+        public UserPreferences UpdateUserPreferences(UserPreferences preferences)
+        {
+            UserPreferences result = GetUserPreferences(preferences.User_Id);
+
+            if (result != null)
+            {
+                // updates existing record
+                result.DefaultStationId = preferences.DefaultStationId;
+                result.DefaultMapMode = preferences.DefaultMapMode;
+                result.DefaultDownloadFormat = preferences.DefaultDownloadFormat;
+                
+                // saves updated record
+                _ctx.Entry(result).State = System.Data.Entity.EntityState.Modified;
+                _ctx.SaveChanges();
+            }
+            else
+            {
+                // adds a new record
+                _ctx.UserPreferences.Add(preferences);
+            }
+
+            // returns the user's new preferences
+            return GetUserPreferences(preferences.User_Id);
+        }
+
         public void Dispose()
         {
             _ctx.Dispose();

@@ -330,29 +330,14 @@
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
     <Compile Include="Database\ApplicationContext.cs" />
-    <Compile Include="Migrations\201604022259027_reset.cs" />
-    <Compile Include="Migrations\201604022259027_reset.Designer.cs">
-      <DependentUpon>201604022259027_reset.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604030649380_AddUnregisteredStation.cs" />
-    <Compile Include="Migrations\201604030649380_AddUnregisteredStation.Designer.cs">
-      <DependentUpon>201604030649380_AddUnregisteredStation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604030705040_AddStationTypes.cs" />
-    <Compile Include="Migrations\201604030705040_AddStationTypes.Designer.cs">
-      <DependentUpon>201604030705040_AddStationTypes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604030718168_AddParameterAdjustments.cs" />
-    <Compile Include="Migrations\201604030718168_AddParameterAdjustments.Designer.cs">
-      <DependentUpon>201604030718168_AddParameterAdjustments.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604030725163_AddPAsToUsers.cs" />
-    <Compile Include="Migrations\201604030725163_AddPAsToUsers.Designer.cs">
-      <DependentUpon>201604030725163_AddPAsToUsers.cs</DependentUpon>
+    <Compile Include="Migrations\201604040122279_UserPrefs.cs" />
+    <Compile Include="Migrations\201604040122279_UserPrefs.Designer.cs">
+      <DependentUpon>201604040122279_UserPrefs.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
+    <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
@@ -562,20 +547,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604022259027_reset.resx">
-      <DependentUpon>201604022259027_reset.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604030649380_AddUnregisteredStation.resx">
-      <DependentUpon>201604030649380_AddUnregisteredStation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604030705040_AddStationTypes.resx">
-      <DependentUpon>201604030705040_AddStationTypes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604030718168_AddParameterAdjustments.resx">
-      <DependentUpon>201604030718168_AddParameterAdjustments.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604030725163_AddPAsToUsers.resx">
-      <DependentUpon>201604030725163_AddPAsToUsers.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604040122279_UserPrefs.resx">
+      <DependentUpon>201604040122279_UserPrefs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -7,18 +7,18 @@ namespace server_api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class reset : IMigrationMetadata
+    public sealed partial class UserPrefs : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(reset));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UserPrefs));
         
         string IMigrationMetadata.Id
         {
-            get { return "201604022259027_reset"; }
+            get { return "201604040122279_UserPrefs"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return null; }
+            get { return Resources.GetString("Source"); }
         }
         
         string IMigrationMetadata.Target
