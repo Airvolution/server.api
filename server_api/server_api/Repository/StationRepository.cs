@@ -379,6 +379,21 @@ namespace server_api
             return true;
         }
 
+        public void AddThirdPartyDevice(string stationID)
+        {
+            UnregisteredStation station = db.UnregisteredStations.SingleOrDefault(s => s.Id == stationID);
+
+            // If station does not exist, add it.
+            if (ReferenceEquals(station, null))
+            {
+                var newStation = new UnregisteredStation();
+                newStation.Id = stationID;
+                db.UnregisteredStations.Add(newStation);
+            }
+
+            // else, do nothing.
+        }
+
         public void Dispose()
         {
             db.Dispose();
