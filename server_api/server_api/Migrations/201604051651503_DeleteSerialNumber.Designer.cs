@@ -7,13 +7,13 @@ namespace server_api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddPAsToUsers : IMigrationMetadata
+    public sealed partial class DeleteSerialNumber : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddPAsToUsers));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(DeleteSerialNumber));
         
         string IMigrationMetadata.Id
         {
-            get { return "201604030725163_AddPAsToUsers"; }
+            get { return "201604051651503_DeleteSerialNumber"; }
         }
         
         string IMigrationMetadata.Source
