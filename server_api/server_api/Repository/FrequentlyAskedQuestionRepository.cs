@@ -63,7 +63,7 @@ namespace server_api.Repository
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        public bool QuestionExists(string questionId)
+        public bool QuestionExists(int questionId)
         {
             if (db.FrequentlyAskedQuestions.Find(questionId) == null)
             {
@@ -77,7 +77,7 @@ namespace server_api.Repository
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        public bool IncrementViewCount(string questionId)
+        public bool IncrementViewCount(int questionId)
         {
             if (QuestionExists(questionId))
             {

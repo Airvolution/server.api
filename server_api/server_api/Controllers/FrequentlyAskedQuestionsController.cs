@@ -42,11 +42,10 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("faq/view")]
         [HttpPost]
-        public IHttpActionResult IncrementViewCount([FromBody]string questionId)
+        public IHttpActionResult IncrementViewCount([FromBody]int questionId)
         {
             // increment the total view count of a question.
-
-
+            _repo.IncrementViewCount(questionId);
 
             return Ok();
         }
