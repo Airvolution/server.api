@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 using server_api.Models;
 using server_api.Repository;
 using System.Web.Http.Description;
+using Swashbuckle.Swagger.Annotations;
 
 namespace server_api.Controllers
 {
@@ -24,7 +27,7 @@ namespace server_api.Controllers
         /// <summary>
         ///   Returns an array of frequently asked questions.
         /// </summary>
-        [ResponseType(typeof(FrequentlyAskedQuestion))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<FrequentlyAskedQuestion>))]
         [Route("faq")]
         [HttpGet]
         public IHttpActionResult FrequentlyAskedQuestionsList()
@@ -41,6 +44,7 @@ namespace server_api.Controllers
         /// <param name="questionId"></param>
         /// <returns></returns>
         [Route("faq/view")]
+        [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         public IHttpActionResult IncrementViewCount([FromBody]int questionId)
         {
@@ -55,6 +59,7 @@ namespace server_api.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("faq/usefulnessReview")]
+        [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         public IHttpActionResult AddUserUsefulnessReview([FromBody]QuestionAnswerUsefulness review)
         {

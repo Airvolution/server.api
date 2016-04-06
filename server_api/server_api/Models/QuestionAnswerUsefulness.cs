@@ -21,6 +21,7 @@ namespace server_api.Models
         [ForeignKey("User")]
         [Key]
         [Column(Order = 0)]
+        [Required]
         public string User_Id
         { get; set; }
 
@@ -30,12 +31,14 @@ namespace server_api.Models
         [ForeignKey("FrequentlyAskedQuestion")]
         [Key]
         [Column(Order = 1)]
+        [Required]
         public int FrequentlyAskedQuestion_Id
         { get; set; }
 
         public virtual FrequentlyAskedQuestion FrequentlyAskedQuestion { get; set; }
 
         [JsonProperty]
+        [Required]
         public int UserUsefulnessScore
         { get; set; }
     }
