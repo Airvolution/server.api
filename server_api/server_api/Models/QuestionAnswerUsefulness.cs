@@ -10,10 +10,10 @@ namespace server_api.Models
 {
     public class QuestionAnswerUsefulness
     {
-        public QuestionAnswerUsefulness(string usrId, int quesId, int score)
+        public QuestionAnswerUsefulness(string userId, int questionId, int score)
         {
-            User_Id = usrId;
-            FrequentlyAskedQuestion_Id = quesId;
+            User_Id = userId;
+            FrequentlyAskedQuestion_Id = questionId;
             UserUsefulnessScore = score;
         }
 

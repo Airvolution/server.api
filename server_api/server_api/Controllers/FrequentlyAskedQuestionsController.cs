@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web.Http;
 using server_api.Models;
 using server_api.Repository;
 using System.Web.Http.Description;
+using Microsoft.AspNet.Identity;
 using Swashbuckle.Swagger.Annotations;
 
 namespace server_api.Controllers
@@ -14,14 +16,16 @@ namespace server_api.Controllers
     /// </summary>
     public class FrequentlyAskedQuestionsController : ApiController
     {
-        private FrequentlyAskedQuestionRepository _repo = null;
+        private FrequentlyAskedQuestionRepository _faqRepo = null;
+        private UserRepository _userRepo = null;
 
         /// <summary>
         /// 
         /// </summary>
         public FrequentlyAskedQuestionsController()
         {
-            _repo = new FrequentlyAskedQuestionRepository();
+            _faqRepo = new FrequentlyAskedQuestionRepository();
+            _userRepo = new UserRepository();
         }
 
         /// <summary>
@@ -33,7 +37,7 @@ namespace server_api.Controllers
         public IHttpActionResult FrequentlyAskedQuestionsList()
         {
             // get all datapoints matching the station ids and parameter types
-            IEnumerable<FrequentlyAskedQuestion> questionsAnswers = _repo.GetAllQuestionsAnswers();
+            IEnumerable<FrequentlyAskedQuestion> questionsAnswers = _faqRepo.GetAllQuestionsAnswers();
 
             return Ok(questionsAnswers);
         }
@@ -49,7 +53,7 @@ namespace server_api.Controllers
         public IHttpActionResult IncrementViewCount([FromBody]int questionId)
         {
             // increment the total view count of a question.
-            _repo.IncrementViewCount(questionId);
+            _faqRepo.IncrementViewCount(questionId);
 
             return Ok();
         }
@@ -59,11 +63,19 @@ namespace server_api.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("faq/usefulnessReview")]
+        [Authorize]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        public IHttpActionResult AddUserUsefulnessReview([FromBody]QuestionAnswerUsefulness review)
+        public async Task<IHttpActionResult> AddUserUsefulnessReview([FromBody]int questionId, int score)
         {
-            _repo.AddUsefulnessScore(review);
+            User user = await _userRepo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var review = new QuestionAnswerUsefulness(user.Id, questionId, score);
+            _faqRepo.AddUsefulnessScore(review);
 
             return Ok();
         }
