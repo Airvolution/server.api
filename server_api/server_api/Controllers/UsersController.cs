@@ -70,15 +70,13 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
         public async Task<IHttpActionResult> GetUserPreferences()
         {
-            /*
             User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
             if (user == null)
             {
                 return Unauthorized();
             }
-            */
 
-            return Ok(_repo.GetUserPreferences("865cb343-b10f-4f3a-a771-c61cc9863d0b"));
+            return Ok(_repo.GetUserPreferences(user.Id));
         }
 
         [Route("preferences")]
@@ -86,25 +84,23 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
-        public async Task<IHttpActionResult> UpdateUserPreferences(UserPreferences preferences)
+        public async Task<IHttpActionResult> UpdateUserPreferences([FromUri]String mapMode, [FromUri]String downloadFormat, [FromUri]String stationId, [FromUri]String[] parameters)
         {
-            /*
+            // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
+
             User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
             if (user == null)
             {
                 return Unauthorized();
             }
-            */
-            if (!_repo.IsValidPreferences(preferences))
+            
+            if (!_repo.IsValidPreferences(mapMode, downloadFormat))
             {
                 return BadRequest();
             }
 
-            preferences.User_Id = "865cb343-b10f-4f3a-a771-c61cc9863d0b";
-
-            var ret = _repo.UpdateUserPreferences(preferences);
-
-            return Ok(_repo.GetUserPreferences("865cb343-b10f-4f3a-a771-c61cc9863d0b"));
+            var updatedPreferences = _repo.UpdateUserPreferences(user.Id, mapMode, downloadFormat, stationId, parameters);
+            return Ok(updatedPreferences);
         }
 
         [AllowAnonymous]

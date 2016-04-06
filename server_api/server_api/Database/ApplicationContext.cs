@@ -17,6 +17,8 @@ namespace server_api
         public ApplicationContext()
             : base("name=AirDB")
         {
+            // If you turn this ON --> you will break the UserPreferences GET/preferences endpoint
+            //this.Configuration.LazyLoadingEnabled = false;
         }
 
         public ApplicationContext(string connectionString)
@@ -69,10 +71,12 @@ namespace server_api
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<UserPreferences>()
-                .HasMany(e => e.DefaultParameters);
+                .HasMany(e => e.DefaultParameters)
+                .WithMany(e => e.UserPreferences)
+                .Map(t => t.ToTable("UserPreferencesParameters")
+                        .MapLeftKey("UserPreferences_Id")
+                        .MapRightKey("Parameter_Name", "Parameter_Unit"));
 
-            modelBuilder.Entity<Parameter>()
-                .HasMany(e => e.UserPreferences);
 
             // Configure Asp Net Identity Tables
             modelBuilder.Entity<User>().ToTable("Users");

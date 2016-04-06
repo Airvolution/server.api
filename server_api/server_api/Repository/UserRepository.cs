@@ -48,39 +48,31 @@ namespace server_api
             return user;
         }
 
-        public Boolean IsValidPreferences(UserPreferences preferences)
+        public Boolean IsValidPreferences(String mapMode, String downloadFormat)
         {
-            Station station = _ctx.Stations
-                                    .Where(s => preferences.DefaultStationId.Equals(s.Id)).FirstOrDefault();
-
-            if (station != null)
+            switch (mapMode.ToUpper())
             {
-                switch (preferences.DefaultMapMode.ToUpper())
-                {
-                    case "LIGHT":
-                        break;
-                    case "DARK":
-                        break;
-                    case "SATELLITE":
-                        break;
-                    default:
-                        return false;
-                }
-
-                switch (preferences.DefaultDownloadFormat.ToUpper())
-                {
-                    case "CSV":
-                        break;
-                    case "JSON":
-                        break;
-                    default:
-                        return false;
-                }
-
-                return true;
+                case "LIGHT":
+                    break;
+                case "DARK":
+                    break;
+                case "SATELLITE":
+                    break;
+                default:
+                    return false;
             }
 
-            return false;
+            switch (downloadFormat.ToUpper())
+            {
+                case "CSV":
+                    break;
+                case "JSON":
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         public UserPreferences GetUserPreferences(string id) 
@@ -92,34 +84,37 @@ namespace server_api
             return data;
         }
 
-        public void RemoveOldParameterDefaults(string id)
+        public UserPreferences UpdateUserPreferences(String id, String mapMode, String downloadFormat, String stationId, String[] parameters)
         {
-            
-        }
+            var existingPreferences = _ctx.UserPreferences.Include("DefaultParameters")
+                                            .Single(u => id == u.User_Id);
 
-        public UserPreferences UpdateUserPreferences(UserPreferences preferences)
-        {
-            UserPreferences result = GetUserPreferences(preferences.User_Id);
+            existingPreferences.DefaultMapMode = mapMode;
+            existingPreferences.DefaultDownloadFormat = downloadFormat;
+            existingPreferences.DefaultStationId = stationId;
 
-            if (result != null)
+            _ctx.Configuration.AutoDetectChangesEnabled = false;
+            existingPreferences.DefaultParameters.Clear();
+
+            // Find the existing parameters in station
+            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();
+            foreach (Parameter p in _ctx.Parameters.ToList())
             {
-                // updates existing record
-                result.DefaultStationId = preferences.DefaultStationId;
-                result.DefaultMapMode = preferences.DefaultMapMode;
-                result.DefaultDownloadFormat = preferences.DefaultDownloadFormat;
-                
-                // saves updated record
-                _ctx.Entry(result).State = System.Data.Entity.EntityState.Modified;
-                _ctx.SaveChanges();
-            }
-            else
-            {
-                // adds a new record
-                _ctx.UserPreferences.Add(preferences);
+                existingParameters.Add(p.Name + " " + p.Unit, p);
             }
 
-            // returns the user's new preferences
-            return GetUserPreferences(preferences.User_Id);
+            // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
+            foreach (var p in parameters)
+            {
+                Parameter newParameter = null;
+                existingParameters.TryGetValue(p, out newParameter);
+                existingPreferences.DefaultParameters.Add(newParameter);
+            }
+
+            _ctx.Configuration.AutoDetectChangesEnabled = true;
+            _ctx.SaveChanges();
+
+            return existingPreferences;
         }
 
         public void Dispose()

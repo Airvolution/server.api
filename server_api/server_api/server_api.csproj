@@ -330,13 +330,9 @@
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
     <Compile Include="Database\ApplicationContext.cs" />
-    <Compile Include="Migrations\201604040122279_UserPrefs.cs" />
-    <Compile Include="Migrations\201604040122279_UserPrefs.Designer.cs">
-      <DependentUpon>201604040122279_UserPrefs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604041731182_ManyToManyUserPrefs.cs" />
-    <Compile Include="Migrations\201604041731182_ManyToManyUserPrefs.Designer.cs">
-      <DependentUpon>201604041731182_ManyToManyUserPrefs.cs</DependentUpon>
+    <Compile Include="Migrations\201604052223248_UserPrefs.cs" />
+    <Compile Include="Migrations\201604052223248_UserPrefs.Designer.cs">
+      <DependentUpon>201604052223248_UserPrefs.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
@@ -551,11 +547,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604040122279_UserPrefs.resx">
-      <DependentUpon>201604040122279_UserPrefs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604041731182_ManyToManyUserPrefs.resx">
-      <DependentUpon>201604041731182_ManyToManyUserPrefs.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604052223248_UserPrefs.resx">
+      <DependentUpon>201604052223248_UserPrefs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

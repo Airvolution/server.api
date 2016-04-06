@@ -7,18 +7,18 @@ namespace server_api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class ManyToManyUserPrefs : IMigrationMetadata
+    public sealed partial class UserPrefs : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ManyToManyUserPrefs));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UserPrefs));
         
         string IMigrationMetadata.Id
         {
-            get { return "201604041731182_ManyToManyUserPrefs"; }
+            get { return "201604052223248_UserPrefs"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return null; }
+            get { return Resources.GetString("Source"); }
         }
         
         string IMigrationMetadata.Target
