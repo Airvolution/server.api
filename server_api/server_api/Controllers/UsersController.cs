@@ -63,7 +63,7 @@ namespace server_api.Controllers
             }
         }
 
-
+        [Authorize]
         [Route("preferences")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
@@ -79,6 +79,7 @@ namespace server_api.Controllers
             return Ok(_repo.GetUserPreferences(user.Id));
         }
 
+        [Authorize]
         [Route("preferences")]
         [HttpPost]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
