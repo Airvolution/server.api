@@ -16,16 +16,18 @@ namespace server_api.Controllers
     /// </summary>
     public class FrequentlyAskedQuestionsController : ApiController
     {
-        private FrequentlyAskedQuestionRepository _faqRepo = null;
-        private UserRepository _userRepo = null;
+        private FrequentlyAskedQuestionRepository _faqRepo;
+        private UserRepository _userRepo;
 
         /// <summary>
         /// 
         /// </summary>
         public FrequentlyAskedQuestionsController()
         {
-            _faqRepo = new FrequentlyAskedQuestionRepository();
-            _userRepo = new UserRepository();
+            ApplicationContext ctx = new ApplicationContext();
+
+            _faqRepo = new FrequentlyAskedQuestionRepository(ctx);
+            _userRepo = new UserRepository(ctx);
         }
 
         /// <summary>

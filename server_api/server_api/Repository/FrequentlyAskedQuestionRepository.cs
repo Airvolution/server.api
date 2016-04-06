@@ -10,23 +10,23 @@ namespace server_api.Repository
     /// </summary>
     public class FrequentlyAskedQuestionRepository : IDisposable
     {
-        private ApplicationContext db;
+        private ApplicationContext _ctx;
 
         /// <summary>
         /// 
         /// </summary>
         public FrequentlyAskedQuestionRepository()
         {
-            db = new ApplicationContext();
+            _ctx = new ApplicationContext();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="existingContext"></param>
-        public FrequentlyAskedQuestionRepository(ApplicationContext existingContext)
+        /// <param name="ctx"></param>
+        public FrequentlyAskedQuestionRepository(ApplicationContext ctx)
         {
-            db = existingContext;
+            _ctx = ctx;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace server_api.Repository
         /// <returns></returns>
         public IEnumerable<FrequentlyAskedQuestion> GetAllQuestionsAnswers()
         {
-            var faqs = db.FrequentlyAskedQuestions;
+            var faqs = _ctx.FrequentlyAskedQuestions;
 
             foreach(var faq in faqs)
             {
@@ -65,7 +65,7 @@ namespace server_api.Repository
         /// <returns></returns>
         public bool QuestionExists(int questionId)
         {
-            if (db.FrequentlyAskedQuestions.Find(questionId) == null)
+            if (_ctx.FrequentlyAskedQuestions.Find(questionId) == null)
             {
                 return false;
             }
@@ -81,9 +81,9 @@ namespace server_api.Repository
         {
             if (QuestionExists(questionId))
             {
-                var faq = db.FrequentlyAskedQuestions.Find(questionId);
+                var faq = _ctx.FrequentlyAskedQuestions.Find(questionId);
                 faq.ViewCount++;
-                db.SaveChanges();
+                _ctx.SaveChanges();
 
                 return true;
             }
@@ -101,7 +101,7 @@ namespace server_api.Repository
         /// <returns></returns>
         public bool UsefulnessScoreExists(int questionId, string userId)
         {
-            if (db.QuestionAnswerUsefulness.Find(questionId, userId) == null)
+            if (_ctx.QuestionAnswerUsefulness.Find(questionId, userId) == null)
             {
                 return false;
             }
@@ -120,21 +120,21 @@ namespace server_api.Repository
             // Update existing user usefulness review.
             if (UsefulnessScoreExists(review.FrequentlyAskedQuestion_Id, review.User_Id))
             {
-                var usefulnessReview = db.QuestionAnswerUsefulness.Find(review.FrequentlyAskedQuestion_Id);
+                var usefulnessReview = _ctx.QuestionAnswerUsefulness.Find(review.FrequentlyAskedQuestion_Id);
                 usefulnessReview = review;
-                db.SaveChanges();
+                _ctx.SaveChanges();
             }
             else
             {
                 // Add user usefulness review.
-                db.QuestionAnswerUsefulness.Add(review);
-                db.SaveChanges();
+                _ctx.QuestionAnswerUsefulness.Add(review);
+                _ctx.SaveChanges();
             } 
         }
 
         public void Dispose()
         {
-            db.Dispose();
+            _ctx.Dispose();
         }
     }
 }
