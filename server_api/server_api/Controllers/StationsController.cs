@@ -402,6 +402,22 @@ namespace server_api.Controllers
         }
 
         /// <summary>
+        ///   Adds the MAC address of a custom device (non-AirNow) to the un-registered table.
+        ///   
+        ///   If the MAC address is already added, do nothing and return 200.
+        /// </summary>
+        /// <returns></returns>
+        [Route("stations/ping")]
+        [HttpPost]
+        public IHttpActionResult Ping([FromBody]string DeviceID)
+        {
+             // If the station MAC adderss does not exist, add it.
+            _stationRepo.AddThirdPartyDevice(DeviceID);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Converts DateTime to compatible JS time in Milliseconds
         /// </summary>
         /// <param name="date">the date to be converted</param>
