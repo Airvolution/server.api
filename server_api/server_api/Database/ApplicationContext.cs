@@ -38,6 +38,7 @@ namespace server_api
         public virtual DbSet<Keyword> EventKeywords { get; set; }
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }
         public virtual DbSet<ParameterAdjustment> ParameterAdjustments { get; set; }
+        public virtual DbSet<QuestionAnswerUsefulness> QuestionAnswerUsefulness { get; set; }
 
 
 

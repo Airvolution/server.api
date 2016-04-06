@@ -24,7 +24,12 @@ namespace server_api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string Answer { get; set; }
+        public string AnswerPlainText { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string AnswerMarkDown { get; set; }
 
         /// <summary>
         /// 
@@ -35,5 +40,15 @@ namespace server_api.Models
         /// 
         /// </summary
         public virtual ICollection<Keyword> Keywords { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int ViewCount { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int TotaUserlUsefulnessScore { get; set; }
     }
 }

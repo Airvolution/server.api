@@ -27,12 +27,41 @@ namespace server_api.Controllers
         [ResponseType(typeof(FrequentlyAskedQuestion))]
         [Route("faq")]
         [HttpGet]
-        public IHttpActionResult FrequentlyAskedQuestions()
+        public IHttpActionResult FrequentlyAskedQuestionsList()
         {
             // get all datapoints matching the station ids and parameter types
             IEnumerable<FrequentlyAskedQuestion> questionsAnswers = _repo.GetAllQuestionsAnswers();
 
             return Ok(questionsAnswers);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="questionId"></param>
+        /// <returns></returns>
+        [Route("faq/view")]
+        [HttpPost]
+        public IHttpActionResult IncrementViewCount([FromBody]string questionId)
+        {
+            // increment the total view count of a question.
+
+
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Route("faq/usefulnessReview")]
+        [HttpPost]
+        public IHttpActionResult AddUserUsefulnessReview([FromBody]QuestionAnswerUsefulness review)
+        {
+            _repo.AddUsefulnessScore(review);
+
+            return Ok();
         }
     }
 }
