@@ -12,6 +12,7 @@ namespace server_api.Models
         public Parameter()
         {
             DataPoints = new HashSet<DataPoint>();
+            UserPreferences = new HashSet<UserPreferences>();
         }
 
         [Key]
@@ -26,5 +27,8 @@ namespace server_api.Models
 
         [JsonIgnore]
         public virtual ICollection<DataPoint> DataPoints { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<UserPreferences> UserPreferences { get; set; }
     }
 }

@@ -64,6 +64,45 @@ namespace server_api.Controllers
         }
 
 
+        [Route("preferences")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        public async Task<IHttpActionResult> GetUserPreferences()
+        {
+            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(_repo.GetUserPreferences(user.Id));
+        }
+
+        [Route("preferences")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        public async Task<IHttpActionResult> UpdateUserPreferences([FromUri]String mapMode, [FromUri]String downloadFormat, [FromUri]String stationId, [FromUri]String[] parameters)
+        {
+            // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
+
+            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            if (!_repo.IsValidPreferences(mapMode, downloadFormat))
+            {
+                return BadRequest();
+            }
+
+            var updatedPreferences = _repo.UpdateUserPreferences(user.Id, mapMode, downloadFormat, stationId, parameters);
+            return Ok(updatedPreferences);
+        }
+
         [AllowAnonymous]
         [Route("register")]
         [SwaggerResponse(HttpStatusCode.OK)]
@@ -88,7 +127,7 @@ namespace server_api.Controllers
         {
             if (disposing)
             {
-                _repo.Dispose();    
+                _repo.Dispose();
             }
             base.Dispose(disposing);
         }

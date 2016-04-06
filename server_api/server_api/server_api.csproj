@@ -350,9 +350,14 @@
     <Compile Include="Migrations\201604051651503_DeleteSerialNumber.Designer.cs">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604061824245_UserPreferences.cs" />
+    <Compile Include="Migrations\201604061824245_UserPreferences.Designer.cs">
+      <DependentUpon>201604061824245_UserPreferences.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
+    <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
@@ -576,6 +581,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604051651503_DeleteSerialNumber.resx">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604061824245_UserPreferences.resx">
+      <DependentUpon>201604061824245_UserPreferences.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

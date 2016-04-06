@@ -38,7 +38,7 @@ namespace server_api
         public virtual DbSet<Keyword> EventKeywords { get; set; }
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }
         public virtual DbSet<ParameterAdjustment> ParameterAdjustments { get; set; }
-
+        public virtual DbSet<UserPreferences> UserPreferences { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -67,6 +67,13 @@ namespace server_api
                 .HasMany(e => e.Stations)
                 .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UserPreferences>()
+                .HasMany(e => e.DefaultParameters)
+                .WithMany(e => e.UserPreferences)
+                .Map(t => t.ToTable("UserPreferencesParameters")
+                        .MapLeftKey("UserPreferences_Id")
+                        .MapRightKey("Parameter_Name", "Parameter_Unit"));
 
 
             // Configure Asp Net Identity Tables
