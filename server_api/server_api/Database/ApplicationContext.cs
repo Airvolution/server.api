@@ -27,7 +27,6 @@ namespace server_api
 
         //Identity and Authorization
 
-
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }

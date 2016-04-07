@@ -22,6 +22,16 @@ namespace server_api
             _userManager = new UserManager<User>(new UserStore<User>(_ctx));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ctx"></param>
+        public UserRepository(ApplicationContext ctx)
+        {
+            _ctx = ctx;
+            _userManager = new UserManager<User>(new UserStore<User>(_ctx));
+        }
+
         public async Task<IdentityResult> RegisterUser(UserRegistration registration)
         {
             User user = new User
