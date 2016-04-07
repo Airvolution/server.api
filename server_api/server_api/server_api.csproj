@@ -329,6 +329,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AlmanacController.cs" />
     <Compile Include="Controllers\ContactUsController.cs" />
+    <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Database\ApplicationContext.cs" />
     <Compile Include="Migrations\201604022259027_reset.cs" />
     <Compile Include="Migrations\201604022259027_reset.Designer.cs">
@@ -350,9 +351,15 @@
     <Compile Include="Migrations\201604051651503_DeleteSerialNumber.Designer.cs">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604051721182_StationGroups.cs" />
+    <Compile Include="Migrations\201604051721182_StationGroups.Designer.cs">
+      <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
+    <Compile Include="Models\RegisterGroup.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
+    <Compile Include="Repository\GroupRepository.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\EmailContent.cs" />
@@ -377,7 +384,7 @@
     <Compile Include="Controllers\StationsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Models\DataPoint.cs" />
-    <Compile Include="Models\StationGroup.cs" />
+    <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GpsBounds.cs" />
     <Compile Include="Models\GpsCoordinates.cs" />
     <Compile Include="Models\SwaggerModels.cs" />
@@ -576,6 +583,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604051651503_DeleteSerialNumber.resx">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604051721182_StationGroups.resx">
+      <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

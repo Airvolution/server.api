@@ -12,6 +12,8 @@ namespace server_api.Models
         public Station()
         {            
             DataPoints = new HashSet<DataPoint>();
+            Dailies = new HashSet<Daily>();
+            Groups = new HashSet<Group>();
         }
 
         [StringLength(32)]
@@ -72,6 +74,9 @@ namespace server_api.Models
 
         [JsonIgnore]
         public virtual ICollection<Daily> Dailies { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<Group> Groups { get; set; }
 
         
 
