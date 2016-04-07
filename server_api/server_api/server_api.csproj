@@ -353,13 +353,9 @@
     <Compile Include="Migrations\201604051651503_DeleteSerialNumber.Designer.cs">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201604060144557_AddFaqDetails.cs" />
-    <Compile Include="Migrations\201604060144557_AddFaqDetails.Designer.cs">
-      <DependentUpon>201604060144557_AddFaqDetails.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604060201526_AddFaqDetails2.cs" />
-    <Compile Include="Migrations\201604060201526_AddFaqDetails2.Designer.cs">
-      <DependentUpon>201604060201526_AddFaqDetails2.cs</DependentUpon>
+    <Compile Include="Migrations\201604070219067_FaqDetails.cs" />
+    <Compile Include="Migrations\201604070219067_FaqDetails.Designer.cs">
+      <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
@@ -589,11 +585,8 @@
     <EmbeddedResource Include="Migrations\201604051651503_DeleteSerialNumber.resx">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604060144557_AddFaqDetails.resx">
-      <DependentUpon>201604060144557_AddFaqDetails.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604060201526_AddFaqDetails2.resx">
-      <DependentUpon>201604060201526_AddFaqDetails2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604070219067_FaqDetails.resx">
+      <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

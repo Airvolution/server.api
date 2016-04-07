@@ -7,13 +7,13 @@ namespace server_api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddFaqDetails2 : IMigrationMetadata
+    public sealed partial class FaqDetails : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddFaqDetails2));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FaqDetails));
         
         string IMigrationMetadata.Id
         {
-            get { return "201604060201526_AddFaqDetails2"; }
+            get { return "201604070219067_FaqDetails"; }
         }
         
         string IMigrationMetadata.Source

@@ -39,7 +39,7 @@ namespace server_api.Repository
 
             foreach(var faq in faqs)
             {
-                faq.AnswerMarkDown = MarkdownToHtml(faq.AnswerMarkDown);
+                faq.AnswerRichText = MarkdownToHtml(faq.AnswerRichText);
             }
 
             return faqs;
@@ -63,49 +63,19 @@ namespace server_api.Repository
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        public bool QuestionExists(int questionId)
-        {
-            if (_ctx.FrequentlyAskedQuestions.Find(questionId) == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="questionId"></param>
-        /// <returns></returns>
         public bool IncrementViewCount(int questionId)
         {
-            if (QuestionExists(questionId))
+            FrequentlyAskedQuestion faq =  _ctx.FrequentlyAskedQuestions.Find(questionId);
+
+            if (faq != null)
             {
-                var faq = _ctx.FrequentlyAskedQuestions.Find(questionId);
                 faq.ViewCount++;
                 _ctx.SaveChanges();
 
                 return true;
             }
-            else
-            {
-                return false;
-            } 
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="questionId"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public bool UsefulnessScoreExists(int questionId, string userId)
-        {
-            if (_ctx.QuestionAnswerUsefulness.Find(questionId, userId) == null)
-            {
-                return false;
-            }
-            return true;
+   
+            return false;
         }
 
         /// <summary>
@@ -117,19 +87,14 @@ namespace server_api.Repository
         /// <returns></returns>
         public void AddUsefulnessScore(QuestionAnswerUsefulness review)
         {
+            FrequentlyAskedQuestion faq = _ctx.FrequentlyAskedQuestions.Find(review.FrequentlyAskedQuestion_Id);
+
             // Update existing user usefulness review.
-            if (UsefulnessScoreExists(review.FrequentlyAskedQuestion_Id, review.User_Id))
+            if (faq != null)
             {
-                var usefulnessReview = _ctx.QuestionAnswerUsefulness.Find(review.FrequentlyAskedQuestion_Id);
-                usefulnessReview = review;
+                faq.Usefulnesses.Add(review);
                 _ctx.SaveChanges();
             }
-            else
-            {
-                // Add user usefulness review.
-                _ctx.QuestionAnswerUsefulness.Add(review);
-                _ctx.SaveChanges();
-            } 
         }
 
         public void Dispose()

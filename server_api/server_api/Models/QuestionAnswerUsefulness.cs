@@ -17,17 +17,14 @@ namespace server_api.Models
             UserUsefulnessScore = score;
         }
 
-        [JsonProperty]
         [ForeignKey("User")]
         [Key]
         [Column(Order = 0)]
-        [Required]
         public string User_Id
         { get; set; }
 
         public virtual User User { get; set; }
 
-        [JsonProperty]
         [ForeignKey("FrequentlyAskedQuestion")]
         [Key]
         [Column(Order = 1)]
@@ -37,7 +34,6 @@ namespace server_api.Models
 
         public virtual FrequentlyAskedQuestion FrequentlyAskedQuestion { get; set; }
 
-        [JsonProperty]
         [Required]
         public int UserUsefulnessScore
         { get; set; }

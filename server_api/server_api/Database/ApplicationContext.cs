@@ -27,7 +27,6 @@ namespace server_api
 
         //Identity and Authorization
 
-
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<StationGroup> DeviceGroups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
@@ -38,9 +37,6 @@ namespace server_api
         public virtual DbSet<Keyword> EventKeywords { get; set; }
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }
         public virtual DbSet<ParameterAdjustment> ParameterAdjustments { get; set; }
-        public virtual DbSet<QuestionAnswerUsefulness> QuestionAnswerUsefulness { get; set; }
-
-
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

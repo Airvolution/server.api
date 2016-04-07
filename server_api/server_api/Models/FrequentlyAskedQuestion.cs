@@ -30,7 +30,7 @@ namespace server_api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string AnswerMarkDown { get; set; }
+        public string AnswerRichText { get; set; }
 
         /// <summary>
         /// 
@@ -42,6 +42,11 @@ namespace server_api.Models
         /// </summary
         public virtual ICollection<Keyword> Keywords { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual ICollection<QuestionAnswerUsefulness> Usefulnesses { get; set; } 
+        
         /// <summary>
         /// 
         /// </summary>

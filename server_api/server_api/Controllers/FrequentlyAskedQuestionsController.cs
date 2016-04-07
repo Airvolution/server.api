@@ -49,10 +49,10 @@ namespace server_api.Controllers
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        [Route("faq/view")]
+        [Route("faq/view/{questionId}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        public IHttpActionResult IncrementViewCount([FromBody]int questionId)
+        public IHttpActionResult IncrementViewCount([FromUri]int questionId)
         {
             // increment the total view count of a question.
             _faqRepo.IncrementViewCount(questionId);
@@ -64,11 +64,11 @@ namespace server_api.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [Route("faq/usefulnessReview")]
+        [Route("faq/usefulnessReview/{questionId}/{score}")]
         [Authorize]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        public async Task<IHttpActionResult> AddUserUsefulnessReview([FromBody]int questionId, int score)
+        public async Task<IHttpActionResult> AddUserUsefulnessReview([FromUri]int questionId, [FromUri]int score)
         {
             User user = await _userRepo.FindUserById(RequestContext.Principal.Identity.GetUserId());
             if (user == null)
