@@ -355,10 +355,15 @@
     <Compile Include="Migrations\201604051721182_StationGroups.Designer.cs">
       <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604070159406_UserPreferences.cs" />
+    <Compile Include="Migrations\201604070159406_UserPreferences.Designer.cs">
+      <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\RegisterGroup.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
+    <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Repository\GroupRepository.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
@@ -586,6 +591,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604051721182_StationGroups.resx">
       <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604070159406_UserPreferences.resx">
+      <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
