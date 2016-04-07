@@ -29,7 +29,7 @@ namespace server_api
 
 
         public virtual DbSet<DataPoint> DataPoints { get; set; }
-        public virtual DbSet<StationGroup> DeviceGroups { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
@@ -39,7 +39,6 @@ namespace server_api
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }
         public virtual DbSet<ParameterAdjustment> ParameterAdjustments { get; set; }
         public virtual DbSet<UserPreferences> UserPreferences { get; set; }
-
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -74,6 +73,13 @@ namespace server_api
                 .Map(t => t.ToTable("UserPreferencesParameters")
                         .MapLeftKey("UserPreferences_Id")
                         .MapRightKey("Parameter_Name", "Parameter_Unit"));
+
+            modelBuilder.Entity<Group>()
+                .HasMany(e=>e.Stations)
+                .WithMany(e=>e.Groups)
+                .Map(t => t.ToTable("StationGroups")
+                    .MapLeftKey("Group_Id")
+                    .MapRightKey("Station_Id"));
 
 
             // Configure Asp Net Identity Tables

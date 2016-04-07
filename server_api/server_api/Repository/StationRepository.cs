@@ -56,9 +56,9 @@ namespace server_api
             db = new ApplicationContext();
         }
 
-        public StationsRepository(ApplicationContext existingContext)
+        public StationsRepository(ApplicationContext ctx)
         {
-            db = existingContext;
+            db = ctx;
         }
 
         public bool StationExists(string stationID)
@@ -93,6 +93,13 @@ namespace server_api
             return db.Stations.Find(stationID);
         }
 
+        public IEnumerable<Station> GetMultipleStations(IEnumerable<string> ids)
+        {
+            var result = from station in db.Stations 
+                         where ids.Contains(station.Id) 
+                         select station;
+            return result;
+        }
 
         public Station GetNearestStation(double lat, double lng)
         {

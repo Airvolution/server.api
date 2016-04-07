@@ -13,7 +13,7 @@ namespace server_api.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201604061824245_UserPreferences"; }
+            get { return "201604070159406_UserPreferences"; }
         }
         
         string IMigrationMetadata.Source
