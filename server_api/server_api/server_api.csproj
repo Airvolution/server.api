@@ -362,8 +362,10 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\RegisterGroup.cs" />
+    <Compile Include="Models\ResetPassword.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
     <Compile Include="Models\UserPreferences.cs" />
+    <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Repository\GroupRepository.cs" />
     <Compile Include="Utilities\AQIFormula.cs" />
     <Compile Include="Models\BaseEntity.cs" />
@@ -380,7 +382,7 @@
     <Compile Include="Utilities\Pm25Aqi.cs" />
     <Compile Include="Models\Section.cs" />
     <Compile Include="Models\Station.cs" />
-    <Compile Include="Models\UserRegistration.cs" />
+    <Compile Include="Models\RegisterUser.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

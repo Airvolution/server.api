@@ -15,14 +15,22 @@ namespace server_api
         private ApplicationContext _ctx;
 
         private UserManager<User> _userManager;
+        private UserStore<User> _userStore;
 
         public UserRepository()
         {
             _ctx = new ApplicationContext();
-            _userManager = new UserManager<User>(new UserStore<User>(_ctx));
+            _userStore = new UserStore<User>(_ctx);
+            _userManager = new UserManager<User>(_userStore);
         }
 
-        public async Task<IdentityResult> RegisterUser(UserRegistration registration)
+        public UserRepository(ApplicationContext ctx)
+        {
+            _userStore = new UserStore<User>(ctx);
+            _userManager = new UserManager<User>(_userStore);
+        }
+
+        public async Task<IdentityResult> RegisterUser(RegisterUser registration)
         {
             User user = new User
             {
@@ -46,6 +54,46 @@ namespace server_api
             User user = await _userManager.FindAsync(userName, password);
 
             return user;
+        }
+
+        public User UpdateUser(string id, UserProfile user)
+        {
+            User existing =  _userManager.FindById(id);
+            if (existing == null)
+            {
+                return null;
+            }
+
+            existing.FirstName = user.FirstName;
+            existing.LastName = user.LastName;
+            existing.Email = user.Email;
+            existing.UserName = user.Email;
+            IdentityResult result = _userManager.Update(existing);
+            if (result.Succeeded)
+            {
+                return existing;
+            }
+            return null;
+
+        }
+
+        public async Task<bool> UpdateUserPassword(string id, string password)
+        {
+            User existing = await _userManager.FindByIdAsync(id);
+            if (existing == null)
+            {
+                return false;
+            }
+            string hash = _userManager.PasswordHasher.HashPassword(password);
+            await _userStore.SetPasswordHashAsync(existing,hash);
+            IdentityResult result = await _userManager.UpdateAsync(existing);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
+            
+
         }
 
         public Boolean IsValidPreferences(String mapMode, String downloadFormat)

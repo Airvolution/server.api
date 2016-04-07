@@ -64,6 +64,48 @@ namespace server_api.Controllers
         }
 
         [Authorize]
+        [Route("current")]
+        [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        public IHttpActionResult UpdateUserProfile([FromBody]UserProfile user)
+        {
+
+            User result = _repo.UpdateUser(RequestContext.Principal.Identity.GetUserId(), user);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return InternalServerError();
+            
+        }
+
+        [Authorize]
+        [Route("current/password")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        public async Task<IHttpActionResult> ResetUserPassword([FromBody]ResetPassword reset)
+        {
+            if (reset.Password == null)
+            {
+                return BadRequest();
+            }
+            bool succeeded  = await _repo.UpdateUserPassword(RequestContext.Principal.Identity.GetUserId(), reset.Password);
+            if (succeeded)
+            {
+                return Ok();
+            }
+            else
+            {
+                return InternalServerError();
+            }
+        }
+
+
+        [Authorize]
         [Route("preferences")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
@@ -109,7 +151,7 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        public async Task<IHttpActionResult> Register(UserRegistration userModel)
+        public async Task<IHttpActionResult> Register(RegisterUser userModel)
         {
             if (!ModelState.IsValid)
             {
