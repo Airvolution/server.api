@@ -47,7 +47,6 @@ namespace server_api
 
             };
             var result = await _userManager.CreateAsync(user, registration.Password);
-
             return result;
         }
 
@@ -81,15 +80,11 @@ namespace server_api
             return false;
         }
 
-        public async Task<bool> SendPasswordResetEmail(User user,string email)
+        public async Task<bool> SetEmailConfirmed(User user,bool confirmed)
         {
-            if (user == null)
-            {
-                return false;
-            }
-           
-            bool result = await MessageProvider.SendEmailToUserAsync(user, user.Email, email);
-            return result;
+            _userStore.SetEmailConfirmedAsync(user, confirmed);
+            await _userStore.UpdateAsync(user);
+            return true;
         }
         public async Task<User> FindUserById(string id)
         {
@@ -100,7 +95,12 @@ namespace server_api
         public async Task<User> FindUser(string userName, string password)
         {
             User user = await _userManager.FindAsync(userName, password);
+            return user;
+        }
 
+        public async Task<User> FindUserByEmail(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
             return user;
         }
 

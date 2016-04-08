@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Web.Hosting;
+using server_api.Providers;
 
 namespace server_api.Controllers
 {
@@ -73,12 +74,18 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        public IHttpActionResult UpdateUserProfile([FromBody]UserProfile user)
+        public async Task<IHttpActionResult> UpdateUserProfile([FromBody]UserProfile user)
         {
-
+            
             User result = _repo.UpdateUser(RequestContext.Principal.Identity.GetUserId(), user);
             if (result != null)
             {
+                if (user.Email != RequestContext.Principal.Identity.Name)
+                {
+                    User userAccount = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+                    string confirmationLink = "http://" + Request.RequestUri.Host + ":" + Request.RequestUri.Port + Url.Route("ConfirmEmail", new { code = userAccount.Id});
+                    SendEmailConfirmationEmail(userAccount, confirmationLink);
+                }
                 return Ok(result);
             }
             return InternalServerError();
@@ -109,13 +116,12 @@ namespace server_api.Controllers
             }
         }
 
-        [Authorize]
-        [Route("current/email")]
+        [Route("password/reset")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK)]
-        public async Task<IHttpActionResult> SendResetEmail()
+        public async Task<IHttpActionResult> SendResetEmail(string email)
         {
-            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            User user = await _repo.FindUserByEmail(email);
             if (user == null )
             {
                 return BadRequest();
@@ -126,10 +132,7 @@ namespace server_api.Controllers
                 return InternalServerError();
             }
             string callbackUrl = "http://"+Request.RequestUri.Host +":"+Request.RequestUri.Port + Url.Route("ResetPassword", new {code = code });
-            string emailPath = HostingEnvironment.MapPath("~/EmailTemplates/PasswordResetEmail.html");
-            string email = File.ReadAllText(emailPath);
-            email = SetEmailResetLink(email, callbackUrl);
-            bool succeeded = await _repo.SendPasswordResetEmail(user, email);
+            bool succeeded = await SendPasswordResetEmail(user,callbackUrl);
             if (succeeded)
             {
                 return Ok();
@@ -138,7 +141,7 @@ namespace server_api.Controllers
         }
 
         [AllowAnonymous]
-        [Route("password/reset", Name = "ResetPassword")]
+        [Route("reset", Name = "ResetPassword")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.Moved)]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
@@ -157,6 +160,31 @@ namespace server_api.Controllers
                 return BadRequest();
             }
             
+        }
+
+        [AllowAnonymous]
+        [Route("confirm/email",Name= "ConfirmEmail")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.Moved)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public async Task<IHttpActionResult> ConfirmPassword(string code)
+        {
+            User user = await _repo.FindUserById(code);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+           bool succeeded = await _repo.SetEmailConfirmed(user,true);
+           if (succeeded)
+           {
+               IHttpActionResult result;
+               HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Moved);
+               response.Headers.Location = new Uri("http://localhost:8084");
+               result = ResponseMessage(response);
+               return result;
+           }
+           return BadRequest();
         }
 
         [Authorize]
@@ -213,7 +241,13 @@ namespace server_api.Controllers
             {
                 return error;
             }
-            return Ok();
+            User user = await _repo.FindUserByEmail(userModel.Email);
+            if(user == null){
+                return InternalServerError();
+            }
+            string confirmationLink = "http://"+Request.RequestUri.Host+":"+Request.RequestUri.Port+ Url.Route("ConfirmEmail", new {code = user.Id });
+            SendEmailConfirmationEmail(user, confirmationLink);
+            return Ok(user);
         }
 
         protected override void Dispose(bool disposing)
@@ -224,15 +258,22 @@ namespace server_api.Controllers
             }
             base.Dispose(disposing);
         }
-        private string SetEmailLogo(String email, string imageUrl)
+
+        private async Task<bool> SendPasswordResetEmail(User user, string resetLink)
         {
-            string srcPattern = @"(<img\s+id=""airlogo""[\s\S]+?src="")(.*?)(""[\s\S]+?>)";
-            return Regex.Replace(email,srcPattern,"$1"+imageUrl+"$3");
-        }
-        private string SetEmailResetLink(string email,string callbackUrl)
-        {
+            string emailPath = HostingEnvironment.MapPath("~/EmailTemplates/PasswordResetEmail.html");
+            string email = File.ReadAllText(emailPath);
             string linkPattern = @"(<a\s+id=""passwordResetButton""[\s\S]+?href="")(.*?)(""[\s\S]+?>)";
-            return Regex.Replace(email, linkPattern, "$1" + callbackUrl + "$3");
+            email = Regex.Replace(email, linkPattern, "$1" + resetLink + "$3");
+            return await MessageProvider.SendEmailToUserAsync(user, "Reset your password", email);
+        }
+        private async Task<bool> SendEmailConfirmationEmail(User user,string confirmationLink)
+        {
+            string emailPath = HostingEnvironment.MapPath("~/EmailTemplates/ConfirmEmailEmail.html");
+            string email = File.ReadAllText(emailPath);
+            string linkPattern = @"(<a\s+id=""confirmEmailBtn""[\s\S]+?href="")(.*?)(""[\s\S]+?>)";
+            email = Regex.Replace(email, linkPattern, "$1" + confirmationLink + "$3");
+            return await MessageProvider.SendEmailToUserAsync(user, "Please confirm your email address", email);
         }
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {

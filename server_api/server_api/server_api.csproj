@@ -499,6 +499,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="EmailTemplates\ConfirmEmailEmail.html" />
     <Content Include="EmailTemplates\PasswordResetEmail.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
