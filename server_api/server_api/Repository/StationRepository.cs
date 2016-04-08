@@ -386,19 +386,22 @@ namespace server_api
             return true;
         }
 
-        public void AddThirdPartyDevice(string stationID)
+        public void AddThirdPartyDevice(UnregisteredStation station)
         {
-            UnregisteredStation station = db.UnregisteredStations.SingleOrDefault(s => s.Id == stationID);
-
-            // If station does not exist, add it.
-            if (ReferenceEquals(station, null))
+            Station existingStation = db.Stations.Where(s => station.Id == s.Id).FirstOrDefault();
+            if (!ReferenceEquals(existingStation, null))
             {
-                var newStation = new UnregisteredStation();
-                newStation.Id = stationID;
-                db.UnregisteredStations.Add(newStation);
+                return; // already registered
             }
 
-            // else, do nothing.
+            UnregisteredStation unregisteredStation = db.UnregisteredStations.Where(s => station.Id == s.Id).FirstOrDefault();
+            if (!ReferenceEquals(unregisteredStation, null))
+            {
+                return; // already in the unregistered list
+            }
+
+            db.UnregisteredStations.Add(station);
+            db.SaveChanges();
         }
 
         public void Dispose()
