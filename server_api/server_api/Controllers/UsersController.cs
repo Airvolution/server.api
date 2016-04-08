@@ -9,6 +9,10 @@ using server_api.Models;
 using Swashbuckle.Swagger.Annotations;
 using System.Net;
 using System.Web.Http.ModelBinding;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.IO;
+using System.Web.Hosting;
 
 namespace server_api.Controllers
 {
@@ -81,6 +85,7 @@ namespace server_api.Controllers
             
         }
 
+
         [Authorize]
         [Route("current/password")]
         [HttpPost]
@@ -104,6 +109,55 @@ namespace server_api.Controllers
             }
         }
 
+        [Authorize]
+        [Route("current/email")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public async Task<IHttpActionResult> SendResetEmail()
+        {
+            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null )
+            {
+                return BadRequest();
+            }
+            string code = await _repo.GeneratePasswordResetCode(user);
+            if (code == "")
+            {
+                return InternalServerError();
+            }
+            string callbackUrl = "http://"+Request.RequestUri.Host +":"+Request.RequestUri.Port + Url.Route("ResetPassword", new {code = code });
+            string emailPath = HostingEnvironment.MapPath("~/EmailTemplates/PasswordResetEmail.html");
+            string email = File.ReadAllText(emailPath);
+            email = SetEmailResetLink(email, callbackUrl);
+            bool succeeded = await _repo.SendPasswordResetEmail(user, email);
+            if (succeeded)
+            {
+                return Ok();
+            }
+            return InternalServerError();
+        }
+
+        [AllowAnonymous]
+        [Route("password/reset", Name = "ResetPassword")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.Moved)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public async Task<IHttpActionResult> ResetPassword(string code)
+        {
+            if (await _repo.ResetPasswordWithCode(code))
+            {
+                IHttpActionResult result;
+                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Moved);
+                response.Headers.Location = new Uri("http://localhost:8084");
+                result = ResponseMessage(response);
+                return result;
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
+        }
 
         [Authorize]
         [Route("preferences")]
@@ -117,8 +171,8 @@ namespace server_api.Controllers
             {
                 return Unauthorized();
             }
-
-            return Ok(_repo.GetUserPreferences(user.Id));
+            UserPreferences prefs = _repo.GetUserPreferences(user.Id);
+            return Ok(prefs);
         }
 
         [Authorize]
@@ -127,22 +181,18 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
-        public async Task<IHttpActionResult> UpdateUserPreferences([FromUri]String mapMode, [FromUri]String downloadFormat, [FromUri]String stationId, [FromUri]String[] parameters)
+        public async Task<IHttpActionResult> UpdateUserPreferences([FromBody]UserPreferences prefs)
         {
             // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
+            prefs.User_Id = RequestContext.Principal.Identity.GetUserId();
 
-            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
-            if (user == null)
-            {
-                return Unauthorized();
-            }
 
-            if (!_repo.IsValidPreferences(mapMode, downloadFormat))
+            if (!_repo.IsValidPreferences(prefs.DefaultMapMode, prefs.DefaultDownloadFormat))
             {
                 return BadRequest();
             }
 
-            var updatedPreferences = _repo.UpdateUserPreferences(user.Id, mapMode, downloadFormat, stationId, parameters);
+            var updatedPreferences = _repo.UpdateUserPreferences(prefs);
             return Ok(updatedPreferences);
         }
 
@@ -174,7 +224,16 @@ namespace server_api.Controllers
             }
             base.Dispose(disposing);
         }
-
+        private string SetEmailLogo(String email, string imageUrl)
+        {
+            string srcPattern = @"(<img\s+id=""airlogo""[\s\S]+?src="")(.*?)(""[\s\S]+?>)";
+            return Regex.Replace(email,srcPattern,"$1"+imageUrl+"$3");
+        }
+        private string SetEmailResetLink(string email,string callbackUrl)
+        {
+            string linkPattern = @"(<a\s+id=""passwordResetButton""[\s\S]+?href="")(.*?)(""[\s\S]+?>)";
+            return Regex.Replace(email, linkPattern, "$1" + callbackUrl + "$3");
+        }
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {
             if (result == null)

@@ -25,13 +25,6 @@
         [JsonIgnore]
         public string Parameter_Name { get; set; }
 
-        [Key]
-        [ForeignKey("Parameter")]
-        [Column(Order = 2)]
-        [StringLength(30)]
-        [JsonIgnore]
-        public string Parameter_Unit { get; set; }
-
         public double ScaleFactor { get; set; }
         public double ShiftFactor { get; set; }
 

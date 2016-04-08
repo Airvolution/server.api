@@ -7,6 +7,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using server_api;
 using server_api.Models;
+using server_api.Providers;
+using System.Runtime.Remoting.Contexts;
+using Microsoft.Owin.Security.DataProtection;
+using Microsoft.AspNet.Identity.Owin;
+using System.Collections.ObjectModel;
 
 namespace server_api
 {
@@ -20,12 +25,15 @@ namespace server_api
         public UserRepository()
         {
             _ctx = new ApplicationContext();
+            var provider = new DpapiDataProtectionProvider("Airvolution");
             _userStore = new UserStore<User>(_ctx);
             _userManager = new UserManager<User>(_userStore);
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<User>(provider.Create("EmailCode"));
         }
 
         public UserRepository(ApplicationContext ctx)
         {
+            _ctx = ctx;
             _userStore = new UserStore<User>(ctx);
             _userManager = new UserManager<User>(_userStore);
         }
@@ -43,6 +51,46 @@ namespace server_api
             return result;
         }
 
+        public async Task<string> GeneratePasswordResetCode(User user)
+        {
+            if (user == null)
+            {
+                return "";
+            }
+            string orginialCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+            ResetPasswordCode shortCode = new ResetPasswordCode(user, orginialCode);
+            _ctx.ResetPasswordCodes.Add(shortCode);
+            _ctx.SaveChanges();
+            return shortCode.Id;
+        }
+
+        public async Task<bool> ResetPasswordWithCode(string resetCode)
+        {
+            ResetPasswordCode code = _ctx.ResetPasswordCodes.Find(resetCode);
+            if (code == null)
+            {
+                return false;
+            }
+            var result = await _userManager.ResetPasswordAsync(code.User_Id, code.ResetCode, "CleanAir");
+            if (result.Succeeded)
+            {
+                _ctx.ResetPasswordCodes.Remove(code);
+                _ctx.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> SendPasswordResetEmail(User user,string email)
+        {
+            if (user == null)
+            {
+                return false;
+            }
+           
+            bool result = await MessageProvider.SendEmailToUserAsync(user, user.Email, email);
+            return result;
+        }
         public async Task<User> FindUserById(string id)
         {
             User user = await _userManager.FindByIdAsync(id);
@@ -129,37 +177,36 @@ namespace server_api
                                         .Where(u => id.Equals(u.User_Id))
                                         .FirstOrDefault();
 
+            if (data == null) { return CreateDefaultUserPreferences(id); }
+
             return data;
         }
 
-        public UserPreferences UpdateUserPreferences(String id, String mapMode, String downloadFormat, String stationId, String[] parameters)
+        public UserPreferences CreateDefaultUserPreferences(string user_id){
+            UserPreferences prefs = new UserPreferences();
+            prefs.User_Id = user_id;
+            prefs.DefaultMapMode = "LIGHT";
+            prefs.DefaultDownloadFormat = "CSV";
+            _ctx.UserPreferences.Add(prefs);
+            _ctx.SaveChanges();
+            return prefs;
+        }
+
+        public UserPreferences UpdateUserPreferences(UserPreferences prefs)
         {
             var existingPreferences = _ctx.UserPreferences.Include("DefaultParameters")
-                                            .Single(u => id == u.User_Id);
+                                            .Single(u => prefs.User_Id == u.User_Id);
 
-            existingPreferences.DefaultMapMode = mapMode;
-            existingPreferences.DefaultDownloadFormat = downloadFormat;
-            existingPreferences.DefaultStationId = stationId;
+            existingPreferences.DefaultMapMode = prefs.DefaultMapMode;
+            existingPreferences.DefaultDownloadFormat = prefs.DefaultDownloadFormat;
+            existingPreferences.DefaultStationId = prefs.DefaultStationId;
 
-            _ctx.Configuration.AutoDetectChangesEnabled = false;
-            existingPreferences.DefaultParameters.Clear();
+            // Find matching parameters
+            IEnumerable<string> paramNames = from tmp in prefs.DefaultParameters select tmp.Name;
+            IEnumerable<Parameter> defaultParams = from parameter in _ctx.Parameters where paramNames.Contains(parameter.Name)  select parameter;
 
-            // Find the existing parameters in station
-            Dictionary<string, Parameter> existingParameters = new Dictionary<string, Parameter>();
-            foreach (Parameter p in _ctx.Parameters.ToList())
-            {
-                existingParameters.Add(p.Name + " " + p.Unit, p);
-            }
+            existingPreferences.DefaultParameters = new Collection<Parameter>(defaultParams.ToList());
 
-            // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
-            foreach (var p in parameters)
-            {
-                Parameter newParameter = null;
-                existingParameters.TryGetValue(p, out newParameter);
-                existingPreferences.DefaultParameters.Add(newParameter);
-            }
-
-            _ctx.Configuration.AutoDetectChangesEnabled = true;
             _ctx.SaveChanges();
 
             return existingPreferences;
