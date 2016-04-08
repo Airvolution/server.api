@@ -70,17 +70,25 @@ namespace server_api
             return true;
         }
 
-        public Station CreateStation(Station station)
+        public Object CreateStation(Station station)
         {
             if (!StationExists(station.Id))
             {
+                UnregisteredStation unregisteredStation = db.UnregisteredStations.Where(s => station.Id == s.Id).FirstOrDefault();
+                if (ReferenceEquals(unregisteredStation, null))
+                {
+                    return "Unknown station. Please make sure it is powered on and connected to a network.";
+                }
+
+                // remove from the unregistered table and move to registered table
+                db.UnregisteredStations.Remove(unregisteredStation); 
                 db.Stations.Add(station);
                 db.SaveChanges();
                 return db.Stations.Find(station.Id);
             }
             else
             {
-                return null;
+                return "Station already registered. But hey, we love you too!";
             }            
         }
 

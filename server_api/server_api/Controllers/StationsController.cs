@@ -122,15 +122,13 @@ namespace server_api.Controllers
             }
 
             newStation.User_Id = user.Id;
-            Station result = _stationRepo.CreateStation(newStation);
-            if (result != null)
+            Object result = _stationRepo.CreateStation(newStation);
+            if (result is Station)
             {
                 return Ok(result);
             }
-            else
-            {
-                return BadRequest("Station already exists.");
-            }
+
+            return BadRequest(result as string);
         }
 
         /// <summary>
