@@ -366,6 +366,14 @@
     <Compile Include="Migrations\201604051651503_DeleteSerialNumber.Designer.cs">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604051721182_StationGroups.cs" />
+    <Compile Include="Migrations\201604051721182_StationGroups.Designer.cs">
+      <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604070159406_UserPreferences.cs" />
+    <Compile Include="Migrations\201604070159406_UserPreferences.Designer.cs">
+      <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201604070219067_FaqDetails.cs" />
     <Compile Include="Migrations\201604070219067_FaqDetails.Designer.cs">
       <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
@@ -615,6 +623,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604051651503_DeleteSerialNumber.resx">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604051721182_StationGroups.resx">
+      <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604070159406_UserPreferences.resx">
+      <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604070219067_FaqDetails.resx">
       <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
