@@ -34,11 +34,10 @@ namespace server_api
         public UserRepository(ApplicationContext ctx)
         {
             _ctx = ctx;
-            _userStore = new UserStore<User>(ctx);
+            _userStore = new UserStore<User>(_ctx);
             _userManager = new UserManager<User>(_userStore);
         }
-
-        public async Task<IdentityResult> RegisterUser(RegisterUser registration)
+        public async Task<IdentityResult> RegisterUser(UserRegistration registration)
         {
             User user = new User
             {

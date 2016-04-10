@@ -23,11 +23,34 @@ namespace server_api.Controllers
     [RoutePrefix("users")]
     public class UsersController : ApiController
     {
-        private UserRepository _repo = null;
+        private UserRepository _repo;
+        private StationsRepository _stationsRepo;
 
         public UsersController()
         {
-            _repo = new UserRepository();
+            ApplicationContext ctx = new ApplicationContext();
+            _repo = new UserRepository(ctx);
+            _stationsRepo = new StationsRepository(ctx);
+        }
+
+        [AllowAnonymous]
+        [Route("register")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        public async Task<IHttpActionResult> Register(UserRegistration userModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            IdentityResult result = await _repo.RegisterUser(userModel);
+            IHttpActionResult error = GetErrorResult(result);
+            if (error != null)
+            {
+                return error;
+            }
+            return Ok();
         }
 
         /// <summary>
@@ -248,6 +271,17 @@ namespace server_api.Controllers
             string confirmationLink = "http://"+Request.RequestUri.Host+":"+Request.RequestUri.Port+ Url.Route("ConfirmEmail", new {code = user.Id });
             SendEmailConfirmationEmail(user, confirmationLink);
             return Ok(user);
+        }
+
+        [Authorize]
+        [Route("stations")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Station>))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        public IHttpActionResult GetUserStations()
+        {
+            var stations = _stationsRepo.GetUserStations(RequestContext.Principal.Identity.GetUserId());
+            return Ok(stations);
         }
 
         protected override void Dispose(bool disposing)
