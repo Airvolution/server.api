@@ -143,6 +143,9 @@
     <Reference Include="AttributeRouting.Web.Mvc">
       <HintPath>..\packages\AttributeRouting.3.5.6\lib\net40\AttributeRouting.Web.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="CommonMark">
+      <HintPath>..\packages\CommonMark.NET.0.11.0\lib\net45\CommonMark.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -363,13 +366,9 @@
     <Compile Include="Migrations\201604051651503_DeleteSerialNumber.Designer.cs">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201604051721182_StationGroups.cs" />
-    <Compile Include="Migrations\201604051721182_StationGroups.Designer.cs">
-      <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604070159406_UserPreferences.cs" />
-    <Compile Include="Migrations\201604070159406_UserPreferences.Designer.cs">
-      <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
+    <Compile Include="Migrations\201604070219067_FaqDetails.cs" />
+    <Compile Include="Migrations\201604070219067_FaqDetails.Designer.cs">
+      <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201604072128034_PasswordReset.cs" />
     <Compile Include="Migrations\201604072128034_PasswordReset.Designer.cs">
@@ -384,6 +383,7 @@
     <Compile Include="Models\RegisterGroup.cs" />
     <Compile Include="Models\ResetPassword.cs" />
     <Compile Include="Models\ResetPasswordCode.cs" />
+    <Compile Include="Models\QuestionAnswerUsefulness.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
     <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Models\UserProfile.cs" />
@@ -616,11 +616,8 @@
     <EmbeddedResource Include="Migrations\201604051651503_DeleteSerialNumber.resx">
       <DependentUpon>201604051651503_DeleteSerialNumber.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604051721182_StationGroups.resx">
-      <DependentUpon>201604051721182_StationGroups.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604070159406_UserPreferences.resx">
-      <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604070219067_FaqDetails.resx">
+      <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604072128034_PasswordReset.resx">
       <DependentUpon>201604072128034_PasswordReset.cs</DependentUpon>
