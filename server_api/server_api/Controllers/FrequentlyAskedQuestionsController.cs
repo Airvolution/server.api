@@ -18,7 +18,7 @@ namespace server_api.Controllers
     {
         private FrequentlyAskedQuestionRepository _faqRepo;
         private UserRepository _userRepo;
-
+         
         /// <summary>
         /// 
         /// </summary>
