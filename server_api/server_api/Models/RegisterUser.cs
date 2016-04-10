@@ -6,7 +6,7 @@ using System.Web;
 
 namespace server_api.Models
 {
-    public class UserRegistration
+    public class RegisterUser
     {
         [StringLength(100)]
         public string Email { get; set; }

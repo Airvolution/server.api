@@ -9,6 +9,11 @@ using server_api.Models;
 using Swashbuckle.Swagger.Annotations;
 using System.Net;
 using System.Web.Http.ModelBinding;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.IO;
+using System.Web.Hosting;
+using server_api.Providers;
 
 namespace server_api.Controllers
 {
@@ -64,6 +69,125 @@ namespace server_api.Controllers
         }
 
         [Authorize]
+        [Route("current")]
+        [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        public async Task<IHttpActionResult> UpdateUserProfile([FromBody]UserProfile user)
+        {
+            
+            User result = _repo.UpdateUser(RequestContext.Principal.Identity.GetUserId(), user);
+            if (result != null)
+            {
+                if (user.Email != RequestContext.Principal.Identity.Name)
+                {
+                    User userAccount = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+                    string confirmationLink = "http://" + Request.RequestUri.Host + ":" + Request.RequestUri.Port + Url.Route("ConfirmEmail", new { code = userAccount.Id});
+                    SendEmailConfirmationEmail(userAccount, confirmationLink);
+                }
+                return Ok(result);
+            }
+            return InternalServerError();
+            
+        }
+
+
+        [Authorize]
+        [Route("current/password")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        public async Task<IHttpActionResult> ResetUserPassword([FromBody]ResetPassword reset)
+        {
+            if (reset.Password == null)
+            {
+                return BadRequest();
+            }
+            bool succeeded  = await _repo.UpdateUserPassword(RequestContext.Principal.Identity.GetUserId(), reset.Password);
+            if (succeeded)
+            {
+                return Ok();
+            }
+            else
+            {
+                return InternalServerError();
+            }
+        }
+
+        [Route("password/reset")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public async Task<IHttpActionResult> SendResetEmail(string email)
+        {
+            User user = await _repo.FindUserByEmail(email);
+            if (user == null )
+            {
+                return BadRequest();
+            }
+            string code = await _repo.GeneratePasswordResetCode(user);
+            if (code == "")
+            {
+                return InternalServerError();
+            }
+            string callbackUrl = "http://"+Request.RequestUri.Host +":"+Request.RequestUri.Port + Url.Route("ResetPassword", new {code = code });
+            bool succeeded = await SendPasswordResetEmail(user,callbackUrl);
+            if (succeeded)
+            {
+                return Ok();
+            }
+            return InternalServerError();
+        }
+
+        [AllowAnonymous]
+        [Route("reset", Name = "ResetPassword")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.Moved)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public async Task<IHttpActionResult> ResetPassword(string code)
+        {
+            if (await _repo.ResetPasswordWithCode(code))
+            {
+                IHttpActionResult result;
+                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Moved);
+                response.Headers.Location = new Uri("http://localhost:8084");
+                result = ResponseMessage(response);
+                return result;
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
+        }
+
+        [AllowAnonymous]
+        [Route("confirm/email",Name= "ConfirmEmail")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.Moved)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public async Task<IHttpActionResult> ConfirmPassword(string code)
+        {
+            User user = await _repo.FindUserById(code);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+           bool succeeded = await _repo.SetEmailConfirmed(user,true);
+           if (succeeded)
+           {
+               IHttpActionResult result;
+               HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Moved);
+               response.Headers.Location = new Uri("http://localhost:8084");
+               result = ResponseMessage(response);
+               return result;
+           }
+           return BadRequest();
+        }
+
+        [Authorize]
         [Route("preferences")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
@@ -75,8 +199,8 @@ namespace server_api.Controllers
             {
                 return Unauthorized();
             }
-
-            return Ok(_repo.GetUserPreferences(user.Id));
+            UserPreferences prefs = _repo.GetUserPreferences(user.Id);
+            return Ok(prefs);
         }
 
         [Authorize]
@@ -85,22 +209,18 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(UserPreferences))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
-        public async Task<IHttpActionResult> UpdateUserPreferences([FromUri]String mapMode, [FromUri]String downloadFormat, [FromUri]String stationId, [FromUri]String[] parameters)
+        public async Task<IHttpActionResult> UpdateUserPreferences([FromBody]UserPreferences prefs)
         {
             // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
+            prefs.User_Id = RequestContext.Principal.Identity.GetUserId();
 
-            User user = await _repo.FindUserById(RequestContext.Principal.Identity.GetUserId());
-            if (user == null)
-            {
-                return Unauthorized();
-            }
 
-            if (!_repo.IsValidPreferences(mapMode, downloadFormat))
+            if (!_repo.IsValidPreferences(prefs.DefaultMapMode, prefs.DefaultDownloadFormat))
             {
                 return BadRequest();
             }
 
-            var updatedPreferences = _repo.UpdateUserPreferences(user.Id, mapMode, downloadFormat, stationId, parameters);
+            var updatedPreferences = _repo.UpdateUserPreferences(prefs);
             return Ok(updatedPreferences);
         }
 
@@ -109,7 +229,7 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        public async Task<IHttpActionResult> Register(UserRegistration userModel)
+        public async Task<IHttpActionResult> Register(RegisterUser userModel)
         {
             if (!ModelState.IsValid)
             {
@@ -121,7 +241,13 @@ namespace server_api.Controllers
             {
                 return error;
             }
-            return Ok();
+            User user = await _repo.FindUserByEmail(userModel.Email);
+            if(user == null){
+                return InternalServerError();
+            }
+            string confirmationLink = "http://"+Request.RequestUri.Host+":"+Request.RequestUri.Port+ Url.Route("ConfirmEmail", new {code = user.Id });
+            SendEmailConfirmationEmail(user, confirmationLink);
+            return Ok(user);
         }
 
         protected override void Dispose(bool disposing)
@@ -133,6 +259,22 @@ namespace server_api.Controllers
             base.Dispose(disposing);
         }
 
+        private async Task<bool> SendPasswordResetEmail(User user, string resetLink)
+        {
+            string emailPath = HostingEnvironment.MapPath("~/EmailTemplates/PasswordResetEmail.html");
+            string email = File.ReadAllText(emailPath);
+            string linkPattern = @"(<a\s+id=""passwordResetButton""[\s\S]+?href="")(.*?)(""[\s\S]+?>)";
+            email = Regex.Replace(email, linkPattern, "$1" + resetLink + "$3");
+            return await MessageProvider.SendEmailToUserAsync(user, "Reset your password", email);
+        }
+        private async Task<bool> SendEmailConfirmationEmail(User user,string confirmationLink)
+        {
+            string emailPath = HostingEnvironment.MapPath("~/EmailTemplates/ConfirmEmailEmail.html");
+            string email = File.ReadAllText(emailPath);
+            string linkPattern = @"(<a\s+id=""confirmEmailBtn""[\s\S]+?href="")(.*?)(""[\s\S]+?>)";
+            email = Regex.Replace(email, linkPattern, "$1" + confirmationLink + "$3");
+            return await MessageProvider.SendEmailToUserAsync(user, "Please confirm your email address", email);
+        }
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {
             if (result == null)

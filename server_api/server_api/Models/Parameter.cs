@@ -20,8 +20,6 @@ namespace server_api.Models
         [StringLength(30)]
         public string Name { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
         [StringLength(30)]
         public string Unit { get; set; }
 
