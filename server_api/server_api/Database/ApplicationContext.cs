@@ -38,6 +38,7 @@ namespace server_api
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }
         public virtual DbSet<ParameterAdjustment> ParameterAdjustments { get; set; }
         public virtual DbSet<UserPreferences> UserPreferences { get; set; }
+        public virtual DbSet<ResetPasswordCode> ResetPasswordCodes { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -46,7 +47,7 @@ namespace server_api
             modelBuilder.Entity<Parameter>()
                 .HasMany(e => e.DataPoints)
                 .WithRequired(e => e.Parameter)
-                .HasForeignKey(e => new { e.Parameter_Name, e.Parameter_Unit })
+                .HasForeignKey(e => new { e.Parameter_Name})
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Station>()
@@ -71,7 +72,7 @@ namespace server_api
                 .WithMany(e => e.UserPreferences)
                 .Map(t => t.ToTable("UserPreferencesParameters")
                         .MapLeftKey("UserPreferences_Id")
-                        .MapRightKey("Parameter_Name", "Parameter_Unit"));
+                        .MapRightKey("Parameter_Name"));
 
             modelBuilder.Entity<Group>()
                 .HasMany(e=>e.Stations)
