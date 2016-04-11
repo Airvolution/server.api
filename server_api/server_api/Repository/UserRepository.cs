@@ -37,7 +37,7 @@ namespace server_api
             _userStore = new UserStore<User>(_ctx);
             _userManager = new UserManager<User>(_userStore);
         }
-        public async Task<IdentityResult> RegisterUser(UserRegistration registration)
+        public async Task<IdentityResult> RegisterUser(RegisterUser registration)
         {
             User user = new User
             {

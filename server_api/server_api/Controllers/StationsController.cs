@@ -31,6 +31,47 @@ namespace server_api.Controllers
             _userRepo = new UserRepository();
         }
 
+        [Route("stations/{id}")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Station))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult GetStation(string id)
+        {
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
+            {
+                return NotFound();
+            }
+            return Ok(station);
+        }
+
+        [Authorize]
+        [Route("stations/{id}")]
+        [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Station))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public IHttpActionResult UpdateStation(string id, [FromBody]Station stationUpdate)
+        {
+
+            if (stationUpdate.Id != id)
+            {
+                stationUpdate.Id = id;
+            }
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
+            {
+                return NotFound();
+            }
+            
+            if (station.User_Id != RequestContext.Principal.Identity.GetUserId())
+            {
+                return Unauthorized();
+            }
+            var result = _stationRepo.UpdateStation(station, stationUpdate);
+            return Ok(result);
+        }
 
         /// <summary>
         /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 

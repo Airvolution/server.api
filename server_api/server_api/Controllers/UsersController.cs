@@ -33,25 +33,6 @@ namespace server_api.Controllers
             _stationsRepo = new StationsRepository(ctx);
         }
 
-        [AllowAnonymous]
-        [Route("register")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
-        [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        public async Task<IHttpActionResult> Register(UserRegistration userModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            IdentityResult result = await _repo.RegisterUser(userModel);
-            IHttpActionResult error = GetErrorResult(result);
-            if (error != null)
-            {
-                return error;
-            }
-            return Ok();
-        }
 
         /// <summary>
         ///   This is a testing method. 
