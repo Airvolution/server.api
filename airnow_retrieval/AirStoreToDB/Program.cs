@@ -68,7 +68,8 @@ namespace AirStoreToDB
                 // Go through each unregisteredStation
                 foreach (AirNowDataPoint stationInfo in unregisteredStationsData)
                 {
-                    PingStationIDToUnregisteredTable(stationInfo.FullAQSCode);
+                    string routes = "hi";
+                    PingStationIDToUnregisteredTable(routes, stationInfo.FullAQSCode);
                     // Ping the station to the UnregisterdStations table
                     // Register the station
                 }
@@ -124,24 +125,24 @@ namespace AirStoreToDB
                             Console.WriteLine("\tStationId: " + station.id.Value);
                             existingStations.Add(station.id.Value);
                         }
-                        return existingStations;
+                        return;
                     }
                     else
                     {
                         Log("Error: Unable to download existing stations.");
-                        return null;
+                        return;
                     }
                 }
             }
             catch (TaskCanceledException e)
             {
                 Log("A task canceled exception occurred: " + e.Message);
-                return null;
+                return;
             }
             catch (Exception e)
             {
                 Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
-                return null;
+                return;
             }
         }
 
