@@ -14,6 +14,7 @@ using System.Globalization;
 using Swashbuckle.Swagger.Annotations;
 using Microsoft.AspNet.Identity;
 using server_api.Utilities;
+using System.Threading.Tasks;
 
 namespace server_api.Controllers
 {
@@ -153,18 +154,22 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.BadRequest, Type = typeof(string))]
         [Route("stations/register")]
         [HttpPost]
-        public IHttpActionResult RegisterUserStation([FromBody]Station newStation)
+        public async Task<IHttpActionResult> RegisterUserStation([FromBody]Station newStation)
         {
-            var db = new ApplicationContext();
+            User user = await _userRepo.FindUserById(RequestContext.Principal.Identity.GetUserId());
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
-            newStation.User_Id = RequestContext.Principal.Identity.GetUserId() as string;
-            Station result = _stationRepo.CreateStation(newStation);
-            if (result != null)
+            newStation.User_Id = user.Id;
+            Object result = _stationRepo.CreateStation(newStation);
+            if (result is Station)
             {
                 return Ok(result);
-            }else{
-                return BadRequest("Station already exists.");
             }
+
+            return BadRequest(result as string);
         }
 
         /// <summary>
@@ -450,10 +455,9 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("stations/ping")]
         [HttpPost]
-        public IHttpActionResult Ping([FromBody]string DeviceID)
+        public IHttpActionResult Ping([FromBody]UnregisteredStation station)
         {
-             // If the station MAC adderss does not exist, add it.
-            _stationRepo.AddThirdPartyDevice(DeviceID);
+            _stationRepo.AddThirdPartyDevice(station);
 
             return Ok();
         }

@@ -64,17 +64,25 @@ namespace server_api
             return true;
         }
 
-        public Station CreateStation(Station station)
+        public Object CreateStation(Station station)
         {
             if (!StationExists(station.Id))
             {
+                UnregisteredStation unregisteredStation = db.UnregisteredStations.Where(s => station.Id == s.Id).FirstOrDefault();
+                if (ReferenceEquals(unregisteredStation, null))
+                {
+                    return "Unknown station. Please make sure it is powered on and connected to a network.";
+                }
+
+                // remove from the unregistered table and move to registered table
+                db.UnregisteredStations.Remove(unregisteredStation); 
                 db.Stations.Add(station);
                 db.SaveChanges();
                 return db.Stations.Find(station.Id);
             }
             else
             {
-                return null;
+                return "Station already registered. But hey, we love you too!";
             }            
         }
 
@@ -401,19 +409,22 @@ namespace server_api
             return true;
         }
 
-        public void AddThirdPartyDevice(string stationID)
+        public void AddThirdPartyDevice(UnregisteredStation station)
         {
-            UnregisteredStation station = db.UnregisteredStations.SingleOrDefault(s => s.Id == stationID);
-
-            // If station does not exist, add it.
-            if (ReferenceEquals(station, null))
+            Station existingStation = db.Stations.Where(s => station.Id == s.Id).FirstOrDefault();
+            if (!ReferenceEquals(existingStation, null))
             {
-                var newStation = new UnregisteredStation();
-                newStation.Id = stationID;
-                db.UnregisteredStations.Add(newStation);
+                return; // already registered
             }
 
-            // else, do nothing.
+            UnregisteredStation unregisteredStation = db.UnregisteredStations.Where(s => station.Id == s.Id).FirstOrDefault();
+            if (!ReferenceEquals(unregisteredStation, null))
+            {
+                return; // already in the unregistered list
+            }
+
+            db.UnregisteredStations.Add(station);
+            db.SaveChanges();
         }
 
         public void Dispose()
