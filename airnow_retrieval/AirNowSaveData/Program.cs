@@ -130,9 +130,7 @@ namespace AirNowSaveData
             }
 
             string backupFolder = "\\AirNow Backup Directory";
-            CreateBackupDirectoryIfNotExists(backupFolder);
-          
-            Console.ReadLine();
+            CreateBackupDirectoryIfNotExists(backupFolder);         
 
             DateTime startDateAndTime = options.StartDate;
             DateTime endDateAndTime = options.EndDate;
