@@ -86,6 +86,21 @@ namespace server_api
             }            
         }
 
+        public Station UpdateStation(Station station, Station update)
+        {
+            station.Agency = update.Agency;
+            station.City = update.City;
+            station.Indoor = update.Indoor;
+            station.Location = update.Location;
+            station.Name = update.Name;
+            station.Postal = update.Postal;
+            station.Purpose = update.Purpose;
+            station.State = update.State;
+            station.Type = update.Type;
+            db.SaveChanges();
+            return station;
+        }
+
         public Station GetStation(string stationID)
         {
             if (!StationExists(stationID))
@@ -103,6 +118,13 @@ namespace server_api
             return result;
         }
 
+        public IEnumerable<Station> GetUserStations(string user_id)
+        {
+            var result = from station in db.Stations
+                         where station.User_Id == user_id
+                         select station;
+            return result;
+        }
         public Station GetNearestStation(double lat, double lng)
         {
             var result = (from outer in
