@@ -81,6 +81,12 @@ namespace server_api
                     .MapLeftKey("Group_Id")
                     .MapRightKey("Station_Id"));
 
+            modelBuilder.Entity<FrequentlyAskedQuestion>()
+                .HasMany(e => e.UserReviews)
+                .WithRequired(e => e.FrequentlyAskedQuestion)
+                .HasForeignKey(e => e.FrequentlyAskedQuestion_Id)
+                .WillCascadeOnDelete(true);
+
 
             // Configure Asp Net Identity Tables
             modelBuilder.Entity<User>().ToTable("Users");

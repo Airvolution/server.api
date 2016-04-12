@@ -8,13 +8,13 @@ using System.Web;
 
 namespace server_api.Models
 {
-    public class QuestionAnswerUsefulness
+    public class QuestionAnswerUserReview
     {
-        public QuestionAnswerUsefulness(string userId, int questionId, int score)
+        public QuestionAnswerUserReview(string userId, int questionId, int score)
         {
             User_Id = userId;
             FrequentlyAskedQuestion_Id = questionId;
-            UserUsefulnessScore = score;
+            UserReviewScore = score;
         }
 
         [ForeignKey("User")]
@@ -35,7 +35,7 @@ namespace server_api.Models
         public virtual FrequentlyAskedQuestion FrequentlyAskedQuestion { get; set; }
 
         [Required]
-        public int UserUsefulnessScore
+        public int UserReviewScore
         { get; set; }
     }
 }

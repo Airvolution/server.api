@@ -85,14 +85,14 @@ namespace server_api.Repository
         /// <param name="userId"></param>
         /// <param name="score"></param>
         /// <returns></returns>
-        public void AddUsefulnessScore(QuestionAnswerUsefulness review)
+        public void AddUsefulnessScore(QuestionAnswerUserReview review)
         {
             FrequentlyAskedQuestion faq = _ctx.FrequentlyAskedQuestions.Find(review.FrequentlyAskedQuestion_Id);
 
             // Update existing user usefulness review.
             if (faq != null)
             {
-                faq.Usefulnesses.Add(review);
+                faq.UserReviews.Add(review);
                 _ctx.SaveChanges();
             }
         }

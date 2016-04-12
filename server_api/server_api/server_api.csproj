@@ -374,10 +374,6 @@
     <Compile Include="Migrations\201604070159406_UserPreferences.Designer.cs">
       <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201604070219067_FaqDetails.cs" />
-    <Compile Include="Migrations\201604070219067_FaqDetails.Designer.cs">
-      <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201604072128034_PasswordReset.cs" />
     <Compile Include="Migrations\201604072128034_PasswordReset.Designer.cs">
       <DependentUpon>201604072128034_PasswordReset.cs</DependentUpon>
@@ -386,12 +382,16 @@
     <Compile Include="Migrations\201604080103350_RemoveParameterUnitKey.Designer.cs">
       <DependentUpon>201604080103350_RemoveParameterUnitKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604120105003_FaqDetails.cs" />
+    <Compile Include="Migrations\201604120105003_FaqDetails.Designer.cs">
+      <DependentUpon>201604120105003_FaqDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\RegisterGroup.cs" />
     <Compile Include="Models\ResetPassword.cs" />
     <Compile Include="Models\ResetPasswordCode.cs" />
-    <Compile Include="Models\QuestionAnswerUsefulness.cs" />
+    <Compile Include="Models\QuestionAnswerUserReview.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
     <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Models\UserProfile.cs" />
@@ -630,14 +630,14 @@
     <EmbeddedResource Include="Migrations\201604070159406_UserPreferences.resx">
       <DependentUpon>201604070159406_UserPreferences.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604070219067_FaqDetails.resx">
-      <DependentUpon>201604070219067_FaqDetails.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604072128034_PasswordReset.resx">
       <DependentUpon>201604072128034_PasswordReset.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604080103350_RemoveParameterUnitKey.resx">
       <DependentUpon>201604080103350_RemoveParameterUnitKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604120105003_FaqDetails.resx">
+      <DependentUpon>201604120105003_FaqDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

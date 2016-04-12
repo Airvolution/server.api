@@ -76,7 +76,7 @@ namespace server_api.Controllers
                 return Unauthorized();
             }
 
-            var review = new QuestionAnswerUsefulness(user.Id, questionId, score);
+            var review = new QuestionAnswerUserReview(user.Id, questionId, score);
             _faqRepo.AddUsefulnessScore(review);
 
             return Ok();

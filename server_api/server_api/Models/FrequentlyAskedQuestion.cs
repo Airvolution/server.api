@@ -45,7 +45,7 @@ namespace server_api.Models
         /// <summary>
         /// 
         /// </summary>
-        public virtual ICollection<QuestionAnswerUsefulness> Usefulnesses { get; set; } 
+        public virtual ICollection<QuestionAnswerUserReview> UserReviews { get; set; } 
         
         /// <summary>
         /// 
@@ -55,6 +55,6 @@ namespace server_api.Models
         /// <summary>
         /// 
         /// </summary>
-        public int TotaUserlUsefulnessScore { get; set; }
+        public int TotaUserReviewScore { get; set; }
     }
 }
