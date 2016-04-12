@@ -24,7 +24,6 @@ namespace server_api.Migrations
         
         public override void Down()
         {
-            AddColumn("dbo.FrequentlyAskedQuestions", "Answer", c => c.String());
             DropForeignKey("dbo.QuestionAnswerUserReviews", "FrequentlyAskedQuestion_Id", "dbo.FrequentlyAskedQuestions");
             DropForeignKey("dbo.QuestionAnswerUserReviews", "User_Id", "dbo.Users");
             DropIndex("dbo.QuestionAnswerUserReviews", new[] { "FrequentlyAskedQuestion_Id" });
