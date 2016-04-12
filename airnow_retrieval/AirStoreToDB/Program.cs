@@ -76,7 +76,7 @@ namespace AirStoreToDB
                 int count = 0;
                 // Go through each file in the directory and add datapoints into our dictionary
                 Dictionary<string, List<AirNowDataPoint>> optimizedPoints = new Dictionary<string, List<AirNowDataPoint>>();
-                foreach (FileInfo fi in backupDirectory.GetFiles())
+                foreach (FileInfo fi in backupDirectory.GetFiles().Reverse())
                 {
                     // If data has not already been extracted
                     if (count < 64)
