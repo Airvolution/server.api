@@ -25,9 +25,10 @@ namespace server_api
         public UserRepository()
         {
             _ctx = new ApplicationContext();
-            var provider = new DpapiDataProtectionProvider("Airvolution");
+            
             _userStore = new UserStore<User>(_ctx);
             _userManager = new UserManager<User>(_userStore);
+            var provider = new DpapiDataProtectionProvider("Airvolution");
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<User>(provider.Create("EmailCode"));
         }
 
@@ -36,6 +37,8 @@ namespace server_api
             _ctx = ctx;
             _userStore = new UserStore<User>(_ctx);
             _userManager = new UserManager<User>(_userStore);
+            var provider = new DpapiDataProtectionProvider("Airvolution");
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<User>(provider.Create("EmailCode"));
         }
         public async Task<IdentityResult> RegisterUser(RegisterUser registration)
         {
