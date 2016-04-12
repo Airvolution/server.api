@@ -336,12 +336,12 @@ namespace server_api
             if (sDaily != null)
             {
                 // Average
-                var tempAvgAQI = (from d in db.DataPoints
+                var tempAQI = (from d in db.DataPoints
                                  where d.Station_Id == dataSetStation.Id && d.Time >= today && d.Time < nextDay && d.AQI > 0
-                                 select d.AQI).Average();
+                                 select d.AQI);
 
-                if (tempAvgAQI != null)
-                    sDaily.AvgAQI = tempAvgAQI;
+                if (tempAQI.Count() > 0)
+                    sDaily.AvgAQI = tempAQI.Average();
 
                 // Min
                 DataPoint min = (from d in db.DataPoints
@@ -349,9 +349,12 @@ namespace server_api
                                  orderby d.AQI ascending
                                  select d).FirstOrDefault();
 
-                sDaily.MinAQI = min.AQI;
-                sDaily.MinCategory = min.Category;
-                sDaily.MinParameter = min.Parameter;
+                if (min != null)
+                {
+                    sDaily.MinAQI = min.AQI;
+                    sDaily.MinCategory = min.Category;
+                    sDaily.MinParameter = min.Parameter;
+                }                
 
                 // Max
                 DataPoint max = (from d in db.DataPoints
@@ -359,9 +362,12 @@ namespace server_api
                                  orderby d.AQI descending
                                  select d).FirstOrDefault();
 
-                sDaily.MaxAQI = max.AQI;
-                sDaily.MaxCategory = max.Category;
-                sDaily.MaxParameter = max.Parameter;
+                if (max != null)
+                {
+                    sDaily.MaxAQI = max.AQI;
+                    sDaily.MaxCategory = max.Category;
+                    sDaily.MaxParameter = max.Parameter;
+                }                
             }
 
             var latestPoints = (from points in db.DataPoints
