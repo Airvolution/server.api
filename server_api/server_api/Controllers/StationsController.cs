@@ -159,7 +159,7 @@ namespace server_api.Controllers
 
             foreach(DataPoint dataPoint in dataSet)
             {
-                if(dataPoint.Category == 0 && dataPoint.AQI == 0)
+                if(dataPoint.Category == 0 && dataPoint.AQI == 0 || dataPoint.AQI == -999)
                 {
                     Tuple<int, int> result = null;
 
