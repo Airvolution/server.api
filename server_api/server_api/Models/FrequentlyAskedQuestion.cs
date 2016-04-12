@@ -14,6 +14,7 @@ namespace server_api.Models
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required]
         public int Id { get; set; }
 
         /// <summary>
@@ -24,7 +25,12 @@ namespace server_api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string Answer { get; set; }
+        public string AnswerPlainText { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string AnswerRichText { get; set; }
 
         /// <summary>
         /// 
@@ -35,5 +41,20 @@ namespace server_api.Models
         /// 
         /// </summary
         public virtual ICollection<Keyword> Keywords { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual ICollection<QuestionAnswerUserReview> UserReviews { get; set; } 
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public int ViewCount { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int TotalUserReviewScore { get; set; }
     }
 }

@@ -27,13 +27,13 @@ namespace server_api
 
         //Identity and Authorization
 
-
         public virtual DbSet<DataPoint> DataPoints { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
         public virtual DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        public virtual DbSet<QuestionAnswerUserReview> QuestionAnswerUserReviews { get; set; }
         public virtual DbSet<Section> Sections { get; set; }
         public virtual DbSet<Keyword> EventKeywords { get; set; }
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }
@@ -81,6 +81,12 @@ namespace server_api
                 .Map(t => t.ToTable("StationGroups")
                     .MapLeftKey("Group_Id")
                     .MapRightKey("Station_Id"));
+
+            modelBuilder.Entity<FrequentlyAskedQuestion>()
+                .HasMany(e => e.UserReviews)
+                .WithRequired(e => e.FrequentlyAskedQuestion)
+                .HasForeignKey(e => e.FrequentlyAskedQuestion_Id)
+                .WillCascadeOnDelete(true);
 
 
             // Configure Asp Net Identity Tables
