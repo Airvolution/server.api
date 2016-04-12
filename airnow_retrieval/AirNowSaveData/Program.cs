@@ -33,21 +33,21 @@ namespace AirNowSaveData
             {
                 // Parse Start Date
                 Match matchStart = rgx.Match(args[0]);
-                startDate = parseMatchToDateTime(matchStart);
+                startDate = ParseMatchToDateTime(matchStart);
             }
             if (args.Length == 2)
             {
                 Match matchStart = rgx.Match(args[0]);
                 Match matchEnd = rgx.Match(args[1]);
-                startDate = parseMatchToDateTime(matchStart);
-                endDate = parseMatchToDateTime(matchEnd);                
+                startDate = ParseMatchToDateTime(matchStart);
+                endDate = ParseMatchToDateTime(matchEnd);                
             }
 
             return new Options(startDate, endDate);
         }
 
         /// <exception cref="ArgumentOutOfRangeException">Invalid datetime input.</exception>
-        private static DateTime parseMatchToDateTime(Match match) 
+        private static DateTime ParseMatchToDateTime(Match match) 
         {
             int second = 0;
             int minute = 0;
@@ -177,7 +177,37 @@ namespace AirNowSaveData
 
         private static Object thisLock = new Object();
         static string logDirectory = "C:\\dev\\airnow_retrieval\\log\\";
+        static string backupDirectory = "..\\..\\";
         static string logFileName = "AirNowSaveData.txt";
+
+
+        /// <summary>
+        /// This function creates an output file with the given string msg as its contents at the
+        /// location of the logDirectory
+        /// </summary>
+        /// <param name="fileName">The file name</param>
+        /// <param name="contents">The string contents of the file</param>
+        private static void CreateOutputFile(String fileName, String contents)
+        {
+            string jsonFilePath = backupDirectory + "AirNow Backup Directory\\" + fileName;
+
+            lock (thisLock)
+            {
+                if (!File.Exists(jsonFilePath))
+                {
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(jsonFilePath, true))
+                    {
+                        file.Write(contents);
+                        file.Dispose();
+                    }
+                }
+                else
+                {
+                    Log(fileName + " already created.");
+                }
+
+            }
+        }
 
         
         /// <summary>
@@ -199,34 +229,7 @@ namespace AirNowSaveData
             }
         }
 
-        /// <summary>
-        /// This function creates an output file with the given string msg as its contents at the
-        /// location of the logDirectory
-        /// </summary>
-        /// <param name="fileName">The file name</param>
-        /// <param name="contents">The string contents of the file</param>
-        private static void CreateOutputFile(String fileName, String contents)
-        {
-            string jsonFilePath = logDirectory + "json_backups\\" + fileName;
-
-            lock (thisLock)
-            {
-                if (!File.Exists(jsonFilePath))
-                {
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(jsonFilePath, true))
-                    {
-                        file.Write(contents);
-                        file.Dispose();
-                    }
-                }
-                else
-                {
-                    Log(fileName + " already created.");
-                }
-                
-            }
-        }
-
+        
         /// <summary>
         /// Pulls the data from the AirNow API and saves it to a json file
         /// </summary>
