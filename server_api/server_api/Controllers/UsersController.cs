@@ -23,12 +23,16 @@ namespace server_api.Controllers
     [RoutePrefix("users")]
     public class UsersController : ApiController
     {
-        private UserRepository _repo = null;
+        private UserRepository _repo;
+        private StationsRepository _stationsRepo;
 
         public UsersController()
         {
-            _repo = new UserRepository();
+            ApplicationContext ctx = new ApplicationContext();
+            _repo = new UserRepository(ctx);
+            _stationsRepo = new StationsRepository(ctx);
         }
+
 
         /// <summary>
         ///   This is a testing method. 
@@ -248,6 +252,17 @@ namespace server_api.Controllers
             string confirmationLink = "http://"+Request.RequestUri.Host+":"+Request.RequestUri.Port+ Url.Route("ConfirmEmail", new {code = user.Id });
             SendEmailConfirmationEmail(user, confirmationLink);
             return Ok(user);
+        }
+
+        [Authorize]
+        [Route("stations")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Station>))]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        public IHttpActionResult GetUserStations()
+        {
+            var stations = _stationsRepo.GetUserStations(RequestContext.Principal.Identity.GetUserId());
+            return Ok(stations);
         }
 
         protected override void Dispose(bool disposing)
