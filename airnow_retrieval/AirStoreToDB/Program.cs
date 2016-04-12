@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity.Spatial;
+using System.Threading;
 
 namespace AirStoreToDB
 {
@@ -38,8 +39,6 @@ namespace AirStoreToDB
 
         static void Main(string[] args)
         {
-            LogInvalidStation(DateTime.UtcNow.ToLongDateString());
-
             string backupFolder = "\\..\\..\\..\\AirNowSaveData\\AirNow Backup Directory";
             DirectoryInfo backupDirectory = GetBackupDirectoryIfExists(backupFolder);
 
@@ -80,7 +79,7 @@ namespace AirStoreToDB
                 foreach (FileInfo fi in backupDirectory.GetFiles())
                 {
                     // If data has not already been extracted
-                    if (count < 100)
+                    if (count < 64)
                     {
                         if (!alreadyLoggedFiles.Contains(fi.FullName))
                         {
@@ -120,18 +119,32 @@ namespace AirStoreToDB
                 currentRegisteredStations = GetExistingStationsFromDB(routeForStationLocations);
 
                 string addDataPointsRoute = "stations/data";
+                int tamper = 0;
+
                 // Go through each station in the optimized points and add all of its points
                 foreach (List<AirNowDataPoint> singleStationDataPoints in optimizedPoints.Values)
                 {
                     if (currentRegisteredStations.Contains(singleStationDataPoints.First().IntlAQSCode))
                     {
                         // Add new datapoints                    
-                        AddDataPoints(addDataPointsRoute, singleStationDataPoints);
+                        //AddDataPoints(addDataPointsRoute, singleStationDataPoints);
+
+                        // Multithreaded
+                        Thread newThread = new Thread(() => AddDataPoints(addDataPointsRoute, singleStationDataPoints));
+                        Console.WriteLine("Starting new thread..." + singleStationDataPoints.First().IntlAQSCode);
+                        newThread.Start();
+                        tamper += 1;
+                        if (tamper > 30)
+                        {
+                            newThread.Join();
+                            Console.WriteLine("Threads joined...");
+                            tamper = 0;
+                        }
                     }
                     
                 }
 
-
+                Log("Finished");
                 Console.ReadLine();
 
             }
@@ -202,7 +215,7 @@ namespace AirStoreToDB
                     }
                     else
                     {
-                        Log("Error: Unable to add DataPoint!");
+                        Log("Error: Unable to add DataPoint for: " + listOfPoints.First().IntlAQSCode);
                         return;
                     }
                 }
