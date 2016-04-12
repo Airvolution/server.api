@@ -11,6 +11,11 @@ namespace server_api.Models
         [Required]
         [StringLength(100, MinimumLength = 1)]
         [DataType(DataType.Password)]
+        public string CurrentPassword { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 1)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

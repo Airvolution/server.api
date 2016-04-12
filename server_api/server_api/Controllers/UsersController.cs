@@ -105,6 +105,12 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         public async Task<IHttpActionResult> ResetUserPassword([FromBody]ResetPassword reset)
         {
+            User user = await _repo.FindUser(RequestContext.Principal.Identity.GetUserName(), reset.CurrentPassword);
+            bool authorized = user != null && user.Id.Equals(RequestContext.Principal.Identity.GetUserId());
+            if (!authorized)
+            {
+                return Unauthorized();
+            }
             if (reset.Password == null)
             {
                 return BadRequest();
@@ -123,7 +129,7 @@ namespace server_api.Controllers
         [Route("password/reset")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK)]
-        public async Task<IHttpActionResult> SendResetEmail(string email)
+        public async Task<IHttpActionResult> SendResetEmail([FromUri]string email)
         {
             User user = await _repo.FindUserByEmail(email);
             if (user == null )
