@@ -21,7 +21,7 @@ namespace AirNowSaveData
         public static Options ParseArguments(string[] args)
         {
             if (args.Length == 0)
-                return new Options(DateTime.UtcNow.AddHours(-2), DateTime.UtcNow);
+                return new Options(DateTime.UtcNow.AddHours(-3), DateTime.UtcNow);
 
             String pattern = @"(\d\d\d\d)[-:]?(\d\d)?[-:]?(\d\d)?[-:]?(\d\d)?[-:]?(\d\d)?[-:]?(\d\d)?";
             Regex rgx = new Regex(pattern);
