@@ -20,6 +20,11 @@ namespace server_api.Migrations
                 .ForeignKey("dbo.FrequentlyAskedQuestions", t => t.FrequentlyAskedQuestion_Id, cascadeDelete: true)
                 .Index(t => t.User_Id)
                 .Index(t => t.FrequentlyAskedQuestion_Id);
+
+            RenameColumn("dbo.FrequentlyAskedQuestions", "Answer", "AnswerPlainText");
+            AddColumn("dbo.FrequentlyAskedQuestions", "AnswerRichText", c => c.String());
+            AddColumn("dbo.FrequentlyAskedQuestions", "ViewCount", c => c.Int(nullable: false));
+            AddColumn("dbo.FrequentlyAskedQuestions", "TotaUserReviewScore", c => c.Int(nullable: false));
         }
         
         public override void Down()

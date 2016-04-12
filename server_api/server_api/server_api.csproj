@@ -382,9 +382,9 @@
     <Compile Include="Migrations\201604080103350_RemoveParameterUnitKey.Designer.cs">
       <DependentUpon>201604080103350_RemoveParameterUnitKey.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201604120105003_FaqDetails.cs" />
-    <Compile Include="Migrations\201604120105003_FaqDetails.Designer.cs">
-      <DependentUpon>201604120105003_FaqDetails.cs</DependentUpon>
+    <Compile Include="Migrations\201604120342187_FaqDetails.cs" />
+    <Compile Include="Migrations\201604120342187_FaqDetails.Designer.cs">
+      <DependentUpon>201604120342187_FaqDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
@@ -636,8 +636,8 @@
     <EmbeddedResource Include="Migrations\201604080103350_RemoveParameterUnitKey.resx">
       <DependentUpon>201604080103350_RemoveParameterUnitKey.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604120105003_FaqDetails.resx">
-      <DependentUpon>201604120105003_FaqDetails.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604120342187_FaqDetails.resx">
+      <DependentUpon>201604120342187_FaqDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

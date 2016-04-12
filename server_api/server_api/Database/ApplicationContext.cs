@@ -33,6 +33,7 @@ namespace server_api
         public virtual DbSet<Parameter> Parameters { get; set; }
         public virtual DbSet<Daily> Dailies { get; set; }
         public virtual DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        public virtual DbSet<QuestionAnswerUserReview> QuestionAnswerUserReviews { get; set; }
         public virtual DbSet<Section> Sections { get; set; }
         public virtual DbSet<Keyword> EventKeywords { get; set; }
         public virtual DbSet<UnregisteredStation> UnregisteredStations { get; set; }

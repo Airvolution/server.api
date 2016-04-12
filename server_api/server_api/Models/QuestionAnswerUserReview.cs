@@ -10,6 +10,9 @@ namespace server_api.Models
 {
     public class QuestionAnswerUserReview
     {
+        public QuestionAnswerUserReview()
+        { }
+
         public QuestionAnswerUserReview(string userId, int questionId, int score)
         {
             User_Id = userId;
@@ -28,7 +31,6 @@ namespace server_api.Models
         [ForeignKey("FrequentlyAskedQuestion")]
         [Key]
         [Column(Order = 1)]
-        [Required]
         public int FrequentlyAskedQuestion_Id
         { get; set; }
 
