@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using server_api.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,7 @@ using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity.Spatial;
 
 namespace AirStoreToDB
 {
@@ -20,6 +22,7 @@ namespace AirStoreToDB
         private static Object thisLock = new Object();
         static string logDirectory = "C:\\dev\\airnow_retrieval\\log\\";
         static string logFileName = "AirStoreToDB.txt";
+        static string loggedFilesName = "LoggedFiles.txt";
         static string invalidStationsFileName = "InvalidStations.txt";
         static string oAuthToken;
 
@@ -35,14 +38,12 @@ namespace AirStoreToDB
 
         static void Main(string[] args)
         {
-            LogInvalidStation("TEST");
-
+            LogInvalidStation(DateTime.UtcNow.ToLongDateString());
 
             string backupFolder = "\\..\\..\\..\\AirNowSaveData\\AirNow Backup Directory";
             DirectoryInfo backupDirectory = GetBackupDirectoryIfExists(backupFolder);
 
             // Login
-
             string loginRoute = "users/login";
             oAuthToken = Login(loginRoute, "AirNow", "AirNowAdmin123");
             
@@ -55,7 +56,7 @@ namespace AirStoreToDB
                 HashSet<AirNowDataPoint> unregisteredStationsData = new HashSet<AirNowDataPoint>();
 
                 // Get set of currentRegisteredStations in DB to check later
-                string routeForStationLocations = "stations/locations?latMin=-91&latMax=91&lngMin=-181&lngMax=181";
+                string routeForStationLocations = "stations/list";
                 currentRegisteredStations = GetExistingStationsFromDB(routeForStationLocations);
 
                 // read in invalid stations
@@ -68,14 +69,30 @@ namespace AirStoreToDB
                     return;
                 }
 
+                // Get import a hashset of all of the files that have already been logged
+                HashSet<string> alreadyLoggedFiles = new HashSet<string>();
+                
+                ExtractAlreadyLoggedFiles(logDirectory + loggedFilesName, alreadyLoggedFiles);
+
+                int count = 0;
                 // Go through each file in the directory and add datapoints into our dictionary
                 Dictionary<string, List<AirNowDataPoint>> optimizedPoints = new Dictionary<string, List<AirNowDataPoint>>();
                 foreach (FileInfo fi in backupDirectory.GetFiles())
                 {
                     // If data has not already been extracted
-                        // Extract Data
-                        Log("Extracting: " + fi.FullName);
-                        ExtractDataFromNewFilesInDictionary(fi.FullName, optimizedPoints, currentRegisteredStations, unregisteredStations, unregisteredStationsData);
+                    if (count < 100)
+                    {
+                        if (!alreadyLoggedFiles.Contains(fi.FullName))
+                        {
+                            // Extract Data
+                            //Log("Extracting: " + fi.FullName);
+                            ExtractDataFromNewFilesInDictionary(fi.FullName, optimizedPoints, currentRegisteredStations, unregisteredStations, unregisteredStationsData);
+                            LogLoggedFiles(fi.FullName);
+                            count++;
+                        }
+                        else
+                            Log("Already logged file: " + fi.FullName);
+                    }
                 }
 
                 string routeForPingingStations = "stations/ping";
@@ -98,11 +115,20 @@ namespace AirStoreToDB
                         }                        
                     }                                        
                 }
-                    
+
+                
+                currentRegisteredStations = GetExistingStationsFromDB(routeForStationLocations);
+
+                string addDataPointsRoute = "stations/data";
                 // Go through each station in the optimized points and add all of its points
                 foreach (List<AirNowDataPoint> singleStationDataPoints in optimizedPoints.Values)
                 {
-                    // Add new datapoints
+                    if (currentRegisteredStations.Contains(singleStationDataPoints.First().IntlAQSCode))
+                    {
+                        // Add new datapoints                    
+                        AddDataPoints(addDataPointsRoute, singleStationDataPoints);
+                    }
+                    
                 }
 
 
@@ -115,6 +141,257 @@ namespace AirStoreToDB
             }
 
             Console.ReadLine();
+        }
+
+        
+
+        private static void AddDataPoints(string route, List<AirNowDataPoint> listOfPoints)
+        {
+            string datePattern = "yyyy-MM-ddTHH:mm";
+
+            List<DataPoint> tempDataPoints = new List<DataPoint>();
+
+            // Convert AirNodDataPoints to DataPoints
+            foreach (AirNowDataPoint airNowDataPoint in listOfPoints)
+            {
+
+                DataPoint item = new DataPoint
+                {
+                    Time = DateTime.ParseExact(airNowDataPoint.UTC, datePattern, CultureInfo.InvariantCulture),
+                    Station = new Station
+                    {
+                        Id = airNowDataPoint.IntlAQSCode
+                    },
+                    Parameter = new Parameter
+                    {
+                        Name = airNowDataPoint.Parameter,
+                        Unit = airNowDataPoint.Unit
+                    },
+                    Indoor = false,
+                    Value = airNowDataPoint.Value,
+                    Category = airNowDataPoint.Category,
+                    AQI = airNowDataPoint.AQI
+                };
+
+                item.Location = CreatePoint(airNowDataPoint.Latitude, airNowDataPoint.Longitude, 4326);
+                tempDataPoints.Add(item);
+            };
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+
+                    client.BaseAddress = new Uri(hostUrl);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    //client.PostAsync(route,,,)
+
+                    var formatter = new JsonMediaTypeFormatter();
+                    formatter.SerializerSettings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    };
+                    Task<HttpResponseMessage> responsePost = client.PostAsync(route, tempDataPoints.ToArray(), formatter);
+                    if (responsePost.Result.IsSuccessStatusCode)
+                    {
+                        Log("DataPoints successfully added for: " + listOfPoints.First().IntlAQSCode);
+                        return;
+                    }
+                    else
+                    {
+                        Log("Error: Unable to add DataPoint!");
+                        return;
+                    }
+                }
+            }
+            catch (TaskCanceledException e)
+            {
+                Log("A task canceled exception occurred: " + e.Message);
+                return;
+            }
+            catch (Exception e)
+            {
+                Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
+                return;
+            }
+        }
+
+        public static DbGeography CreatePoint(double lat, double lon, int srid)
+        {
+            string wkt = String.Format("POINT({0} {1})", lon, lat);
+
+            return DbGeography.PointFromText(wkt, srid);
+        }
+
+        private static void ExtractAlreadyLoggedFiles(string fileName, HashSet<string> alreadyLoggedFiles)
+        {
+            // Read in file
+            string fileContents = ReadInFile(fileName);
+
+            if (fileContents != null)
+            {
+                // Parse the file
+                string[] files = fileContents.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+                foreach (string fi in files)
+                {
+                    alreadyLoggedFiles.Add(fi);
+                }
+
+            }
+            else
+            {
+                Log("Failed to read in file: " + fileName);
+            }
+        }
+
+        private static void ExtractInvalidStations(string fileName, HashSet<string> currentRegisteredStations)
+        {
+            // Read in file
+            string fileContents = ReadInFile(fileName);
+
+            if (fileContents != null)
+            {
+                // Parse the file
+                string[] stations = fileContents.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+                foreach (string station in stations)
+                {
+                    currentRegisteredStations.Add(station);
+                }
+
+            }
+            else
+            {
+                Log("Failed to read in file: " + fileName);
+            }
+        }
+
+        private static void ExtractDataFromNewFilesInDictionary(string fileName,
+                                                                Dictionary<string, List<AirNowDataPoint>> dataPointsByStation,
+                                                                HashSet<string> currentRegisteredStations,
+                                                                HashSet<string> unregisteredStations,
+                                                                HashSet<AirNowDataPoint> unregisteredStationsData)
+        {
+            // Read in file
+            string json = ReadInFile(fileName);
+
+            if (json != null)
+            {
+                // Parse the file
+                AirNowDataPoint[] dataPoints = JsonConvert.DeserializeObject<AirNowDataPoint[]>(json);
+
+                // Combining calls from the same stations into a single call
+                foreach (AirNowDataPoint dataPoint in dataPoints)
+                {
+                    if (!currentRegisteredStations.Contains(dataPoint.IntlAQSCode))
+                    {
+                        if (!unregisteredStations.Contains(dataPoint.IntlAQSCode))
+                        {
+                            unregisteredStations.Add(dataPoint.IntlAQSCode);
+                            unregisteredStationsData.Add(dataPoint);
+                        }
+                    }
+
+                    if (dataPointsByStation.ContainsKey(dataPoint.IntlAQSCode))
+                    {
+                        List<AirNowDataPoint> empty = null;
+                        dataPointsByStation.TryGetValue(dataPoint.IntlAQSCode, out empty);
+                        empty.Add(dataPoint);
+                    }
+                    else
+                    {
+                        List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
+                        newList.Add(dataPoint);
+                        dataPointsByStation.Add(dataPoint.IntlAQSCode, newList);
+                    }
+                }
+
+            }
+            else
+            {
+                Log("Failed to Upload: " + fileName);
+            }
+        }
+
+        private static DirectoryInfo GetBackupDirectoryIfExists(string backupFolder)
+        {
+            DirectoryInfo projectDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+            // Look up directory containing backup files
+            Console.WriteLine(projectDirectory.FullName + backupFolder);
+
+            if (Directory.Exists(projectDirectory.FullName + backupFolder))
+            {
+                Log("Backup directory (" + projectDirectory.FullName + ") found.");
+                return new DirectoryInfo(projectDirectory.FullName + backupFolder);
+            }
+            else
+            {
+                Log("Backup directory (" + projectDirectory.FullName + ") does not exist.");
+                return null;
+            }
+        }
+
+        private static HashSet<string> GetExistingStationsFromDB(string route)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(hostUrl);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    //client.PostAsync(route,,,)
+
+                    var formatter = new JsonMediaTypeFormatter();
+                    formatter.SerializerSettings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    };
+
+                    Task<HttpResponseMessage> responseGet = client.GetAsync(route);
+
+                    if (responseGet.Result.IsSuccessStatusCode)
+                    {
+                        HttpResponseMessage httpMsg = responseGet.Result;
+                        Task<string> content = httpMsg.Content.ReadAsStringAsync();
+                        string jsonAsString = content.Result;
+
+                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString, jsonSettings);
+                        Console.WriteLine(httpMsg.StatusCode + ": DataPoints Added");
+
+                        HashSet<string> existingStations = new HashSet<string>();
+
+                        foreach (var station in responseObject)
+                        {
+                            Console.WriteLine("\tStationId: " + station.id.Value);
+                            existingStations.Add(station.id.Value);
+                        }
+                        return existingStations;
+                    }
+                    else
+                    {
+                        Log("Error: Unable to download existing stations.");
+                        return null;
+                    }
+                }
+            }
+            catch (TaskCanceledException e)
+            {
+                Log("A task canceled exception occurred: " + e.Message);
+                return null;
+            }
+            catch (Exception e)
+            {
+                Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
+                return null;
+            }
         }
 
         private static GoogleGeo GetGoogleInfo(string route, double lat, double lng, string stationId)
@@ -200,9 +477,67 @@ namespace AirStoreToDB
             catch (WebException e)
             {
                 Log("Google lookup failed.");
+                Log(e.Message);
             }
 
             return result;        
+        }
+
+        /// <summary>
+        /// This function writes the string (msg) that is passed into the argument into a file at the 
+        /// location of the logDirectory.
+        /// </summary>
+        /// <param name="msg">A message to log</param>
+        private static void Log(String msg)
+        {
+            Console.WriteLine(msg);
+
+            lock (thisLock)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + logFileName, true))
+                {
+                    file.WriteLine(DateTime.UtcNow.ToString() + ": " + msg);
+                    file.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function writes the string (msg) that is passed into the argument into a file at the 
+        /// location of the logDirectory.
+        /// </summary>
+        /// <param name="stationId">A message to log</param>
+        private static void LogInvalidStation(String stationId)
+        {
+            Console.WriteLine(stationId);
+
+            lock (thisLock)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + invalidStationsFileName, true))
+                {
+                    file.WriteLine(stationId);
+                    file.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function writes the string (msg) that is passed into the argument into a file at the 
+        /// location of the logDirectory.
+        /// </summary>
+        /// <param name="stationId">A message to log</param>
+        private static void LogLoggedFiles(String filename)
+        {
+            Console.WriteLine(filename);
+
+            lock (thisLock)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + loggedFilesName, true))
+                {
+                    file.WriteLine(filename);
+                    file.Dispose();
+                }
+            }
         }
 
         private static string Login(string route, string email, string password)
@@ -272,6 +607,55 @@ namespace AirStoreToDB
 
         }
 
+        private static bool PingStationIDToUnregisteredTable(string route, string stationId)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(hostUrl);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    //client.PostAsync(route,,,)
+
+                    var formatter = new JsonMediaTypeFormatter();
+                    formatter.SerializerSettings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    };
+
+                    UnregisteredStation unregisteredStation = new UnregisteredStation();
+                    unregisteredStation.Id = stationId;
+
+                    Task<HttpResponseMessage> responsePost = client.PostAsync(route, unregisteredStation, formatter);
+
+                    if (responsePost.Result.IsSuccessStatusCode)
+                    {
+                        HttpResponseMessage httpMsg = responsePost.Result;
+                        Console.WriteLine(httpMsg.StatusCode + ": Unregisterd station pinged");
+                        return true;
+                    }
+                    else
+                    {
+                        Log("Error: Unable to ping unregistered station!");
+                        return false;
+                    }
+                }
+            }
+            catch (TaskCanceledException e)
+            {
+                Log("A task canceled exception occurred: " + e.Message);
+                return false;
+            }
+            catch (Exception e)
+            {
+                Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
+                return false;
+            }
+        }
+
         private static void RegisterStation(string route, AirNowDataPoint stationInfo, GoogleGeo geoInfo)
         {
             try
@@ -332,182 +716,6 @@ namespace AirStoreToDB
             }
         }
 
-        private static bool PingStationIDToUnregisteredTable(string route, string stationId)
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(hostUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    //client.PostAsync(route,,,)
-
-                    var formatter = new JsonMediaTypeFormatter();
-                    formatter.SerializerSettings = new JsonSerializerSettings
-                    {
-                        Formatting = Formatting.Indented,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    };
-
-                    UnregisteredStation unregisteredStation = new UnregisteredStation();
-                    unregisteredStation.Id = stationId;
-
-                    Task<HttpResponseMessage> responsePost = client.PostAsync(route, unregisteredStation, formatter);
-
-                    if (responsePost.Result.IsSuccessStatusCode)
-                    {
-                        HttpResponseMessage httpMsg = responsePost.Result;
-                        Console.WriteLine(httpMsg.StatusCode + ": Unregisterd station pinged");
-                        return true;
-                    }
-                    else
-                    {
-                        Log("Error: Unable to ping unregistered station!");
-                        return false;
-                    }
-                }
-            }
-            catch (TaskCanceledException e)
-            {
-                Log("A task canceled exception occurred: " + e.Message);
-                return false;
-            }
-            catch (Exception e)
-            {
-                Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
-                return false;
-            }
-        }
-
-        private static HashSet<string> GetExistingStationsFromDB(string route)
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {                    
-                    client.BaseAddress = new Uri(hostUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    //client.PostAsync(route,,,)
-
-                    var formatter = new JsonMediaTypeFormatter();
-                    formatter.SerializerSettings = new JsonSerializerSettings
-                    {
-                        Formatting = Formatting.Indented,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    };
-
-                    Task<HttpResponseMessage> responseGet = client.GetAsync(route);
-
-                    if (responseGet.Result.IsSuccessStatusCode)
-                    {                        
-                        HttpResponseMessage httpMsg = responseGet.Result;
-                        Task<string> content = httpMsg.Content.ReadAsStringAsync();
-                        string jsonAsString = content.Result;
-
-                        dynamic responseObject = JsonConvert.DeserializeObject(jsonAsString, jsonSettings);
-                        Console.WriteLine(httpMsg.StatusCode + ": DataPoints Added");
-
-                        HashSet<string> existingStations = new HashSet<string>();
-                        
-                        foreach (var station in responseObject)
-                        {
-                            Console.WriteLine("\tStationId: " + station.id.Value);
-                            existingStations.Add(station.id.Value);
-                        }
-                        return existingStations;
-                    }
-                    else
-                    {
-                        Log("Error: Unable to download existing stations.");
-                        return null;
-                    }
-                }
-            }
-            catch (TaskCanceledException e)
-            {
-                Log("A task canceled exception occurred: " + e.Message);
-                return null;
-            }
-            catch (Exception e)
-            {
-                Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
-                return null;
-            }
-        }
-
-        private static void ExtractInvalidStations(string fileName, HashSet<string> currentRegisteredStations)
-        {
-            // Read in file
-            string fileContents = ReadInFile(fileName);
-
-            if (fileContents != null)
-            {
-                // Parse the file
-                string[] stations = fileContents.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-
-                foreach (string station in stations)
-                {
-                    currentRegisteredStations.Add(station);
-                }
-
-            }
-            else
-            {
-                Log("Failed to read in file: " + fileName);
-            }
-        }
-
-        private static void ExtractDataFromNewFilesInDictionary(string fileName, 
-                                                                Dictionary<string, List<AirNowDataPoint>> dataPointsByStation,
-                                                                HashSet<string> currentRegisteredStations,
-                                                                HashSet<string> unregisteredStations,
-                                                                HashSet<AirNowDataPoint> unregisteredStationsData)
-        {
-            // Read in file
-            string json = ReadInFile(fileName);
-
-            if (json != null)
-            {
-                // Parse the file
-                AirNowDataPoint[] dataPoints = JsonConvert.DeserializeObject<AirNowDataPoint[]>(json);                                                
-                
-                // Combining calls from the same stations into a single call
-                foreach (AirNowDataPoint dataPoint in dataPoints)
-                {
-                    if (!currentRegisteredStations.Contains(dataPoint.IntlAQSCode))
-                    {
-                        if (!unregisteredStations.Contains(dataPoint.IntlAQSCode))
-                        {
-                            unregisteredStations.Add(dataPoint.IntlAQSCode);
-                            unregisteredStationsData.Add(dataPoint);
-                        }                        
-                    }
-                    
-                    if (dataPointsByStation.ContainsKey(dataPoint.IntlAQSCode))
-                    {
-                        List<AirNowDataPoint> empty = null;
-                        dataPointsByStation.TryGetValue(dataPoint.IntlAQSCode, out empty);
-                        empty.Add(dataPoint);
-                    }
-                    else
-                    {
-                        List<AirNowDataPoint> newList = new List<AirNowDataPoint>();
-                        newList.Add(dataPoint);
-                        dataPointsByStation.Add(dataPoint.IntlAQSCode, newList);
-                    }
-                }
-
-            }
-            else
-            {
-                Log("Failed to Upload: " + fileName);
-            }            
-        }
-
         private static string ReadInFile(string fileName)
         {
             try
@@ -527,65 +735,5 @@ namespace AirStoreToDB
             }
         }
 
-
-        /* HELPER STATIC METHODS */
-
-        private static DirectoryInfo GetBackupDirectoryIfExists(string backupFolder)
-        {
-            DirectoryInfo projectDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-
-            // Look up directory containing backup files
-            Console.WriteLine(projectDirectory.FullName + backupFolder);
-
-            if (Directory.Exists(projectDirectory.FullName + backupFolder))
-            {
-                Log("Backup directory (" + projectDirectory.FullName + ") found.");
-                return new DirectoryInfo(projectDirectory.FullName + backupFolder);
-            }
-            else
-            {
-                Log("Backup directory (" + projectDirectory.FullName + ") does not exist.");
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// This function writes the string (msg) that is passed into the argument into a file at the 
-        /// location of the logDirectory.
-        /// </summary>
-        /// <param name="msg">A message to log</param>
-        private static void Log(String msg)
-        {
-            Console.WriteLine(msg);
-
-            lock (thisLock)
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + logFileName, true))
-                {
-                    file.WriteLine(DateTime.UtcNow.ToString() + ": " + msg);
-                    file.Dispose();
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// This function writes the string (msg) that is passed into the argument into a file at the 
-        /// location of the logDirectory.
-        /// </summary>
-        /// <param name="stationId">A message to log</param>
-        private static void LogInvalidStation(String stationId)
-        {
-            Console.WriteLine(stationId);
-
-            lock (thisLock)
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + invalidStationsFileName, true))
-                {
-                    file.WriteLine(stationId);
-                    file.Dispose();
-                }
-            }
-        }
     }
 }
