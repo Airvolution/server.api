@@ -228,6 +228,7 @@ namespace AirStoreToDB
 
         private static void ExtractAlreadyLoggedFiles(string fileName, HashSet<string> alreadyLoggedFiles)
         {
+            Log("Extracting all of the backup files already read in from " + fileName);
             // Read in file
             string fileContents = ReadInFile(fileName);
 
@@ -250,6 +251,7 @@ namespace AirStoreToDB
 
         private static void ExtractInvalidStations(string fileName, HashSet<string> currentRegisteredStations)
         {
+            Log("Extracting invalid stations from " + fileName);
             // Read in file
             string fileContents = ReadInFile(fileName);
 
@@ -276,6 +278,7 @@ namespace AirStoreToDB
                                                                 HashSet<string> unregisteredStations,
                                                                 HashSet<AirNowDataPoint> unregisteredStationsData)
         {
+            Log("Extracting data from files that have not yet been used.");
             // Read in file
             string json = ReadInFile(fileName);
 
@@ -319,6 +322,7 @@ namespace AirStoreToDB
 
         private static DirectoryInfo GetBackupDirectoryIfExists(string backupFolder)
         {
+            Log("Getting backup directories if they exist.");
             DirectoryInfo projectDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
             // Look up directory containing backup files
@@ -338,6 +342,7 @@ namespace AirStoreToDB
 
         private static HashSet<string> GetExistingStationsFromDB(string route)
         {
+            Log("Getting existing stations from DB");
             try
             {
                 using (var client = new HttpClient())
@@ -370,7 +375,6 @@ namespace AirStoreToDB
 
                         foreach (var station in responseObject)
                         {
-                            Console.WriteLine("\tStationId: " + station.id.Value);
                             existingStations.Add(station.id.Value);
                         }
                         return existingStations;
