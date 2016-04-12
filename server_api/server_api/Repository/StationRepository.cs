@@ -203,7 +203,7 @@ namespace server_api
             return GetDataPointsFromStationBetweenTimes(stationID, after, DateTime.UtcNow);
         }
 
-        public IEnumerable<DataPoint> GetDataPointsFromStationBetweenTimes(string stationID, DateTime after, DateTime before)
+        public HashSet<DataPoint> GetDataPointsFromStationBetweenTimes(string stationID, DateTime after, DateTime before)
         {
             IEnumerable<DataPoint> data = from point in db.DataPoints
                                           where point.Station.Id == stationID &&
@@ -211,13 +211,26 @@ namespace server_api
                                                 point.Time <= before
                                           orderby point.Time ascending
                                           select point;
-            return data;
+
+            HashSet<DataPoint> returnValue = new HashSet<DataPoint>();
+            foreach (DataPoint d in data)
+            {
+                returnValue.Add(d);
+            }
+
+            return returnValue;
         }
 
         public IEnumerable<DataPoint> SetDataPointsFromStation(DataPoint[] dataSet)
         {
+            if (dataSet.Length <= 0)
+            {
+                return null;
+            }
+
             string stationId = dataSet[0].Station.Id;
             Station dataSetStation = db.Stations.Find(stationId);
+
             if (dataSetStation == null)
             {
                 return null;
@@ -246,7 +259,15 @@ namespace server_api
             // Get values currently in database.
             DataPointComparer comparer = new DataPointComparer();
             HashSet<DataPoint> exisitingDataPoints = new HashSet<DataPoint>(comparer);
-            exisitingDataPoints.UnionWith(GetDataPointsFromStationBetweenTimes(stationId, startTime, nextDay));
+
+            HashSet<DataPoint> temp = GetDataPointsFromStationBetweenTimes(stationId, startTime, nextDay);
+
+            if (temp != null)
+            {
+                exisitingDataPoints.UnionWith(temp);
+            }
+
+            
 
             // Latest DataPoints for each Parameter
             List<DataPoint> addingDataPoints = new List<DataPoint>();
@@ -315,9 +336,12 @@ namespace server_api
             if (sDaily != null)
             {
                 // Average
-                sDaily.AvgAQI = (from d in db.DataPoints
+                var tempAvgAQI = (from d in db.DataPoints
                                  where d.Station_Id == dataSetStation.Id && d.Time >= today && d.Time < nextDay && d.AQI > 0
                                  select d.AQI).Average();
+
+                if (tempAvgAQI != null)
+                    sDaily.AvgAQI = tempAvgAQI;
 
                 // Min
                 DataPoint min = (from d in db.DataPoints
@@ -408,6 +432,11 @@ namespace server_api
         public void Dispose()
         {
             db.Dispose();
+        }
+
+        public IEnumerable<Station> GetAllStations()
+        {
+            return db.Stations;
         }
     }
 }

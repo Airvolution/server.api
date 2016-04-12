@@ -8,7 +8,6 @@ using System.Threading;
 using server_api.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using server_api;
 
 namespace server_api.unit_testing
 {

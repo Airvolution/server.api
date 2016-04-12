@@ -279,6 +279,14 @@ namespace server_api.Controllers
         }
 
         [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations/list")]
+        [HttpGet]
+        public IHttpActionResult GetAllStations()
+        {
+            return Ok(_stationRepo.GetAllStations());
+        }
+
+        [ResponseType(typeof(IEnumerable<Station>))]
         [Route("stations/nearest")]
         [HttpGet]
         public IHttpActionResult NearestStation(double lat, double lng)
