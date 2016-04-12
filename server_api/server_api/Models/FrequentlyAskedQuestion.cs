@@ -55,6 +55,6 @@ namespace server_api.Models
         /// <summary>
         /// 
         /// </summary>
-        public int TotaUserReviewScore { get; set; }
+        public int TotalUserReviewScore { get; set; }
     }
 }

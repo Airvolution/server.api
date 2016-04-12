@@ -49,7 +49,7 @@ namespace server_api.Controllers
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        [Route("faq/view/{questionId}")]
+        [Route("faq/{questionId}/view")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         public IHttpActionResult IncrementViewCount([FromUri]int questionId)
@@ -64,7 +64,7 @@ namespace server_api.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [Route("faq/usefulnessReview/{questionId}/{score}")]
+        [Route("faq/{questionId}/userReview/{score}")]
         [Authorize]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]

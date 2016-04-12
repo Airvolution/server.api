@@ -24,19 +24,19 @@ namespace server_api.Migrations
             RenameColumn("dbo.FrequentlyAskedQuestions", "Answer", "AnswerPlainText");
             AddColumn("dbo.FrequentlyAskedQuestions", "AnswerRichText", c => c.String());
             AddColumn("dbo.FrequentlyAskedQuestions", "ViewCount", c => c.Int(nullable: false));
-            AddColumn("dbo.FrequentlyAskedQuestions", "TotaUserReviewScore", c => c.Int(nullable: false));
+            AddColumn("dbo.FrequentlyAskedQuestions", "TotalUserReviewScore", c => c.Int(nullable: false));
         }
         
         public override void Down()
         {
+            RenameColumn("dbo.FrequentlyAskedQuestions", "AnswerPlainText", "Answer");
             DropForeignKey("dbo.QuestionAnswerUserReviews", "FrequentlyAskedQuestion_Id", "dbo.FrequentlyAskedQuestions");
             DropForeignKey("dbo.QuestionAnswerUserReviews", "User_Id", "dbo.Users");
             DropIndex("dbo.QuestionAnswerUserReviews", new[] { "FrequentlyAskedQuestion_Id" });
             DropIndex("dbo.QuestionAnswerUserReviews", new[] { "User_Id" });
-            DropColumn("dbo.FrequentlyAskedQuestions", "TotaUserReviewScore");
+            DropColumn("dbo.FrequentlyAskedQuestions", "TotalUserReviewScore");
             DropColumn("dbo.FrequentlyAskedQuestions", "ViewCount");
             DropColumn("dbo.FrequentlyAskedQuestions", "AnswerRichText");
-            RenameColumn("dbo.FrequentlyAskedQuestions", "AnswerPlainText", "Answer");
             DropTable("dbo.QuestionAnswerUserReviews");
         }
     }
