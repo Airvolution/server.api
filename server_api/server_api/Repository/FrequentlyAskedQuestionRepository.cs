@@ -63,7 +63,7 @@ namespace server_api.Repository
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        public bool IncrementViewCount(int questionId)
+        public void IncrementViewCount(int questionId)
         {
             FrequentlyAskedQuestion faq =  _ctx.FrequentlyAskedQuestions.Find(questionId);
 
@@ -71,11 +71,7 @@ namespace server_api.Repository
             {
                 faq.ViewCount++;
                 _ctx.SaveChanges();
-
-                return true;
             }
-   
-            return false;
         }
 
         /// <summary>
