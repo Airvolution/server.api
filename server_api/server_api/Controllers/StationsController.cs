@@ -200,7 +200,7 @@ namespace server_api.Controllers
 
             foreach(DataPoint dataPoint in dataSet)
             {
-                if(dataPoint.Category == 0 && dataPoint.AQI == 0 || dataPoint.AQI == -999)
+                if(dataPoint.Category == 0 && dataPoint.AQI == 0 || dataPoint.AQI < 0)
                 {
                     Tuple<int, int> result = null;
 
@@ -320,7 +320,7 @@ namespace server_api.Controllers
         }
 
         [ResponseType(typeof(IEnumerable<Station>))]
-        [Route("stations/list")]
+        [Route("stations")]
         [HttpGet]
         public IHttpActionResult GetAllStations()
         {
