@@ -21,12 +21,15 @@ namespace AirStoreToDB
     class Program
     {
         private static Object thisLock = new Object();
-        static string logDirectory = "C:\\dev\\airnow_retrieval\\log\\";
-        static string logFileName = "AirStoreToDB.txt";
-        static string loggedFilesName = "LoggedFiles.txt";
-        static string invalidStationsFileName = "InvalidStations.txt";
-        static string oAuthToken;
 
+        static DirectoryInfo dirLog;
+        static DirectoryInfo dirBackup;
+
+        static string logFileName = "\\AirStoreToDB.txt";
+        static string loggedFilesName = "\\LoggedFiles.txt";
+        static string invalidStationsFileName = "\\InvalidStations.txt";
+
+        static string oAuthToken;
 
         static string hostUrl = "http://localhost:40321/";
         //static string hostUrl = "http://dev.air.eng.utah.edu/api/";
@@ -39,8 +42,10 @@ namespace AirStoreToDB
 
         static void Main(string[] args)
         {
-            string backupFolder = "\\..\\..\\..\\AirNowSaveData\\AirNow Backup Directory";
-            DirectoryInfo backupDirectory = GetBackupDirectoryIfExists(backupFolder);
+            DirectoryInfo dirAirNowRetrieval = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent;
+
+            dirLog = Directory.CreateDirectory(dirAirNowRetrieval.FullName + "\\AirStoreToDB\\log");
+            dirBackup = Directory.CreateDirectory(dirAirNowRetrieval.FullName + "\\AirNowSaveData\\AirNow Backup Directory");                     
 
             // Login
             string loginRoute = "users/login";
@@ -48,18 +53,18 @@ namespace AirStoreToDB
             
 
             // Check that the directory exists
-            if (backupDirectory != null)
+            if (dirBackup != null)
             {
                 HashSet<string> currentRegisteredStations = new HashSet<string>();
                 HashSet<string> unregisteredStations = new HashSet<string>();
                 HashSet<AirNowDataPoint> unregisteredStationsData = new HashSet<AirNowDataPoint>();
 
                 // Get set of currentRegisteredStations in DB to check later
-                string routeForStationLocations = "stations/list";
+                string routeForStationLocations = "stations";
                 currentRegisteredStations = GetExistingStationsFromDB(routeForStationLocations);
 
                 // read in invalid stations
-                ExtractInvalidStations(logDirectory + invalidStationsFileName, currentRegisteredStations);
+                ExtractInvalidStations(dirLog.FullName + invalidStationsFileName, currentRegisteredStations);
              
                 if (currentRegisteredStations == null)
                 {
@@ -71,12 +76,12 @@ namespace AirStoreToDB
                 // Get import a hashset of all of the files that have already been logged
                 HashSet<string> alreadyLoggedFiles = new HashSet<string>();
                 
-                ExtractAlreadyLoggedFiles(logDirectory + loggedFilesName, alreadyLoggedFiles);
+                ExtractAlreadyLoggedFiles(dirLog.FullName + loggedFilesName, alreadyLoggedFiles);
 
                 int count = 0;
                 // Go through each file in the directory and add datapoints into our dictionary
                 Dictionary<string, List<AirNowDataPoint>> optimizedPoints = new Dictionary<string, List<AirNowDataPoint>>();
-                foreach (FileInfo fi in backupDirectory.GetFiles().Reverse())
+                foreach (FileInfo fi in dirBackup.GetFiles().Reverse())
                 {
                     // If data has not already been extracted
                     if (count < 64)
@@ -124,14 +129,13 @@ namespace AirStoreToDB
                 // Go through each station in the optimized points and add all of its points
                 foreach (List<AirNowDataPoint> singleStationDataPoints in optimizedPoints.Values)
                 {
+
                     if (currentRegisteredStations.Contains(singleStationDataPoints.First().IntlAQSCode))
                     {
-                        // Add new datapoints                    
-                        //AddDataPoints(addDataPointsRoute, singleStationDataPoints);
-
+                        // Add new datapoints                                            
                         // Multithreaded
                         Thread newThread = new Thread(() => AddDataPoints(addDataPointsRoute, singleStationDataPoints));
-                        Console.WriteLine("Starting new thread..." + singleStationDataPoints.First().IntlAQSCode);
+
                         newThread.Start();
                         tamper += 1;
                         if (tamper > 30)
@@ -141,8 +145,9 @@ namespace AirStoreToDB
                             tamper = 0;
                         }
                     }
-                    
                 }
+
+                Console.WriteLine("All calculations are complete.");
 
                 Log("Finished");
                 Console.ReadLine();
@@ -160,6 +165,15 @@ namespace AirStoreToDB
 
         private static void AddDataPoints(string route, List<AirNowDataPoint> listOfPoints)
         {
+            Console.WriteLine("Starting new thread...");
+
+            //object[] array = state as object[];
+
+            //string route = (string)array[0];
+            //List<AirNowDataPoint> listOfPoints = (List<AirNowDataPoint>)array[1];
+            //ManualResetEvent doneEvent = (ManualResetEvent)array[2];
+
+
             string datePattern = "yyyy-MM-ddTHH:mm";
 
             List<DataPoint> tempDataPoints = new List<DataPoint>();
@@ -229,6 +243,11 @@ namespace AirStoreToDB
             {
                 Log("An unknown exception occurred in SetAirUDataPoint: " + e.Message);
                 return;
+            }
+            finally
+            {
+                //doneEvent.Set();
+                Console.WriteLine("Thread finished...");
             }
         }
 
@@ -335,16 +354,15 @@ namespace AirStoreToDB
 
         private static DirectoryInfo GetBackupDirectoryIfExists(string backupFolder)
         {
-            Log("Getting backup directories if they exist.");
-            DirectoryInfo projectDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            Log("Getting backup directory, if it exist.");
+            DirectoryInfo projectDirectory = new DirectoryInfo(backupFolder);
 
             // Look up directory containing backup files
-            Console.WriteLine(projectDirectory.FullName + backupFolder);
+            Console.WriteLine(backupFolder);
 
-            if (Directory.Exists(projectDirectory.FullName + backupFolder))
+            if (Directory.Exists(backupFolder))
             {
-                Log("Backup directory (" + projectDirectory.FullName + ") found.");
-                return new DirectoryInfo(projectDirectory.FullName + backupFolder);
+                return new DirectoryInfo(backupFolder);
             }
             else
             {
@@ -511,7 +529,7 @@ namespace AirStoreToDB
 
             lock (thisLock)
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + logFileName, true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(dirLog.FullName + logFileName, true))
                 {
                     file.WriteLine(DateTime.UtcNow.ToString() + ": " + msg);
                     file.Dispose();
@@ -530,7 +548,7 @@ namespace AirStoreToDB
 
             lock (thisLock)
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + invalidStationsFileName, true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(dirLog.FullName + invalidStationsFileName, true))
                 {
                     file.WriteLine(stationId);
                     file.Dispose();
@@ -549,7 +567,7 @@ namespace AirStoreToDB
 
             lock (thisLock)
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + loggedFilesName, true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(dirLog.FullName + loggedFilesName, true))
                 {
                     file.WriteLine(filename);
                     file.Dispose();
