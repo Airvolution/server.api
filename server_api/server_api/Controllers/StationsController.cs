@@ -252,8 +252,8 @@ namespace server_api.Controllers
             {
                 return NotFound();
             }
-            else 
-                return Ok(response);
+
+            return Ok(response);
         }
 
         /// <summary>

@@ -13,9 +13,14 @@ namespace server_api
         public string setNonNull(string a, string b)
         {
             if (a != null)
+            {
                 return a;
+            }
             else
+            {
                 return b;
+            }
+                
         }
 
         public bool Equals(DataPoint x, DataPoint y)
@@ -437,7 +442,10 @@ namespace server_api
 
 
             if (tempAQI.Count() > 0)
+            {
                 sDaily.AvgAQI = tempAQI.Average();
+            }
+                
 
             // Min
             DataPoint min = (from d in db.DataPoints
