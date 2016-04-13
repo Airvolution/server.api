@@ -180,7 +180,7 @@ namespace AirNowSaveData
                                                         " to " +
                                                         endDate.Year + "-" + endDate.Month + "-" + endDate.Day + " " +
                                                         endDate.Hour + "-" + endDate.Minute + "-" + endDate.Second + " - "+ name +".json";
-
+            
             lock (thisLock)
             {
                 if (!File.Exists(jsonFilePath))
@@ -193,6 +193,7 @@ namespace AirNowSaveData
                 }
                 else
                 {
+                    // Call to method with Re-Entrant Lock (Locks within the same thread can lock the same lock as much as they want)
                     Log(jsonFilePath + " already created.");
                 }
 
@@ -209,6 +210,7 @@ namespace AirNowSaveData
         {
             Console.WriteLine(msg);
 
+            // Re-Entrant Lock (Locks within the same thread can lock the same lock as much as they want)
             lock (thisLock)
             {
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(dirLog.FullName + logFileName, true))
