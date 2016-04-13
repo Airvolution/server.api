@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -35,7 +34,7 @@ namespace AirNowSaveData
                 Match matchStart = rgx.Match(args[0]);
                 startDate = ParseMatchToDateTime(matchStart);
             }
-            if (args.Length == 2)
+            else if (args.Length == 2)
             {
                 Match matchStart = rgx.Match(args[0]);
                 Match matchEnd = rgx.Match(args[1]);
@@ -90,7 +89,9 @@ namespace AirNowSaveData
             foreach (Group g in match.Groups)
             {
                 if (g.Length > 0)
+                {
                     count++;
+                }
             }
             return count;
         }
@@ -98,12 +99,22 @@ namespace AirNowSaveData
     }
     class Program
     {
+        private static Object thisLock = new Object();
+        static string logFileName = "\\AirNowSaveData.txt";
+
+        static DirectoryInfo dirLog;
+        static DirectoryInfo dirBackup;
+
 
         static void Main(string[] args)
-        {            
-            Console.Out.WriteLine(new DateTime().ToString());
-            Log("Current Date: " + DateTime.UtcNow.ToString());
+        {
+            DirectoryInfo dirAirNowRetrieval = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent;
 
+            dirLog = Directory.CreateDirectory(dirAirNowRetrieval.FullName + "\\AirNowSaveData\\log");
+            dirBackup = Directory.CreateDirectory(dirAirNowRetrieval.FullName + "\\AirNowSaveData\\AirNow Backup Directory"); 
+            
+            Log("Current Date: " + DateTime.UtcNow.ToString());
+           
             Options options = null;
 
             try
@@ -127,10 +138,7 @@ namespace AirNowSaveData
                     "(i.e 2000-12-31 2016)");
                 Console.ReadLine();
                 return;
-            }
-
-            string backupFolder = "\\AirNow Backup Directory";
-            CreateBackupDirectoryIfNotExists(backupFolder);         
+            }      
 
             DateTime startDateAndTime = options.StartDate;
             DateTime endDateAndTime = options.EndDate;
@@ -143,9 +151,9 @@ namespace AirNowSaveData
             int totalTime = (years * 365 * 24) + (days * 24) + hours;
             int offset = 3;
                         
-            if (!File.Exists(logDirectory + logFileName))
+            if (!File.Exists(dirLog.FullName + logFileName))
             {
-                File.Create(logDirectory + logFileName);
+                File.Create(dirLog.FullName + logFileName);
             }
 
             // For each 3 hour segment between the start date and end date
@@ -154,32 +162,7 @@ namespace AirNowSaveData
                 // Save a file for output
                 SaveAirNowApiDataPoints(startDateAndTime, offset, hourlyOffset);
             }            
-        }
-
-        private static void CreateBackupDirectoryIfNotExists(string backupFolder)
-        {
-            DirectoryInfo projectDirectory = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent;
-            DirectoryInfo backupDirectory = null;
-
-            // Create directory for backup files
-            Console.WriteLine(projectDirectory.FullName + backupFolder);
-
-            if (!Directory.Exists(projectDirectory.FullName + backupFolder))
-            {
-                backupDirectory = Directory.CreateDirectory(projectDirectory.FullName + backupFolder);
-                Log("Creating Backup Directory: " + backupDirectory.FullName);
-            }
-            else
-            {
-                Log("Existing Backup Directory: " + projectDirectory.FullName + backupFolder);
-            }
-        }
-
-        private static Object thisLock = new Object();
-        static string logDirectory = "C:\\dev\\airnow_retrieval\\log\\";
-        static string backupDirectory = "..\\..\\";
-        static string logFileName = "AirNowSaveData.txt";
-
+        }        
 
         /// <summary>
         /// This function creates an output file with the given string msg as its contents at the
@@ -187,9 +170,13 @@ namespace AirNowSaveData
         /// </summary>
         /// <param name="fileName">The file name</param>
         /// <param name="contents">The string contents of the file</param>
-        private static void CreateOutputFile(String fileName, String contents)
+        private static void CreateJsonOutputFile(String name, String contents, DateTime startDate, DateTime endDate)
         {
-            string jsonFilePath = backupDirectory + "AirNow Backup Directory\\" + fileName;
+            string jsonFilePath = dirBackup.FullName + "\\" + startDate.Year + "-" + startDate.Month + "-" + startDate.Day + " " +
+                                                        startDate.Hour + "-" + startDate.Minute + "-" + startDate.Second +
+                                                        " to " +
+                                                        endDate.Year + "-" + endDate.Month + "-" + endDate.Day + " " +
+                                                        endDate.Hour + "-" + endDate.Minute + "-" + endDate.Second + " - "+ name +".json";
 
             lock (thisLock)
             {
@@ -203,7 +190,7 @@ namespace AirNowSaveData
                 }
                 else
                 {
-                    Log(fileName + " already created.");
+                    Log(jsonFilePath + " already created.");
                 }
 
             }
@@ -221,7 +208,7 @@ namespace AirNowSaveData
 
             lock (thisLock)
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(logDirectory + logFileName, true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(dirLog.FullName + logFileName, true))
                 {
                     file.WriteLine(DateTime.UtcNow.ToString() + ": " + msg);
                     file.Dispose();
@@ -281,11 +268,7 @@ namespace AirNowSaveData
             try
             {
                 json = airNowApiWebClient.DownloadString(getUrl);
-                CreateOutputFile(startDate.Year + "-" + startDate.Month + "-" + startDate.Day + " " + 
-                                 startDate.Hour + "-" + startDate.Minute + "-" + startDate.Second + 
-                                 " to " +
-                                 endDate.Year + "-" + endDate.Month + "-" + endDate.Day + " " +
-                                 endDate.Hour + "-" + endDate.Minute + "-" + endDate.Second + " - 48.json", json);
+                CreateJsonOutputFile("48", json, startDate, endDate);
                 
             }
             catch (WebException e)
@@ -301,11 +284,7 @@ namespace AirNowSaveData
             try
             {
                 json = airNowApiWebClient.DownloadString(getUrl);
-                CreateOutputFile(startDate.Year + "-" + startDate.Month + "-" + startDate.Day + " " +
-                                 startDate.Hour + "-" + startDate.Minute + "-" + startDate.Second +
-                                 " to " +
-                                 endDate.Year + "-" + endDate.Month + "-" + endDate.Day + " " +
-                                 endDate.Hour + "-" + endDate.Minute + "-" + endDate.Second + " - AK-HI.json", json);                
+                CreateJsonOutputFile("AK-HI", json, startDate, endDate);
             }
             catch (WebException e)
             {
