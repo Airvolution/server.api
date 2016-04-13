@@ -6,6 +6,8 @@ server_api_deployment-package
 
 # airnow_retrieval specific folder
 airnow_retrieval/AirNowSaveData/AirNow Backup Directory/*
+airnow_retrieval/AirNowSaveData/log/*
+airnow_retrieval/AirStoreToDB/log/*
 
 # User-specific files
 *.suo
