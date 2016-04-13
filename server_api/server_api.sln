@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{154B58
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server_api.unit_testing", "server_api.unit_testing\server_api.unit_testing.csproj", "{7CB027DE-8614-45A1-A663-3094C1C2ACB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirNowSaveData", "..\airnow_retrieval\AirNowSaveData\AirNowSaveData.csproj", "{50E4CC0B-D370-4A85-ACF5-22F66381F21A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirStoreToDB", "..\airnow_retrieval\AirStoreToDB\AirStoreToDB.csproj", "{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		arvixe-dev|Any CPU = arvixe-dev|Any CPU
@@ -50,6 +54,30 @@ Global
 		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.local|Any CPU.Build.0 = local|Any CPU
 		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CB027DE-8614-45A1-A663-3094C1C2ACB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.arvixe-dev|Any CPU.ActiveCfg = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.arvixe-dev|Any CPU.Build.0 = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.arvixe-prod|Any CPU.ActiveCfg = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.arvixe-prod|Any CPU.Build.0 = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.cade|Any CPU.ActiveCfg = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.cade|Any CPU.Build.0 = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.local|Any CPU.ActiveCfg = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.local|Any CPU.Build.0 = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E4CC0B-D370-4A85-ACF5-22F66381F21A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.arvixe-dev|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.arvixe-dev|Any CPU.Build.0 = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.arvixe-prod|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.arvixe-prod|Any CPU.Build.0 = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.cade|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.cade|Any CPU.Build.0 = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.local|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.local|Any CPU.Build.0 = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B45CA5-17DF-4A7C-A27C-C1301CF8FDF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

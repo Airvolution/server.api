@@ -200,7 +200,7 @@ namespace server_api.Controllers
 
             foreach(DataPoint dataPoint in dataSet)
             {
-                if(dataPoint.Category == 0 && dataPoint.AQI == 0)
+                if(dataPoint.Category == 0 && dataPoint.AQI == 0 || dataPoint.AQI < 0)
                 {
                     Tuple<int, int> result = null;
 
@@ -252,8 +252,8 @@ namespace server_api.Controllers
             {
                 return NotFound();
             }
-            else 
-                return Ok(response);
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -317,6 +317,14 @@ namespace server_api.Controllers
         public IHttpActionResult StationLocators(double latMin, double latMax, double lngMin, double lngMax)
         {
             return Ok(_stationRepo.StationLocations(latMin, latMax, lngMin, lngMax));
+        }
+
+        [ResponseType(typeof(IEnumerable<Station>))]
+        [Route("stations")]
+        [HttpGet]
+        public IHttpActionResult GetAllStations()
+        {
+            return Ok(_stationRepo.GetAllStations());
         }
 
         [ResponseType(typeof(IEnumerable<Station>))]
