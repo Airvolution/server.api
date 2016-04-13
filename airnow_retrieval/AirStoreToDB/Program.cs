@@ -588,25 +588,11 @@ namespace AirStoreToDB
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
 
-                    //client.PostAsync(route,,,)
-
-                    //var formatter = new JsonMediaTypeFormatter();
-                    //formatter.SerializerSettings = new JsonSerializerSettings
-                    //{
-                    //    Formatting = Formatting.Indented,
-                    //    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    //};                    
-
-                    ////string data = "grant_type=password&email=" + email + "&password=" + password;
-
-                    //var formatter = new FormUrlEncodedMediaTypeFormatter();
                     var formContent = new FormUrlEncodedContent(new[]{
                         new KeyValuePair<string, string>("grant_type", "password"),
                         new KeyValuePair<string, string>("password", password),
                         new KeyValuePair<string, string>("username", email)
                     });
-
-                    string hi = formContent.ToString();
 
                     Task<HttpResponseMessage> responsePost = client.PostAsync(route, formContent);
 
