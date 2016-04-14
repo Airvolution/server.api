@@ -21,7 +21,7 @@ namespace AirNowSaveData
         {
             if (args.Length == 0)
             {
-                return new Options(DateTime.UtcNow.AddHours(-3), DateTime.UtcNow);
+                return new Options(DateTime.UtcNow.AddHours(0-Program.offset), DateTime.UtcNow);
             }
                 
 
@@ -83,7 +83,7 @@ namespace AirNowSaveData
                 case 0:
                     break;
             }
-            return new DateTime(year, month, day, second, hour, minute);
+            return new DateTime(year, month, day, hour, minute, second);
         }
 
         private static int CountNonEmptyGroups(Match match)
@@ -107,6 +107,8 @@ namespace AirNowSaveData
 
         static DirectoryInfo dirLog;
         static DirectoryInfo dirBackup;
+
+        public static int offset = 2;
 
 
         static void Main(string[] args)
@@ -152,7 +154,6 @@ namespace AirNowSaveData
             int hours = endDateAndTime.Hour - startDateAndTime.Hour;
 
             int totalTime = (years * 365 * 24) + (days * 24) + hours;
-            int offset = 3;
                         
             if (!File.Exists(dirLog.FullName + logFileName))
             {
