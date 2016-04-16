@@ -111,7 +111,7 @@ namespace AirStoreToDB
 
                     if (geoInfo != null)
                     {
-                        // Ping the station to the UnregisterdStations table
+                        // Ping the station to the UnregisteredStations table
                         if (PingStationIDToUnregisteredTable(routeForPingingStations, stationInfo.IntlAQSCode))
                         {                                               
                             // Register the station
@@ -138,7 +138,7 @@ namespace AirStoreToDB
 
                         newThread.Start();
                         tamper += 1;
-                        if (tamper > 30)
+                        if (tamper > 15)
                         {
                             newThread.Join();
                             Console.WriteLine("Threads joined...");
@@ -150,14 +150,12 @@ namespace AirStoreToDB
                 Console.WriteLine("All calculations are complete.");
 
                 Log("Finished");
-                Console.ReadLine();
 
             }
             else
             {
                 Log("Files not found.");
             }
-
             Console.ReadLine();
         }
 
@@ -655,7 +653,7 @@ namespace AirStoreToDB
                     if (responsePost.Result.IsSuccessStatusCode)
                     {
                         HttpResponseMessage httpMsg = responsePost.Result;
-                        Console.WriteLine(httpMsg.StatusCode + ": Unregisterd station pinged");
+                        Console.WriteLine(httpMsg.StatusCode + ": Unregistered station pinged");
                         return true;
                     }
                     else
@@ -715,7 +713,7 @@ namespace AirStoreToDB
                     if (responsePost.Result.IsSuccessStatusCode)
                     {
                         HttpResponseMessage httpMsg = responsePost.Result;
-                        Console.WriteLine(httpMsg.StatusCode + ": Unregisterd station pinged");
+                        Console.WriteLine(httpMsg.StatusCode + ": Unregistered station pinged");
                         return;
                     }
                     else
