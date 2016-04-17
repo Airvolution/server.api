@@ -32,6 +32,8 @@ namespace server_api.Controllers
             _userRepo = new UserRepository();
         }
 
+        
+
         [Route("stations/{id}")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Station))]
@@ -455,9 +457,9 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
-        [Route("stations/{id}/adjust")]
+        [Route("stations/{id}/adjustments")]
         [HttpGet]
-        public IHttpActionResult GetStationAdjustments(string id)
+        public IHttpActionResult GetStationAdjustment(string id)
         {
             // make sure station exists
             Station station = _stationRepo.GetStation(id);
@@ -472,8 +474,50 @@ namespace server_api.Controllers
                 return Unauthorized();
             }
 
-            return Ok(_stationRepo.GetStationAdjustments(station));
+            return Ok(_stationRepo.GetStationAdjustment(station));
         }
+
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [Route("stations/{id}/adjustments")]
+        [HttpPost]
+        public IHttpActionResult PostStationAdjustment(string id, [FromBody] List<ParameterAdjustment> adjustment)
+        {
+            // make sure station exists
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
+            {
+                return NotFound();
+            }
+
+            // make sure user owns the station
+            if (station.User_Id != RequestContext.Principal.Identity.GetUserId())
+            {
+                return Unauthorized();
+            }
+
+            foreach (ParameterAdjustment adj in adjustment)
+            {
+                adj.Station = station;
+                adj.Station_Id = station.Id;
+                _stationRepo.PostStationAdjustment(adj);
+            }
+
+            return Ok(_stationRepo.GetStationAdjustment(station));
+        }
+
+        ///// <summary>
+        ///// http://weblog.west-wind.com/posts/2013/Apr/15/WebAPI-Getting-Headers-QueryString-and-Cookie-Values
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //public static Dictionary<string, string> GetQueryStrings(this HttpRequestMessage request)
+        //{
+        //    return request.GetQueryNameValuePairs()
+        //                  .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
+        //}
 
         /// <summary>
         ///   Adds the MAC address of a custom device (non-AirNow) to the un-registered table.

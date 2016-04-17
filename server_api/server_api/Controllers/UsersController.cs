@@ -223,9 +223,7 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
         public async Task<IHttpActionResult> UpdateUserPreferences([FromBody]UserPreferences prefs)
         {
-            // Expects the Parameter List to be SPACE separated string "NAME UNIT" eg. "PM2.5 UG/M3"
             prefs.User_Id = RequestContext.Principal.Identity.GetUserId();
-
 
             if (!_repo.IsValidPreferences(prefs.DefaultMapMode, prefs.DefaultDownloadFormat))
             {
