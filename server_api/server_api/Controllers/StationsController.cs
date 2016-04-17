@@ -451,6 +451,30 @@ namespace server_api.Controllers
             }
         }
 
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [Route("stations/{id}/adjust")]
+        [HttpGet]
+        public IHttpActionResult GetStationAdjustments(string id)
+        {
+            // make sure station exists
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
+            {
+                return NotFound();
+            }
+
+            // make sure user owns the station
+            if (station.User_Id != RequestContext.Principal.Identity.GetUserId()) 
+            {
+                return Unauthorized();
+            }
+
+            return Ok(_stationRepo.GetStationAdjustments(station));
+        }
+
         /// <summary>
         ///   Adds the MAC address of a custom device (non-AirNow) to the un-registered table.
         ///   

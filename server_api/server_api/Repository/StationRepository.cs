@@ -510,6 +510,11 @@ namespace server_api
             db.SaveChanges();
         }
 
+        public IEnumerable<ParameterAdjustment> GetStationAdjustments(Station station)
+        {
+            return db.ParameterAdjustments.Where(a => station.Id == a.Station_Id);
+        }
+
         public void Dispose()
         {
             db.Dispose();
