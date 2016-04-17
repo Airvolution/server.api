@@ -387,6 +387,8 @@
       <DependentUpon>201604120408144_FaqDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\DownloadOptions.cs" />
+    <Compile Include="Models\Nvd3Data.cs" />
     <Compile Include="Models\ParameterAdjustments.cs" />
     <Compile Include="Models\RegisterGroup.cs" />
     <Compile Include="Models\ResetPassword.cs" />
@@ -424,7 +426,6 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GpsBounds.cs" />
     <Compile Include="Models\GpsCoordinates.cs" />
-    <Compile Include="Models\SwaggerModels.cs" />
     <Compile Include="Models\WeatherResponse.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Repository\AlmanacRepository.cs" />

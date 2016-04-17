@@ -210,11 +210,13 @@ namespace server_api
             return data;
         }
 
-        public IEnumerable<DataPoint> GetDataPointsFromStation(string[] stationID, string[] parameter)
+        public IEnumerable<DataPoint> GetDataPointsFromStation(DownloadOptions options)
         {
             IEnumerable<DataPoint> data = db.DataPoints
-                                            .Where(s => stationID.Contains(s.Station.Id))
-                                            .Where(p => parameter.Contains(p.Parameter.Name))
+                                            .Where(s => options.StationIds.Contains(s.Station.Id))
+                                            .Where(p => options.Parameters.Contains(p.Parameter.Name))
+                                            .Where(t => options.FromDate <= t.Time)
+                                            .Where(t => options.ToDate >= t.Time)
                                             .OrderBy(p => p.Time);
 
             return data;
