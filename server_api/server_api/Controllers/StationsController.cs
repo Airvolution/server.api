@@ -32,8 +32,6 @@ namespace server_api.Controllers
             _userRepo = new UserRepository();
         }
 
-        
-
         [Route("stations/{id}")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Station))]
