@@ -496,14 +496,7 @@ namespace server_api.Controllers
                 return Unauthorized();
             }
 
-            foreach (ParameterAdjustment adj in adjustment)
-            {
-                adj.Station = station;
-                adj.Station_Id = station.Id;
-                _stationRepo.PostStationAdjustment(adj);
-            }
-
-            return Ok(_stationRepo.GetStationAdjustment(station));
+            return Ok(_stationRepo.PostStationAdjustment(station, adjustment));
         }
 
         /// <summary>
