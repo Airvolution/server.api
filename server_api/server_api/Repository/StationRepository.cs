@@ -515,27 +515,24 @@ namespace server_api
             return db.ParameterAdjustments.Where(a => station.Id == a.Station_Id);
         }
 
-        public void PostStationAdjustment(ParameterAdjustment adjustment)
+        public IEnumerable<ParameterAdjustment> PostStationAdjustment(Station station, List<ParameterAdjustment> adjustment)
         {
-            ParameterAdjustment existingAdjustment = db.ParameterAdjustments
-                                                        .Where(s => adjustment.Station_Id == s.Station_Id)
-                                                        .Where(p => adjustment.Parameter.Name == p.Parameter.Name)
-                                                        .FirstOrDefault();
+            db.ParameterAdjustments.RemoveRange(db.ParameterAdjustments.Where(s => station.Id == s.Station_Id));
+            db.SaveChanges();
 
-            if (existingAdjustment == null)
+            foreach (ParameterAdjustment adj in adjustment)
             {
-                db.Parameters.Attach(adjustment.Parameter);
-                db.ParameterAdjustments.Add(adjustment);
-            }
-            else
-            {
-                existingAdjustment.ScaleFactor = adjustment.ScaleFactor;
-                existingAdjustment.ShiftFactor = adjustment.ShiftFactor;
+                adj.Station = station;
+                adj.Station_Id = station.Id;
+                db.Parameters.Attach(adj.Parameter);
+                db.ParameterAdjustments.Add(adj);
             }
 
             db.SaveChanges();
-        }
 
+            return GetStationAdjustment(station);
+        }
+        
         public void Dispose()
         {
             db.Dispose();
