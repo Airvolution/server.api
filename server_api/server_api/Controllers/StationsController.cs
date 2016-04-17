@@ -508,17 +508,6 @@ namespace server_api.Controllers
             return Ok(_stationRepo.GetStationAdjustment(station));
         }
 
-        ///// <summary>
-        ///// http://weblog.west-wind.com/posts/2013/Apr/15/WebAPI-Getting-Headers-QueryString-and-Cookie-Values
-        ///// </summary>
-        ///// <param name="request"></param>
-        ///// <returns></returns>
-        //public static Dictionary<string, string> GetQueryStrings(this HttpRequestMessage request)
-        //{
-        //    return request.GetQueryNameValuePairs()
-        //                  .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
-        //}
-
         /// <summary>
         ///   Adds the MAC address of a custom device (non-AirNow) to the un-registered table.
         ///   
