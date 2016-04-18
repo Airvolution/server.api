@@ -30,6 +30,7 @@ namespace server_api
             return from d in db.Dailies
                           where d.Station.Id == stationId &&
                                 d.Date > dateNDaysInBack
+                                orderby d.Date descending
                           select d;
         }
 
