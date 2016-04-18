@@ -115,6 +115,7 @@ namespace server_api
             return db.Stations.Find(stationID);
         }
 
+
         public IEnumerable<Station> GetMultipleStations(IEnumerable<string> ids)
         {
             var result = from station in db.Stations 
@@ -210,11 +211,13 @@ namespace server_api
             return data;
         }
 
-        public IEnumerable<DataPoint> GetDataPointsFromStation(string[] stationID, string[] parameter)
+        public IEnumerable<DataPoint> GetDataPointsFromStation(DownloadOptions options)
         {
             IEnumerable<DataPoint> data = db.DataPoints
-                                            .Where(s => stationID.Contains(s.Station.Id))
-                                            .Where(p => parameter.Contains(p.Parameter.Name))
+                                            .Where(s => options.StationIds.Contains(s.Station.Id))
+                                            .Where(p => options.Parameters.Contains(p.Parameter.Name))
+                                            .Where(t => options.FromDate <= t.Time)
+                                            .Where(t => options.ToDate >= t.Time)
                                             .OrderBy(p => p.Time);
 
             return data;
@@ -508,6 +511,29 @@ namespace server_api
             db.SaveChanges();
         }
 
+        public IEnumerable<ParameterAdjustment> GetStationAdjustment(Station station)
+        {
+            return db.ParameterAdjustments.Where(a => station.Id == a.Station_Id);
+        }
+
+        public IEnumerable<ParameterAdjustment> PostStationAdjustment(Station station, List<ParameterAdjustment> adjustment)
+        {
+            db.ParameterAdjustments.RemoveRange(db.ParameterAdjustments.Where(s => station.Id == s.Station_Id));
+            db.SaveChanges();
+
+            foreach (ParameterAdjustment adj in adjustment)
+            {
+                adj.Station = station;
+                adj.Station_Id = station.Id;
+                db.Parameters.Attach(adj.Parameter);
+                db.ParameterAdjustments.Add(adj);
+            }
+
+            db.SaveChanges();
+
+            return GetStationAdjustment(station);
+        }
+        
         public void Dispose()
         {
             db.Dispose();

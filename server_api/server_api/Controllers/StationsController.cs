@@ -46,6 +46,22 @@ namespace server_api.Controllers
             return Ok(station);
         }
 
+        [Route("stations")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Station>))]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public IHttpActionResult GetStations([FromBody]IEnumerable<string> ids)
+        {
+            if (ids.Count() > 0)
+            {
+                return Ok(_stationRepo.GetMultipleStations(ids));
+            }
+            else
+            {
+                return BadRequest("Must provide one or more station ids");
+            }
+        }
+
         [Authorize]
         [Route("stations/{id}")]
         [HttpPut]
@@ -77,22 +93,18 @@ namespace server_api.Controllers
         /// <summary>
         /// Returns an array of objects specific for our NVD3 plots. Each object is keyed by the 
         ///   station name and parameter type. Each value is an array of timestamps and measurements of the
-        ///   given parameter. This endpoint is temporary, proof of concept... I'd like to add time range
-        ///   to this functionality.
+        ///   given parameter.
         /// </summary>
-        /// <param name="id">A list of station ids</param>
-        /// <param name="parameter">A list of parameter types</param>
-        /// <returns></returns>
         [Route("stations/parameterValues")]
         [HttpGet]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SwaggerPollutantList))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Nvd3Data))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
-        public IHttpActionResult GetAllDataPointsForParameters([FromUri] string[] stationID, [FromUri] string[] parameter, [FromUri] bool useRawValue = true)
+        public IHttpActionResult GetAllDataPointsForParameters([FromUri] DownloadOptions options)
         {
             // get all datapoints matching the station ids and parameter types
-            IEnumerable<DataPoint> points = _stationRepo.GetDataPointsFromStation(stationID, parameter);
+            IEnumerable<DataPoint> points = _stationRepo.GetDataPointsFromStation(options);
 
-            Dictionary<string, SwaggerPollutantList> data = new Dictionary<string, SwaggerPollutantList>();
+            Dictionary<string, Nvd3Data> data = new Dictionary<string, Nvd3Data>();
 
             // builds an object specific for the NVD3 plots where the key is eg:
             //   Hawthorne - PM2.5
@@ -100,25 +112,25 @@ namespace server_api.Controllers
             {
                 string key = (d.Station.Name + " - " + d.Parameter.Name);
 
-                SwaggerPollutantList list;
+                Nvd3Data list;
                 if (!data.TryGetValue(key, out list))
                 {
-                    data.Add(key, new SwaggerPollutantList(key));
+                    data.Add(key, new Nvd3Data(key));
                     if (!data.TryGetValue(key, out list))
                     {
                         return BadRequest();
                     }
                 }
 
-                list.values.Add(new object[2]);
-                list.values.Last()[0] = ConvertDateTimeToMilliseconds(d.Time);
-                if (useRawValue)
+                list.Values.Add(new object[2]);
+                list.Values.Last()[0] = ConvertDateTimeToMilliseconds(d.Time);
+                if (options.UseRawValues)
                 {
-                    list.values.Last()[1] = (decimal) d.Value;
+                    list.Values.Last()[1] = (decimal) d.Value;
                 }
                 else
                 {
-                    list.values.Last()[1] = (int) d.AQI;
+                    list.Values.Last()[1] = (int) d.AQI;
                 }
                 
             }
@@ -128,20 +140,22 @@ namespace server_api.Controllers
             return Ok(data.Values);
         }
 
-        private void normalizeDataSwaggerPollutantList(ref Dictionary<string, SwaggerPollutantList> dict) {
+        private void normalizeDataSwaggerPollutantList(ref Dictionary<string, Nvd3Data> dict)
+        {
             // find longest length array in each object
             int max = 0;
-            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict) {
-                if (pair.Value.values.Count > max)
+            foreach (KeyValuePair<string, Nvd3Data> pair in dict)
+            {
+                if (pair.Value.Values.Count > max)
                 {
-                    max = pair.Value.values.Count;
+                    max = pair.Value.Values.Count;
                 }
             }
 
             // normalize all other arrays to be the same length
-            foreach (KeyValuePair<string, SwaggerPollutantList> pair in dict)
+            foreach (KeyValuePair<string, Nvd3Data> pair in dict)
             {
-                List<object[]> current = pair.Value.values;
+                List<object[]> current = pair.Value.Values;
                 while (current.Count < max)
                 {
                     current.Add(new object[0]);
@@ -259,27 +273,25 @@ namespace server_api.Controllers
         /// <summary>
         /// Downloads the datapoints for specific parameters given a list of station ids and parameter names
         /// </summary>
-        /// <param name="id">Station IDs</param>
-        /// <param name="parameter">Parameter names</param>
-        /// <returns></returns>
         [Route("stations/download")]
         [HttpGet]
         [SwaggerResponse(HttpStatusCode.OK)]
-        public IHttpActionResult DownloadStationData([FromUri] string[] stationID, [FromUri] string[] parameter)
+        public IHttpActionResult DownloadStationData([FromUri] DownloadOptions options)
         {
             // get all datapoints matching the station ids and parameter types
-            IEnumerable<DataPoint> points = _stationRepo.GetDataPointsFromStation(stationID, parameter);
+            IEnumerable<DataPoint> points = _stationRepo.GetDataPointsFromStation(options);
 
             string delimiter = "\"";
             string tick = "\'";
             string separator = ",";
             string linefeed = "\r\n";
-            
+
             StringBuilder sb = new StringBuilder();
 
             // write header
             sb.Append("Station,Id,Agency,City,State,Postal,Parameter,Value,Unit,AQI,Category,Date,Time\r\n");
-            foreach (DataPoint d in points) {
+            foreach (DataPoint d in points)
+            {
                 // write station information for datapoint
                 sb.Append(delimiter + d.Station.Name + delimiter + separator);
                 sb.Append(tick + d.Station.Id + separator);
@@ -453,6 +465,54 @@ namespace server_api.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [Route("stations/{id}/adjustments")]
+        [HttpGet]
+        public IHttpActionResult GetStationAdjustment(string id)
+        {
+            // make sure station exists
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
+            {
+                return NotFound();
+            }
+
+            // make sure user owns the station
+            if (station.User_Id != RequestContext.Principal.Identity.GetUserId()) 
+            {
+                return Unauthorized();
+            }
+
+            return Ok(_stationRepo.GetStationAdjustment(station));
+        }
+
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [Route("stations/{id}/adjustments")]
+        [HttpPost]
+        public IHttpActionResult PostStationAdjustment(string id, [FromBody] List<ParameterAdjustment> adjustment)
+        {
+            // make sure station exists
+            Station station = _stationRepo.GetStation(id);
+            if (station == null)
+            {
+                return NotFound();
+            }
+
+            // make sure user owns the station
+            if (station.User_Id != RequestContext.Principal.Identity.GetUserId())
+            {
+                return Unauthorized();
+            }
+
+            return Ok(_stationRepo.PostStationAdjustment(station, adjustment));
         }
 
         /// <summary>
