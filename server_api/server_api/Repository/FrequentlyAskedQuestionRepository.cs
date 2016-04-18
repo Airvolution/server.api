@@ -105,15 +105,40 @@ namespace server_api.Repository
                 {
                     // No existing Review. Add new review.
                     faq.UserReviews.Add(review);
+                    faq.TotalUserReviewScore += review.UserReviewScore;
                 }
                 else
                 {
                     // Existing review. Update review.
                     faq.UserReviews.Remove(existingReview);
+                    faq.TotalUserReviewScore += -existingReview.UserReviewScore;
                     faq.UserReviews.Add(review);
+                    faq.TotalUserReviewScore += review.UserReviewScore;
                 }
                 _ctx.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<FrequentlyAskedQuestion> getTop5Viewed()
+        {
+            var faqs = _ctx.FrequentlyAskedQuestions.OrderByDescending(x => x.ViewCount).Take(5);
+
+            return faqs;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<FrequentlyAskedQuestion> getTop5Rated()
+        {
+            var faqs = _ctx.FrequentlyAskedQuestions.OrderByDescending(x => x.TotalUserReviewScore).Take(5);
+
+            return faqs;
         }
 
         public void Dispose()
