@@ -46,7 +46,7 @@ namespace server_api.Repository
         {
             List<Station> stations = new List<Station>();
 
-            foreach(var stationId in stationIds)
+            foreach(var stationId in id)
             {
                 Station station = _ctx.Stations.Find(id);
                 if (station != null)
