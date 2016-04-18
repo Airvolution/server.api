@@ -27,9 +27,10 @@ namespace server_api
 
             DateTime dateNDaysInBack = DateTime.UtcNow.Date.AddDays(-daysBack);
             var dailies = from d in db.Dailies
-                         where d.Station.Id == stationId &&
-                               d.Date > dateNDaysInBack
-                         select d;
+                          where d.Station.Id == stationId &&
+                                d.Date > dateNDaysInBack
+                                orderby d.Date descending
+                          select d;
 
             return this.PadDailies(dailies, daysBack);
         }
