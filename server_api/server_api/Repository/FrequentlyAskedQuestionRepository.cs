@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Web.Mvc;
+using System.Linq;
 
 namespace server_api.Repository
 {
@@ -40,6 +42,11 @@ namespace server_api.Repository
             foreach(var faq in faqs)
             {
                 faq.AnswerRichText = MarkdownToHtml(faq.AnswerRichText);
+
+                foreach(var review in faq.UserReviews)
+                {
+                    faq.TotalUserReviewScore += review.UserReviewScore;
+                }
             }
 
             return faqs;
@@ -81,6 +88,7 @@ namespace server_api.Repository
         /// <param name="userId"></param>
         /// <param name="score"></param>
         /// <returns></returns>
+        [Authorize]
         public void AddUsefulnessScore(QuestionAnswerUserReview review)
         {
             FrequentlyAskedQuestion faq = _ctx.FrequentlyAskedQuestions.Find(review.FrequentlyAskedQuestion_Id);
@@ -88,9 +96,49 @@ namespace server_api.Repository
             // Update existing user usefulness review.
             if (faq != null)
             {
-                faq.UserReviews.Add(review);
+                ICollection<QuestionAnswerUserReview> reviews = faq.UserReviews;
+
+                var existingReviews = reviews.Where(e => e.User_Id == review.User_Id && e.FrequentlyAskedQuestion_Id == review.FrequentlyAskedQuestion_Id);
+                QuestionAnswerUserReview existingReview = existingReviews.FirstOrDefault();
+
+                if (existingReview == null)
+                {
+                    // No existing Review. Add new review.
+                    faq.UserReviews.Add(review);
+                    faq.TotalUserReviewScore += review.UserReviewScore;
+                }
+                else
+                {
+                    // Existing review. Update review.
+                    faq.UserReviews.Remove(existingReview);
+                    faq.TotalUserReviewScore += -existingReview.UserReviewScore;
+                    faq.UserReviews.Add(review);
+                    faq.TotalUserReviewScore += review.UserReviewScore;
+                }
                 _ctx.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<FrequentlyAskedQuestion> getTop5Viewed()
+        {
+            var faqs = _ctx.FrequentlyAskedQuestions.OrderByDescending(x => x.ViewCount).Take(5);
+
+            return faqs;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<FrequentlyAskedQuestion> getTop5Rated()
+        {
+            var faqs = _ctx.FrequentlyAskedQuestions.OrderByDescending(x => x.TotalUserReviewScore).Take(5);
+
+            return faqs;
         }
 
         public void Dispose()

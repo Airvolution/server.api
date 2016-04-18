@@ -81,5 +81,33 @@ namespace server_api.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        ///   Returns an array of the top 5 most viewed frequently asked questions.
+        /// </summary>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<FrequentlyAskedQuestion>))]
+        [Route("faq/top5Viewed")]
+        [HttpGet]
+        public IHttpActionResult Top5MostViewedList()
+        {
+            // get all datapoints matching the station ids and parameter types
+            IEnumerable<FrequentlyAskedQuestion> questionsAnswers = _faqRepo.getTop5Viewed();
+
+            return Ok(questionsAnswers);
+        }
+
+        /// <summary>
+        ///   Returns an array of the top 5 best user rated frequently asked questions.
+        /// </summary>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<FrequentlyAskedQuestion>))]
+        [Route("faq/top5Rated")]
+        [HttpGet]
+        public IHttpActionResult Top5HighestRatedList()
+        {
+            // get all datapoints matching the station ids and parameter types
+            IEnumerable<FrequentlyAskedQuestion> questionsAnswers = _faqRepo.getTop5Rated();
+
+            return Ok(questionsAnswers);
+        }
     }
 }
