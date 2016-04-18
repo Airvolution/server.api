@@ -48,7 +48,7 @@ namespace server_api.Repository
 
             foreach(var stationId in id)
             {
-                Station station = _ctx.Stations.Find(id);
+                Station station = _ctx.Stations.Find(stationId);
                 if (station != null)
                 {
                     stations.Add(station);
