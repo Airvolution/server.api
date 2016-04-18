@@ -46,6 +46,22 @@ namespace server_api.Controllers
             return Ok(station);
         }
 
+        [Route("stations")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Station>))]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        public IHttpActionResult GetStations([FromBody]IEnumerable<string> ids)
+        {
+            if (ids.Count() > 0)
+            {
+                return Ok(_stationRepo.GetMultipleStations(ids));
+            }
+            else
+            {
+                return BadRequest("Must provide one or more station ids");
+            }
+        }
+
         [Authorize]
         [Route("stations/{id}")]
         [HttpPut]
