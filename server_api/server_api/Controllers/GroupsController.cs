@@ -69,9 +69,9 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Group))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
-        [Route("{groupId}/stations/{stationId}")]
+        [Route("{groupId}/stations/")]
         [HttpPut]
-        public IHttpActionResult AddStationToGroup(int groupId, string stationId)
+        public IHttpActionResult AddStationToGroup(int groupId, [FromUri] string[] stationIds)
         {
             Group group = _repo.GetGroup(groupId);
             if(group == null){
@@ -80,11 +80,13 @@ namespace server_api.Controllers
 
             if (group.Owner_Id == RequestContext.Principal.Identity.GetUserId()){
             
-                var result = _repo.AddStationToGroup(group, stationId);
-                if(result == null){
+                var result = _repo.AddStationToGroup(group, stationIds);
+                if (!result)
+                {
                     return NotFound();
                 }
-                return Ok(result);
+
+                return Ok(_repo.GetGroup(group.Id));
             }
             else
             {
@@ -96,9 +98,9 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Group))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
-        [Route("{groupId}/stations/{stationId}")]
+        [Route("{groupId}/stations/")]
         [HttpDelete]
-        public IHttpActionResult RemoveStationFromGroup(int groupId, string stationId)
+        public IHttpActionResult RemoveStationFromGroup(int groupId, [FromUri] string[] stationIds)
         {
             Group group = _repo.GetGroup(groupId);
             if(group == null){
@@ -107,11 +109,12 @@ namespace server_api.Controllers
 
             if (group.Owner_Id == RequestContext.Principal.Identity.GetUserId()){
             
-                var result = _repo.RemoveStationFromGroup(group, stationId);
-                if(result == null){
+                var result = _repo.RemoveStationFromGroup(group, stationIds);
+                if (!result)
+                {
                     return NotFound();
                 }
-                return Ok(result);
+                return Ok(_repo.GetGroup(group.Id));
             }
             else
             {
