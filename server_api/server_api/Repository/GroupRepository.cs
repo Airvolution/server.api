@@ -42,35 +42,58 @@ namespace server_api.Repository
             return group;
         }
 
-        public Group AddStationToGroup(Group group, string stationId)
+        public bool AddStationToGroup(Group group, string[] stationIds)
         {
-            Station station = _ctx.Stations.Find(stationId);
-            if (station != null)
+            List<Station> stations = new List<Station>();
+
+            foreach(var stationId in stationIds)
+            {
+                Station station = _ctx.Stations.Find(stationId);
+                if (station != null)
+                {
+                    stations.Add(station);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            foreach (var station in stations)
             {
                 group.Stations.Add(station);
-                _ctx.SaveChanges();
-                return group;
             }
-            else
-            {
-                return null;
-            }
-            
+
+            _ctx.SaveChanges();
+
+            return true;
         }
 
-        public Group RemoveStationFromGroup(Group group, string stationId)
+        public bool RemoveStationFromGroup(Group group, string[] stationIds)
         {
-            Station station =  _ctx.Stations.Find(stationId);
-            if (station != null)
+            List<Station> stations = new List<Station>();
+
+            foreach (var stationId in stationIds)
+            {
+                Station station = _ctx.Stations.Find(stationId);
+                if (station != null)
+                {
+                    stations.Add(station);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            foreach(var station in stations)
             {
                 group.Stations.Remove(station);
-                _ctx.SaveChanges();
-                return group;
             }
-            else
-            {
-                return null;
-            }
+            
+            _ctx.SaveChanges();
+
+            return true;
         }
 
 
