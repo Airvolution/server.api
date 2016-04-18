@@ -42,13 +42,13 @@ namespace server_api.Repository
             return group;
         }
 
-        public bool AddStationToGroup(Group group, string[] stationIds)
+        public bool AddStationToGroup(Group group, string[] id)
         {
             List<Station> stations = new List<Station>();
 
             foreach(var stationId in stationIds)
             {
-                Station station = _ctx.Stations.Find(stationId);
+                Station station = _ctx.Stations.Find(id);
                 if (station != null)
                 {
                     stations.Add(station);
@@ -69,11 +69,11 @@ namespace server_api.Repository
             return true;
         }
 
-        public bool RemoveStationFromGroup(Group group, string[] stationIds)
+        public bool RemoveStationFromGroup(Group group, string[] id)
         {
             List<Station> stations = new List<Station>();
 
-            foreach (var stationId in stationIds)
+            foreach (var stationId in id)
             {
                 Station station = _ctx.Stations.Find(stationId);
                 if (station != null)
