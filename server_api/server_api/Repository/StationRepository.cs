@@ -279,7 +279,7 @@ namespace server_api
                 DateTime today = startTime.Date;
                 DateTime nextDay = startTime.AddDays(1);
                 DateTime endTime = maxTime;
-                DateTime twoHoursAgo = DateTime.UtcNow.AddHours(-2);
+                DateTime sixHoursAgo = DateTime.UtcNow.AddHours(-6);
 
                 // Recursively call this to separate days
                 if (startTime.Date != endTime.Date)
@@ -393,7 +393,7 @@ namespace server_api
 
                 var latestPoints = (from points in db.DataPoints
                                     where points.Station.Id == stationId
-                                    where points.Time > twoHoursAgo
+                                    where points.Time > sixHoursAgo
                                     group points by points.Parameter.Name into paramPoints
                                     select new
                                     {
