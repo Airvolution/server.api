@@ -26,6 +26,7 @@ namespace server_api.Models
         public string User_Id
         { get; set; }
 
+        [JsonIgnore]
         public virtual User User { get; set; }
 
         [ForeignKey("FrequentlyAskedQuestion")]
@@ -34,6 +35,7 @@ namespace server_api.Models
         public int FrequentlyAskedQuestion_Id
         { get; set; }
 
+        [JsonIgnore]
         public virtual FrequentlyAskedQuestion FrequentlyAskedQuestion { get; set; }
 
         [Required]
