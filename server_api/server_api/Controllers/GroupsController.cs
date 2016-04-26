@@ -71,7 +71,7 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
         [Route("{groupId}/stations/")]
         [HttpPut]
-        public IHttpActionResult AddStationToGroup(int groupId, [FromUri] string[] id)
+        public IHttpActionResult AddStationToGroup(int groupId, [FromUri] string[] ids)
         {
             Group group = _repo.GetGroup(groupId);
             if(group == null){
@@ -80,7 +80,7 @@ namespace server_api.Controllers
 
             if (group.Owner_Id == RequestContext.Principal.Identity.GetUserId()){
 
-                var result = _repo.AddStationToGroup(group, id);
+                bool result = _repo.AddStationToGroup(group, ids);
                 if (!result)
                 {
                     return NotFound();
@@ -100,7 +100,7 @@ namespace server_api.Controllers
         [SwaggerResponse(HttpStatusCode.Unauthorized)]
         [Route("{groupId}/stations/")]
         [HttpDelete]
-        public IHttpActionResult RemoveStationFromGroup(int groupId, [FromUri] string[] id)
+        public IHttpActionResult RemoveStationFromGroup(int groupId, [FromUri] string[] ids)
         {
             Group group = _repo.GetGroup(groupId);
             if(group == null){
@@ -109,7 +109,7 @@ namespace server_api.Controllers
 
             if (group.Owner_Id == RequestContext.Principal.Identity.GetUserId()){
 
-                var result = _repo.RemoveStationFromGroup(group, id);
+                bool result = _repo.RemoveStationFromGroup(group, ids);
                 if (!result)
                 {
                     return NotFound();
@@ -120,6 +120,41 @@ namespace server_api.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+        [Authorize]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Group))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized)]
+        [Route("{groupId}/stations/")]
+        [HttpPost]
+        public IHttpActionResult UpdateGroup([FromUri] int groupId, [FromBody] UpdateGroup data)
+        {
+            Group group = _repo.GetGroup(groupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (group.Owner_Id == RequestContext.Principal.Identity.GetUserId())
+            {
+                bool result = _repo.AddStationToGroup(group, data.stationsToAdd);
+                if (!result)
+                {
+                    return NotFound();
+                }
+                result = _repo.RemoveStationFromGroup(group, data.stationsToRemove);
+                if (!result)
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+            return Ok(_repo.GetGroup(group.Id)); ;
         }
 
         [Authorize]

@@ -395,6 +395,7 @@
     <Compile Include="Models\ResetPasswordCode.cs" />
     <Compile Include="Models\QuestionAnswerUserReview.cs" />
     <Compile Include="Models\UnregisteredStation.cs" />
+    <Compile Include="Models\UpdateGroup.cs" />
     <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Providers\MessageProvider.cs" />
