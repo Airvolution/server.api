@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace server_api.Models
+namespace server_api.Utilities
 {
     public class Pm25Aqi
     {

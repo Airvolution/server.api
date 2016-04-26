@@ -1,6 +1,4 @@
 ﻿using System;
-using server_api.Models;
-
 namespace server_api.Utilities
 {
     public class No2Aqi
