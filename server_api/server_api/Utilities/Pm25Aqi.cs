@@ -17,16 +17,16 @@ namespace server_api.Utilities
 
         public static Tuple<Tuple<double, double>, Tuple<int, int>> BreakPoints(double value)
         {
-            if (value <= 12.0)
+            if (value < 12.1)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(0.0, 12.0);
+                Tuple<double, double> BP = new Tuple<double, double>(0.0, 12.1);
                 Tuple<int, int> I = new Tuple<int, int>(0, 50);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
             if (value <= 35.4)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(12.0, 35.4);
+                Tuple<double, double> BP = new Tuple<double, double>(12.1, 35.4);
                 Tuple<int, int> I = new Tuple<int, int>(51, 100);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
