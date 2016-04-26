@@ -35,7 +35,7 @@ namespace server_api.Utilities
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
-            if (value <= 254)
+            if (value <= 254.0)
             {
                 Tuple<double, double> BP = new Tuple<double, double>(154.0, 254.0);
                 Tuple<int, int> I = new Tuple<int, int>(101, 150);
@@ -56,14 +56,9 @@ namespace server_api.Utilities
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
-            if (value <= 504.0)
-            {
-                Tuple<double, double> BP = new Tuple<double, double>(424.0, 504.0);
-                Tuple<int, int> I = new Tuple<int, int>(301, 400);
-                return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
-            }
-
-            return new Tuple<Tuple<double, double>, Tuple<int, int>>(new Tuple<double, double>(505, 604), new Tuple<int, int>(401, 500));
+            Tuple<double, double> bp = new Tuple<double, double>(424.0, 604.0);
+            Tuple<int, int> i = new Tuple<int, int>(301, 400);
+            return new Tuple<Tuple<double, double>, Tuple<int, int>>(bp, i);
         }
     }
 }

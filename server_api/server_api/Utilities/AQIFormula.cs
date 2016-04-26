@@ -44,12 +44,7 @@ namespace server_api.Utilities
                 return 5;
             }
 
-            if (aqi <= 400)
-            {
-                return 6;
-            }
-
-            return 7;
+            return 6;
         }
     }
 }

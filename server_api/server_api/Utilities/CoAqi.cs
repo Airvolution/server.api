@@ -53,14 +53,10 @@ namespace server_api.Utilities
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
-            if (value <= 40.4)
-            {
-                Tuple<double, double> BP = new Tuple<double, double>(30.4, 40.4);
-                Tuple<int, int> I = new Tuple<int, int>(301, 400);
-                return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
-            }
-
-            return new Tuple<Tuple<double, double>, Tuple<int, int>>(new Tuple<double, double>(40.4, 50.4), new Tuple<int, int>(401, 500));
+            
+            Tuple<double, double> bp = new Tuple<double, double>(30.4, 50.4);
+            Tuple<int, int> i = new Tuple<int, int>(301, 400);
+            return new Tuple<Tuple<double, double>, Tuple<int, int>>(bp, i);                       
         }
     }
 }
