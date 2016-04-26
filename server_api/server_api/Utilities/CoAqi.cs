@@ -55,7 +55,7 @@ namespace server_api.Utilities
 
             if (value <= 40.4)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(35.5, 40.4);
+                Tuple<double, double> BP = new Tuple<double, double>(30.5, 40.4);
                 Tuple<int, int> I = new Tuple<int, int>(301, 400);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
