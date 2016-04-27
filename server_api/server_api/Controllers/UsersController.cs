@@ -161,8 +161,7 @@ namespace server_api.Controllers
             {
                 IHttpActionResult result;
                 HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Moved);
-                //TODO Fix this so it works when deployed
-                response.Headers.Location = new Uri("http://localhost:8084/#/modal/password/reset/complete");
+                response.Headers.Location = new Uri("http://air.eng.utah.edu/#/modal/password/reset/complete");
                 result = ResponseMessage(response);
                 return result;
             }
@@ -191,8 +190,7 @@ namespace server_api.Controllers
            {
                IHttpActionResult result;
                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Moved);
-               //TODO Fix this so it works when deployed
-               response.Headers.Location = new Uri("http://localhost:8084/#/modal/email/confirmed");
+               response.Headers.Location = new Uri("http://air.eng.utah.edu/#/modal/email/confirmed");
                result = ResponseMessage(response);
                return result;
            }
