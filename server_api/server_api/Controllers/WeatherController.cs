@@ -5,6 +5,7 @@ using System.Web.Http;
 using Newtonsoft.Json;
 using server_api.Models;
 using Newtonsoft.Json.Linq;
+using Swashbuckle.Swagger.Annotations;
 
 namespace server_api.Controllers
 {
@@ -19,6 +20,8 @@ namespace server_api.Controllers
         /// <returns></returns>
         [Route("weather/current")]
         [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(WeatherResponse))]
+        [SwaggerResponse(HttpStatusCode.BadRequest, Type = typeof(string))]
         public IHttpActionResult CurrentWeather(decimal lat = 360, decimal lng = 360, int id = -1, int zip = -1)
         {
             StringBuilder parameters = new StringBuilder("?");

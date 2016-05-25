@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security.OAuth;
+using server_api.Models;
 
 namespace server_api.Providers
 {
@@ -19,9 +20,10 @@ namespace server_api.Providers
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new []{"*"});
-            using (AuthRepository _repo = new AuthRepository())
+            User user;
+            using (UserRepository _repo = new UserRepository())
             {
-                IdentityUser user = await _repo.FindUser(context.UserName, context.Password);
+                user = await _repo.FindUser(context.UserName, context.Password);
                 if (user == null)
                 {
                     context.SetError("invalid_agent","The user name or passward is incorrect.");
@@ -31,6 +33,8 @@ namespace server_api.Providers
 
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
             identity.AddClaim(new Claim("sub", context.UserName));
+            identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
             identity.AddClaim(new Claim("role","user"));
 
             context.Validated(identity);

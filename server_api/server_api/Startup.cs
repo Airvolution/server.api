@@ -6,6 +6,8 @@ using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using server_api.Providers;
 using Swashbuckle.Application;
+using System.Web.Http.Validation;
+using System.Data.Entity.Spatial;
 
 [assembly: OwinStartup(typeof(server_api.App_Start.Startup))]
 
@@ -25,6 +27,8 @@ namespace server_api.App_Start
 
             HttpConfiguration config = new HttpConfiguration();
 
+            config.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
+
             WebApiConfig.Register(config);
             ConfigureOAuth(app);
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
@@ -41,12 +45,20 @@ namespace server_api.App_Start
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
         }
 
+        public class CustomBodyModelValidator : DefaultBodyModelValidator
+        {
+            public override bool ShouldValidateType(Type type)
+            {
+                return type != typeof(DbGeography) && base.ShouldValidateType(type);
+            }
+        }
+
         public void ConfigureOAuth(IAppBuilder app)
         {
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
                 AllowInsecureHttp = true,
-                TokenEndpointPath = new PathString("/token"),
+                TokenEndpointPath = new PathString("/users/login"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
                 Provider = new SimpleAuthorizationServerProvider()
             };
