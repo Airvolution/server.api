@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace server_api.Models
+namespace server_api.Utilities
 {
     public class AQIFormula
     {
@@ -44,12 +44,7 @@ namespace server_api.Models
                 return 5;
             }
 
-            if (aqi <= 400)
-            {
-                return 6;
-            }
-
-            return 7;
+            return 6;
         }
     }
 }

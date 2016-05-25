@@ -1,6 +1,4 @@
 ﻿using System;
-using server_api.Models;
-
 namespace server_api.Utilities
 {
     public class No2Aqi
@@ -29,14 +27,9 @@ namespace server_api.Utilities
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
-            if (value <= 1.64)
-            {
-                Tuple<double, double> BP = new Tuple<double, double>(1.25, 1.64);
-                Tuple<int, int> I = new Tuple<int, int>(301, 400);
-                return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
-            }
-
-            return new Tuple<Tuple<double, double>, Tuple<int, int>>(new Tuple<double, double>(1.65, 2.04), new Tuple<int, int>(401, 500));
+            Tuple<double, double> bp = new Tuple<double, double>(1.24, 2.04);
+            Tuple<int, int> i = new Tuple<int, int>(301, 400);
+            return new Tuple<Tuple<double, double>, Tuple<int, int>>(bp, i);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace server_api.Models
+namespace server_api.Utilities
 {
     public class Pm25Aqi
     {
@@ -17,9 +17,9 @@ namespace server_api.Models
 
         public static Tuple<Tuple<double, double>, Tuple<int, int>> BreakPoints(double value)
         {
-            if (value <= 12.0)
+            if (value < 12.1)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(0.0, 12.0);
+                Tuple<double, double> BP = new Tuple<double, double>(0.0, 12.1);
                 Tuple<int, int> I = new Tuple<int, int>(0, 50);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
@@ -33,33 +33,28 @@ namespace server_api.Models
 
             if (value <= 55.4)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(35.5, 55.4);
+                Tuple<double, double> BP = new Tuple<double, double>(35.4, 55.4);
                 Tuple<int, int> I = new Tuple<int, int>(101, 150);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
             if (value <= 150.4)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(55.5, 150.4);
+                Tuple<double, double> BP = new Tuple<double, double>(55.4, 150.4);
                 Tuple<int, int> I = new Tuple<int, int>(151, 200);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
             if (value <= 250.4)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(150.5, 250.4);
+                Tuple<double, double> BP = new Tuple<double, double>(150.4, 250.4);
                 Tuple<int, int> I = new Tuple<int, int>(201, 300);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
-            if (value <= 350.4)
-            {
-                Tuple<double, double> BP = new Tuple<double, double>(250.5, 350.4);
-                Tuple<int, int> I = new Tuple<int, int>(301, 400);
-                return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
-            }
-
-            return new Tuple<Tuple<double, double>, Tuple<int, int>>(new Tuple<double, double>(350.5, 500), new Tuple<int, int>(401, 500));
+            Tuple<double, double> bp = new Tuple<double, double>(250.4, 500);
+            Tuple<int, int> i = new Tuple<int, int>(301, 400);
+            return new Tuple<Tuple<double, double>, Tuple<int, int>>(bp, i);
         }
     }
 }

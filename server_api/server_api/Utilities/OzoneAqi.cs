@@ -30,26 +30,22 @@ namespace server_api.Utilities
 
             if (value <= 0.204)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(0.165, 0.204);
+                Tuple<double, double> BP = new Tuple<double, double>(0.164, 0.204);
                 Tuple<int, int> I = new Tuple<int, int>(151, 200);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
             if (value <= 0.404)
             {
-                Tuple<double, double> BP = new Tuple<double, double>(0.205, 0.404);
+                Tuple<double, double> BP = new Tuple<double, double>(0.204, 0.404);
                 Tuple<int, int> I = new Tuple<int, int>(201, 300);
                 return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
             }
 
-            if (value <= 0.504)
-            {
-                Tuple<double, double> BP = new Tuple<double, double>(0.405, 0.504);
-                Tuple<int, int> I = new Tuple<int, int>(301, 400);
-                return new Tuple<Tuple<double, double>, Tuple<int, int>>(BP, I);
-            }
+            Tuple<double, double> bp = new Tuple<double, double>(0.404, 0.604);
+            Tuple<int, int> i = new Tuple<int, int>(301, 400);
+            return new Tuple<Tuple<double, double>, Tuple<int, int>>(bp, i);
 
-            return new Tuple<Tuple<double, double>, Tuple<int, int>>(new Tuple<double, double>(0.505, 0.604), new Tuple<int, int>(401, 500));
         }
     }
 }
